@@ -46,24 +46,109 @@
       color: #1a73e8;
       font-weight: 700;
     }
+
+    /* Адаптивність для мобільних пристроїв */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 10px;
+      }
+      input {
+        width: 100%;
+        font-size: 14px;
+        padding: 12px;
+      }
+      .result {
+        width: 100%;
+        padding: 20px;
+        font-size: 14px;
+      }
+      .modal {
+        width: 90vw;
+      }
+      #codeEditor {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 20px;
+      }
+      input {
+        font-size: 13px;
+        padding: 10px;
+      }
+      .result {
+        font-size: 13px;
+        padding: 15px;
+      }
+    }
+
+    /* Стиль повідомлення про оновлення */
+    .update-notice {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 15px 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 700px;
+      margin-bottom: 20px;
+      color: #856404;
+      font-size: 15px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* Модальні вікна та кнопки */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal {
+      background:#fff;
+      width:min(90vw,700px);
+      border-radius:12px;
+      box-shadow:0 6px 20px rgba(0,0,0,.25);
+      border:2px solid #1a73e8;
+    }
+    .modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
+    .modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
+    .modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
+    .btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
+    .btn-primary {background:#1a73e8;color:#fff;}
+    .edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
+    .edit-input {width:100%;padding:6px;margin-top:6px;}
+    .logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
+    .creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
+    .creator-tools .btn {background:#1a73e8;color:#fff;}
+    #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
+    .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
   </style>
 </head>
 <body>
+
+  <div class="update-notice">
+    Вітаю! Оновлення 0.1: у цьому оновленні ми вийшли на новий рівень, а саме офіційність. 
+    Тепер ми в колі офіційних сайтів і з прямим посиланням.
+  </div>
+
   <h1>Пошук покарань</h1>
   <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
   <div class="result" id="result">Тут з'явиться покарання</div>
 
   <script>
     const punishments = {
-      // 1.15-1.17
       "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
-      // 2. Правила нікнейму
       "нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
       "нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
       "заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікнейму, заборона на вступ у фракцію" },
       "нецензурний нікнейм": { rule: "2.3", punishment: "Перманентне блокування облікового запису" },
       "образливий нікнейм": { rule: "2.4", punishment: "Перманентне блокування облікового запису" },
-      // 4. RolePlay правила
       "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
       "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
       "dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
@@ -96,7 +181,6 @@
       "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
       "зменшене покарання за обман": { rule: "4.22", punishment: "Бан від 3 до 15 днів" },
       "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
-      // 5. Чат
       "mg": { rule: "5.1", punishment: "Мут 20 хвилин / Warn при зловживанні" },
       "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
       "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
@@ -124,223 +208,6 @@
       resultBox.textContent = results.length > 0 ? results.join('\n') : "Покарання не знайдено";
     });
   </script>
-
-<style>
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-  }
-  .modal {
-    background:#fff;
-    width:min(90vw,700px);
-    border-radius:12px;
-    box-shadow:0 6px 20px rgba(0,0,0,.25);
-    border:2px solid #1a73e8;
-  }
-  .modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
-  .modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
-  .modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
-  .btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
-  .btn-primary {background:#1a73e8;color:#fff;}
-  .edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
-  .edit-input {width:100%;padding:6px;margin-top:6px;}
-  .logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
-  .creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
-  .creator-tools .btn {background:#1a73e8;color:#fff;}
-  #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
-  .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
-</style>
-<script>
-(function(){
-  // utility to create modal elements without injecting HTML with unescaped code
-  function createModal(title, bodyNode, actions){
-    const backdrop = document.createElement('div');
-    backdrop.className = 'modal-backdrop';
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    const header = document.createElement('div');
-    header.className = 'modal-header';
-    header.textContent = title;
-    const body = document.createElement('div');
-    body.className = 'modal-body';
-    if(bodyNode) body.appendChild(bodyNode);
-    const act = document.createElement('div');
-    act.className = 'modal-actions';
-    actions.forEach(btn => act.appendChild(btn));
-    modal.appendChild(header);
-    modal.appendChild(body);
-    modal.appendChild(act);
-    backdrop.appendChild(modal);
-    return backdrop;
-  }
-
-  function showLoginModal(){
-    const container = document.createElement('div');
-    const p = document.createElement('p');
-    p.innerHTML = 'Цей текст потрібен, щоб я міг зрозуміти хто ви? Адміністратор UA Online чи мій творець.<br><br>' +
-                  '<b>Якщо ви <u>не мій творець</u>, натисніть кнопку \"Я не Творець\" без введення ніка і пароля.</b><br>' +
-                  'Введення ніка і пароля потрібно <b>лише для творця (Artem_Furrry)</b>.';
-    container.appendChild(p);
-    const labelNick = document.createElement('label'); labelNick.textContent='Ваш нік:';
-    const inputNick = document.createElement('input'); inputNick.type='text'; inputNick.style.width='100%'; inputNick.style.padding='6px'; inputNick.style.margin='6px 0';
-    const labelPass = document.createElement('label'); labelPass.textContent='Пароль:';
-    const inputPass = document.createElement('input'); inputPass.type='password'; inputPass.style.width='100%'; inputPass.style.padding='6px'; inputPass.style.margin='6px 0';
-    const err = document.createElement('p'); err.id='loginError'; err.style.color='red'; err.style.fontSize='13px'; err.style.display='none'; err.textContent='Невірний нік або пароль!';
-
-    container.appendChild(labelNick); container.appendChild(inputNick);
-    container.appendChild(labelPass); container.appendChild(inputPass);
-    container.appendChild(err);
-
-    const btnNo = document.createElement('button'); btnNo.className='btn'; btnNo.textContent='Я не Творець';
-    const btnYes = document.createElement('button'); btnYes.className='btn btn-primary'; btnYes.textContent='Я Творець';
-
-    const modal = createModal('Авторизація', container, [btnNo, btnYes]);
-    document.body.appendChild(modal);
-
-    btnNo.addEventListener('click', ()=>{
-      localStorage.setItem('userRole','user');
-      document.body.removeChild(modal);
-      location.reload();
-    });
-    btnYes.addEventListener('click', ()=>{
-      const nick = inputNick.value.trim();
-      const pass = inputPass.value.trim();
-      if(nick === 'Artem_Furrry' && pass === 'QazMlp123'){
-        localStorage.setItem('userRole','creator');
-        document.body.removeChild(modal);
-        location.reload();
-      } else {
-        err.style.display='block';
-      }
-    });
-  }
-
-  function addLogoutButton(){
-    const role = localStorage.getItem('userRole');
-    if(!role) return;
-    const logout = document.createElement('div');
-    logout.textContent = 'Вийти';
-    logout.className = 'logout';
-    logout.title = 'Вийти з поточної ролі';
-    logout.addEventListener('click', ()=>{
-      localStorage.removeItem('userRole');
-      location.reload();
-    });
-    document.body.appendChild(logout);
-  }
-
-  function logAction(text){
-    const logs = JSON.parse(localStorage.getItem('editLogs')||'[]');
-    logs.push(new Date().toLocaleString() + ': ' + text);
-    localStorage.setItem('editLogs', JSON.stringify(logs));
-  }
-
-  function openLogsModal(){
-    const logs = JSON.parse(localStorage.getItem('editLogs')||'[]');
-    const container = document.createElement('div');
-    if(logs.length===0){
-      const p = document.createElement('div'); p.textContent='Немає змін'; container.appendChild(p);
-    } else {
-      const ul = document.createElement('ul'); ul.className='log-list';
-      logs.forEach(l=>{ const li=document.createElement('li'); li.textContent = l; ul.appendChild(li); });
-      container.appendChild(ul);
-    }
-    const btnClose = document.createElement('button'); btnClose.className='btn btn-primary'; btnClose.textContent='Закрити';
-    const modal = createModal('Логи змін', container, [btnClose]);
-    document.body.appendChild(modal);
-    btnClose.addEventListener('click', ()=> document.body.removeChild(modal));
-  }
-
-  function openCodeEditor(){
-    const codeRaw = localStorage.getItem('customCode') || document.documentElement.outerHTML;
-    const container = document.createElement('div');
-    const ta = document.createElement('textarea'); ta.id='codeEditor'; ta.style.width='100%'; ta.style.height='400px'; ta.value = codeRaw;
-    container.appendChild(ta);
-
-    const btnCancel = document.createElement('button'); btnCancel.className='btn'; btnCancel.textContent='Відмінити';
-    const btnSave = document.createElement('button'); btnSave.className='btn btn-primary'; btnSave.textContent='Зберегти та застосувати';
-
-    const modal = createModal('Редактор коду', container, [btnCancel, btnSave]);
-    document.body.appendChild(modal);
-
-    btnCancel.addEventListener('click', ()=> document.body.removeChild(modal));
-    btnSave.addEventListener('click', ()=>{
-      const newCode = ta.value;
-      // save raw HTML
-      localStorage.setItem('customCode', newCode);
-      logAction('Редагування коду сайту (збережено)');
-      // Apply immediately: write new HTML to document (this will replace entire page)
-      // Use a short delay to allow modal to remove
-      document.body.removeChild(modal);
-      alert('Код збережено. Сайт буде перезавантажено з новим кодом.');
-      // apply
-      document.open();
-      document.write(newCode);
-      document.close();
-    });
-  }
-
-  // Setup on DOMContentLoaded
-  document.addEventListener('DOMContentLoaded', ()=>{
-    const role = localStorage.getItem('userRole');
-    if(!role){
-      showLoginModal();
-      return;
-    }
-
-    addLogoutButton();
-
-    // restore saved edits for all users
-    document.querySelectorAll('td').forEach(td=>{
-      try{
-        const saved = localStorage.getItem('rule_'+td.closest('tr').rowIndex+'_'+td.cellIndex);
-        if(saved) td.textContent = saved;
-      }catch(e){}
-    });
-
-    if(role === 'creator'){
-      // add edit buttons to td that look like punishment cells
-      document.querySelectorAll('td').forEach(td=>{
-        try{
-          if(td.textContent.match(/Jail|Ban|хв|бізнес|Ban|Jail/i)){
-            // restore saved first
-            const saved = localStorage.getItem('rule_'+td.closest('tr').rowIndex+'_'+td.cellIndex);
-            if(saved) td.textContent = saved;
-            const btn = document.createElement('span'); btn.className='edit-btn'; btn.textContent='✏️';
-            btn.title = 'Редагувати';
-            btn.addEventListener('click', ()=>{
-              const current = td.textContent;
-              const input = document.createElement('input'); input.type='text'; input.className='edit-input'; input.value=current;
-              td.innerHTML = ''; td.appendChild(input); input.focus();
-              input.addEventListener('blur', ()=>{
-                td.textContent = input.value;
-                localStorage.setItem('rule_'+td.closest('tr').rowIndex+'_'+td.cellIndex, input.value);
-                td.appendChild(btn);
-                logAction('Змінено правило в рядку '+td.closest('tr').rowIndex+' колонка '+td.cellIndex+' на \"'+input.value+'\"');
-              });
-            });
-            td.appendChild(btn);
-          }
-        }catch(e){}
-      });
-
-      // create creator-tools with proper event listeners attached before adding to DOM
-      const tools = document.createElement('div'); tools.className='creator-tools';
-      const bLogs = document.createElement('button'); bLogs.className='btn'; bLogs.textContent='📜 Логи';
-      const bCode = document.createElement('button'); bCode.className='btn'; bCode.textContent='💻 Редагувати код';
-      bLogs.addEventListener('click', openLogsModal);
-      bCode.addEventListener('click', openCodeEditor);
-      tools.appendChild(bLogs); tools.appendChild(bCode);
-      document.body.appendChild(tools);
-    }
-  });
-})(); 
-</script>
 
 </body>
 </html>
