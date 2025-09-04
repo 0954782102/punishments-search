@@ -1,126 +1,113 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Пошук покарань</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  body { font-family: 'Roboto', sans-serif; background:#e8f0fe; display:flex; flex-direction:column; align-items:center; padding:20px; margin:0; }
-  h1 { color:#1a73e8; text-align:center; margin-bottom:20px; }
-  input { padding:12px; width:600px; max-width:95%; border:2px solid #1a73e8; border-radius:12px; margin-bottom:20px; font-size:16px; outline:none; transition:0.2s; }
-  input:focus { box-shadow:0 0 10px rgba(26,115,232,0.5); }
-  .result { background:#fff; padding:20px; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.15); width:700px; max-width:95%; white-space:pre-wrap; line-height:1.6; font-size:15px; color:#202124; }
-  .logout { position:fixed; top:10px; right:10px; background:#f44336; color:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; z-index:10000; }
-  .creator-tools { position:fixed; bottom:10px; right:10px; display:flex; gap:8px; z-index:10000; }
-  .creator-tools .btn { background:#1a73e8; color:#fff; padding:6px 12px; border:none; border-radius:8px; cursor:pointer; }
-  .editor { width:90%; max-width:700px; background:#fff; padding:10px; border-radius:12px; margin-top:10px; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
-  .editor input, .editor textarea { width:100%; margin:5px 0; padding:6px; border:1px solid #1a73e8; border-radius:8px; }
-  @media(max-width:768px){ input{ font-size:14px; padding:10px; } .result{ font-size:14px; padding:16px; } }
-  @media(max-width:480px){ h1{ font-size:22px; } input{ font-size:13px; padding:8px; } .result{ font-size:13px; padding:12px; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пошук покарань</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #e8f0fe;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+      margin:0;
+    }
+    h1 {
+      color: #1a73e8;
+      margin-bottom: 20px;
+      text-align:center;
+    }
+    input {
+      padding: 14px;
+      width: 600px;
+      max-width: 95%;
+      border: 2px solid #1a73e8;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s;
+    }
+    input:focus {
+      box-shadow: 0 0 10px rgba(26, 115, 232, 0.5);
+    }
+    .result {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      width: 700px;
+      max-width: 95%;
+      text-align: left;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 15px;
+      color: #202124;
+    }
+    .highlight {
+      color: #1a73e8;
+      font-weight: 700;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal {
+      background:#fff;
+      width:min(90vw,700px);
+      border-radius:12px;
+      box-shadow:0 6px 20px rgba(0,0,0,.25);
+      border:2px solid #1a73e8;
+    }
+    .modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
+    .modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
+    .modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
+    .btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
+    .btn-primary {background:#1a73e8;color:#fff;}
+    .edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
+    .edit-input {width:100%;padding:6px;margin-top:6px;}
+    .logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
+    .creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
+    .creator-tools .btn {background:#1a73e8;color:#fff;}
+    #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
+    .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
+    .logoUA {position:fixed;top:10px;left:10px;z-index:10001;display:flex;align-items:center;gap:6px;background:#fff;padding:4px 8px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.2);}
+    .logoUA img {height:30px;}
+    .logoUA span {font-weight:700;color:#1a73e8;}
+
+    /* --- Адаптация под мобильные --- */
+    @media(max-width:768px){
+      input { font-size:14px; padding:12px; }
+      .result { font-size:14px; padding:20px; }
+    }
+    @media(max-width:480px){
+      h1 { font-size:22px; margin-bottom:15px; }
+      input { font-size:13px; padding:10px; }
+      .result { font-size:13px; padding:16px; }
+    }
+  </style>
 </head>
 <body>
-<h1>Пошук покарань</h1>
-<input type="text" id="search" placeholder="Введіть ключове слово (DM, SK, PG, Нікнейм...)">
-<div class="result" id="result">Тут з'явиться покарання</div>
-<div class="logout" id="logoutBtn">Вийти</div>
-
-<div class="creator-tools" id="creatorTools" style="display:none;">
-  <button class="btn" id="viewLogs">📜 Логи</button>
-  <button class="btn" id="editRules">✏️ Редагувати правила</button>
+<div class="logoUA">
+  <img src="https://i.imgur.com/Ml9b2vQ.png" alt="Admins Help UA"/>
+  <span>Admins Help UA</span>
 </div>
+<h1>Пошук покарань</h1>
+<input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
+<div class="result" id="result">Тут з'явиться покарання</div>
 
 <script>
-const CREATOR_NICK='Artem_Furrry', CREATOR_PASS='QazMlp123';
-let role = localStorage.getItem('userRole');
-
-// --- Авторизация ---
-function showLoginModal(){
-  const nick = prompt("Введіть нік (творець: Artem_Furrry) або залиште порожнім:");
-  if(nick===CREATOR_NICK){
-    const pass = prompt("Введіть пароль:");
-    if(pass===CREATOR_PASS){ localStorage.setItem('userRole','creator'); role='creator'; } 
-    else { alert('Невірний пароль! Ви увійшли як користувач'); localStorage.setItem('userRole','user'); role='user'; }
-  } else { localStorage.setItem('userRole','user'); role='user'; }
-}
-
-if(!role) showLoginModal();
-
-// --- Кнопка Вийти ---
-document.getElementById('logoutBtn').addEventListener('click', ()=>{
-  localStorage.removeItem('userRole'); location.reload();
-});
-
-// --- Правила покарань ---
-let punishments = JSON.parse(localStorage.getItem('punishmentsData')) || {
-  "керівництво": { rule: "1.15-1.17", punishment: "Керівництво може видавати покарання" },
-  "нікнейм": { rule: "2.1", punishment: "Нікнейм у форматі Ім’я_Прізвище" },
-  "нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
-  "заборонені імена": { rule:"2.2", punishment:"Попередження або заборона у фракції" },
-  "нецензурний нікнейм": { rule:"2.3", punishment:"Перманентне блокування" },
-  "образливий нікнейм": { rule:"2.4", punishment:"Перманентне блокування" },
-  "dm": { rule:"4.1", punishment:"Jail 20 хв" },
-  "mass dm": { rule:"4.1.1", punishment:"Jail 120 хв" },
-  "sk": { rule:"4.4", punishment:"Jail 30 хв" },
-  "pg": { rule:"4.6", punishment:"Jail 20 хв" },
-  "tk": { rule:"4.5", punishment:"Jail 20 хв" },
-  "nonrp": { rule:"4.7", punishment:"Jail 20 хв" },
-  "вихід під час рп": { rule:"4.8", punishment:"Jail 30 хв" }
-};
-
-// --- Логи (тільки для творця) ---
-function logSearch(query){
-  if(role!=='creator' || !query) return;
-  const logs = JSON.parse(localStorage.getItem('searchLogs')||'[]');
-  logs.push({query,time:new Date().toLocaleString()});
-  localStorage.setItem('searchLogs', JSON.stringify(logs));
-}
-
-// --- Пошук ---
-document.getElementById('search').addEventListener('input', function(){
-  const q=this.value.trim().toLowerCase();
-  const res=document.getElementById('result');
-  logSearch(q);
-  if(!q){ res.textContent='Тут з\'явиться покарання'; return; }
-  const found = [];
-  for(let key in punishments){
-    if(key.includes(q) || punishments[key].rule.includes(q) || punishments[key].punishment.toLowerCase().includes(q)){
-      found.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
-    }
-  }
-  res.textContent=found.length>0?found.join('\n'):'Покарання не знайдено';
-});
-
-// --- Творець: Логи и редактор ---
-if(role==='creator'){
-  const tools = document.getElementById('creatorTools');
-  tools.style.display='flex';
-
-  document.getElementById('viewLogs').addEventListener('click', ()=>{
-    const logs = JSON.parse(localStorage.getItem('searchLogs')||'[]');
-    let msg = logs.length?logs.map(l=>`${l.time}: ${l.query}`).join('\n'):'Немає логів';
-    alert(msg);
-  });
-
-  document.getElementById('editRules').addEventListener('click', ()=>{
-    const editorDiv = document.createElement('div'); editorDiv.className='editor';
-    const ta = document.createElement('textarea'); ta.value=JSON.stringify(punishments,null,2);
-    editorDiv.appendChild(ta);
-    const btnSave = document.createElement('button'); btnSave.className='btn'; btnSave.textContent='Зберегти';
-    editorDiv.appendChild(btnSave);
-    document.body.appendChild(editorDiv);
-    btnSave.addEventListener('click', ()=>{
-      try{
-        const newData = JSON.parse(ta.value);
-        punishments=newData;
-        localStorage.setItem('punishmentsData', JSON.stringify(punishments));
-        alert('Правила збережено!');
-        editorDiv.remove();
-      }catch(e){ alert('Помилка JSON: перевірте формат'); }
-    });
-  });
-}
-</script>
-</body>
-</html>
+  const punishments = {
+    // Все правила как было
+    "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
+    "нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
+    "нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
+    "заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікней
