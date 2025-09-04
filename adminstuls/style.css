@@ -1,0 +1,113 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #e8f0fe;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 20px;
+  margin: 0;
+}
+
+h1 {
+  color: #1a73e8;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+input {
+  padding: 14px;
+  width: 600px;
+  max-width: 90%;
+  border: 2px solid #1a73e8;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  box-shadow: 0 0 10px rgba(26, 115, 232, 0.5);
+}
+
+.result {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  width: 700px;
+  max-width: 95%;
+  text-align: left;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 15px;
+  color: #202124;
+}
+
+.highlight {
+  color: #1a73e8;
+  font-weight: 700;
+}
+
+.logoUA {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  padding: 4px 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+
+.logoUA img { height: 30px; }
+.logoUA span { font-weight:700;color:#1a73e8; }
+
+/* Адаптивные медиазапросы */
+@media (max-width: 768px) {
+  body {
+    padding: 30px 10px;
+  }
+  
+  input {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .result {
+    font-size: 14px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  input {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .result {
+    font-size: 13px;
+    padding: 15px;
+  }
+
+  .logoUA {
+    padding: 3px 6px;
+    gap: 4px;
+  }
+
+  .logoUA img {
+    height: 24px;
+  }
+
+  .logoUA span {
+    font-size: 14px;
+  }
+}
