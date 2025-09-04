@@ -1,4 +1,3 @@
-/* --- Базовые стили --- */
 body {
   font-family: 'Roboto', sans-serif;
   background: #e8f0fe;
@@ -45,74 +44,14 @@ input:focus {
   color: #202124;
 }
 
-.highlight {
-  color: #1a73e8;
-  font-weight: 700;
-}
-
-.logoUA {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 10001;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #fff;
-  padding: 4px 8px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.2);
-}
-
-.logoUA img { height: 30px; }
-.logoUA span { font-weight:700;color:#1a73e8; }
-
 /* --- Адаптивные медиазапросы --- */
-
-/* Планшеты */
 @media (max-width: 768px) {
-  body {
-    padding: 30px 15px;
-  }
-  
-  input {
-    font-size: 14px;
-    padding: 12px;
-  }
-
-  .result {
-    font-size: 14px;
-    padding: 20px;
-  }
+  input { font-size: 14px; padding: 12px; }
+  .result { font-size: 14px; padding: 20px; }
 }
 
-/* Мобильные */
 @media (max-width: 480px) {
-  h1 {
-    font-size: 22px;
-  }
-
-  input {
-    font-size: 13px;
-    padding: 10px;
-  }
-
-  .result {
-    font-size: 13px;
-    padding: 15px;
-  }
-
-  .logoUA {
-    padding: 3px 6px;
-    gap: 4px;
-  }
-
-  .logoUA img {
-    height: 24px;
-  }
-
-  .logoUA span {
-    font-size: 14px;
-  }
+  h1 { font-size: 22px; }
+  input { font-size: 13px; padding: 10px; }
+  .result { font-size: 13px; padding: 15px; }
 }
-
