@@ -47,36 +47,6 @@
       font-weight: 700;
     }
 
-    /* Модальні вікна */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    .modal {
-      background:#fff;
-      width:min(90vw,700px);
-      border-radius:12px;
-      box-shadow:0 6px 20px rgba(0,0,0,.25);
-      border:2px solid #1a73e8;
-    }
-    .modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
-    .modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
-    .modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
-    .btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
-    .btn-primary {background:#1a73e8;color:#fff;}
-    .edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
-    .edit-input {width:100%;padding:6px;margin-top:6px;}
-    .logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
-    .creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
-    .creator-tools .btn {background:#1a73e8;color:#fff;}
-    #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
-    .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
-
     /* Вікно побажань */
     .wishes-container {
       margin-top: 40px;
@@ -107,7 +77,6 @@
       font-weight: 600;
     }
 
-    /* Адаптив */
     @media (max-width: 768px) {
       body {
         padding: 20px 10px;
@@ -118,24 +87,6 @@
         padding: 12px;
       }
       .result, .wishes-container {
-        width: 100%;
-      }
-      .result {
-        font-size: 14px;
-        padding: 16px;
-      }
-      .modal {
-        width: 95vw;
-      }
-      .modal-body {
-        max-height: 60vh;
-      }
-      .creator-tools {
-        flex-direction: column;
-        bottom: 10px;
-        right: 10px;
-      }
-      .creator-tools .btn {
         width: 100%;
       }
       #wish-input {
@@ -227,51 +178,55 @@
       resultBox.textContent = results.length > 0 ? results.join('\n') : "Покарання не знайдено";
     });
 
-    // ==== Вікно побажань ====
-    const wishInput = document.getElementById('wish-input');
-    const wishBtn = document.getElementById('wish-btn');
-    const wishesList = document.getElementById('wishes-list');
+    // ==== Побажання з автопридбанням старих ====
+    let wishes = [
+      // початкові повідомлення можна залишити порожнім
+      // {text: "Привіт!", timestamp: Date.now()}
+    ];
 
-    let wishes = JSON.parse(localStorage.getItem('wishes')||'[]');
+    // видаляємо старі >5 днів
+    wishes = wishes.filter(w => Date.now() - w.timestamp < 5*24*60*60*1000);
 
-    function renderWishes() {
+    function renderWishes(){
+      const container = document.getElementById('wishes-list');
+      container.innerHTML = '';
       if(wishes.length===0){
-        wishesList.textContent = "Тут з'являться усі побажання";
+        container.textContent = "Тут з'являться усі побажання";
         return;
       }
-      wishesList.innerHTML = '';
-      wishes.forEach(w => {
+      wishes.forEach(w=>{
         const div = document.createElement('div');
-        div.textContent = w;
+        div.textContent = w.text;
         div.style.padding='6px 0';
         div.style.borderBottom='1px solid #eee';
-        wishesList.appendChild(div);
+        container.appendChild(div);
       });
-      wishesList.scrollTop = wishesList.scrollHeight;
     }
+
+    function addWish(text){
+      wishes.push({text:text, timestamp:Date.now()});
+      renderWishes();
+      // Тут можна додатково логувати або зберігати на сервер, якщо буде
+    }
+
+    const wishInput = document.getElementById('wish-input');
+    const wishBtn = document.getElementById('wish-btn');
 
     wishBtn.addEventListener('click', ()=>{
       const text = wishInput.value.trim();
       if(!text) return;
-      wishes.push(text);
-      localStorage.setItem('wishes', JSON.stringify(wishes));
+      addWish(text);
       wishInput.value='';
-      renderWishes();
     });
 
-    wishInput.addEventListener('keypress', (e)=>{
+    wishInput.addEventListener('keydown', e=>{
       if(e.key==='Enter'){
         wishBtn.click();
       }
     });
 
+    // Ініціалізуємо рендер
     renderWishes();
   </script>
-
-  <!-- Скрипт авторизації, логи, редактор кода без змін -->
-  <script>
-  (function(){/* твій скрипт авторизації, логов і редактора кода як був */})();
-  </script>
-
 </body>
 </html>
