@@ -46,48 +46,74 @@ input {
   border: 1px solid #ffeeba;
   border-radius: 10px;
   padding: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   max-width: 600px;
   text-align: center;
 }
 
-/* ==== AUDIO PANEL ==== */
-.audio-panel {
-  width: 420px;
-  max-width: 92%;
-  background: linear-gradient(180deg, #ffffff, #f3f8ff);
-  border: 1px solid rgba(26,115,232,0.12);
-  box-shadow: 0 6px 18px rgba(10,30,80,0.06);
-  padding: 12px 14px;
-  border-radius: 12px;
-  display: flex;
-  gap: 12px;
+/* ==== AUDIO ICON (added) ==== */
+.audio-icon {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(180deg,#1a73e8,#165ec9);
+  color:#fff;
+  font-size:20px;
+  border: 2px solid rgba(255,255,255,0.12);
+  box-shadow: 0 6px 18px rgba(10,30,80,0.12);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s;
   margin-bottom: 18px;
-  transition: transform .18s ease;
 }
-.audio-panel:hover { transform: translateY(-3px); }
+.audio-icon:hover { transform: translateY(-3px); }
+.audio-icon.playing { background: linear-gradient(180deg,#0b57d0,#053b9a); box-shadow: 0 10px 24px rgba(10,30,80,0.18); }
 
-.audio-controls { display:flex; gap:8px; align-items:center; }
-.aud-btn {
-  background:#1a73e8; color:#fff; border:none; padding:8px 10px; border-radius:10px; cursor:pointer; font-weight:700;
-  box-shadow: 0 4px 12px rgba(26,115,232,0.12);
+/* ==== КНОПКА ВЫХОД ==== */
+#logoutBtn {
+  display: none;
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
-.aud-btn.secondary { background:#fff; color:#1a73e8; border:2px solid #1a73e8; font-weight:600; }
 
-.eq {
-  display:flex; gap:3px; align-items:flex-end; height:24px; width:72px;
+#logoutBtn:hover {
+  background-color: #c82333;
 }
-.eq-bar {
-  width:6px; height:6px; background:#cfe6ff; border-radius:3px; transition:height .12s linear, background .12s;
+
+/* ==== МОДАЛЬНЕ ВІКНО ==== */
+#creatorModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
 }
-.eq-bar.active { background:#1a73e8; }
 
-/* voice selector + speed */
-.audio-meta { display:flex; flex-direction:column; gap:6px; font-size:13px; color:#0b2b5a; width:100%; }
-.row { display:flex; gap:8px; align-items:center; }
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
 
-/* Adaptive tweaks */
+.close {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ==== АДАПТИВНОСТЬ ==== */
 @media (max-width: 1024px) {
   body {
     padding: 30px 15px;
@@ -123,7 +149,6 @@ input {
     padding: 12px;
     width: 100% !important;
   }
-  .audio-panel { width:100%; }
 }
 
 @media (max-width: 480px) {
@@ -140,21 +165,26 @@ input {
   }
 }
 
-/* Модальні (твій оригінал) */
-.modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; }
-.modal { background:#fff; width:min(90vw,700px); border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,.25); border:2px solid #1a73e8; }
-.modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
-.modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
-.modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
-.btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
-.btn-primary {background:#1a73e8;color:#fff;}
-.edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
-.edit-input {width:100%;padding:6px;margin-top:6px;}
-.logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
-.creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
-.creator-tools .btn {background:#1a73e8;color:#fff;}
-#codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
-.log-list {max-height:60vh;overflow:auto;padding-left:18px;}
+  
+  /* Модальні */
+  .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; }
+  .modal { background:#fff; width:min(90vw,700px); border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,.25); border:2px solid #1a73e8; }
+  .modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
+  .modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
+  .modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
+  .btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
+  .btn-primary {background:#1a73e8;color:#fff;}
+  .edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
+  .edit-input {width:100%;padding:6px;margin-top:6px;}
+  .logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
+  .creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
+  .creator-tools .btn {background:#1a73e8;color:#fff;}
+  #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
+  .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
+
+  /* Адаптивність */
+  @media (max-width: 768px) { body {padding:20px 10px;} input {width:100%; font-size:14px; padding:12px;} .result {width:100%; padding:20px; font-size:14px;} .modal {width:90vw;} #codeEditor {height:300px;} }
+  @media (max-width: 480px) { h1 {font-size:20px;} input {font-size:13px; padding:10px;} .result {font-size:13px; padding:15px;} }
 </style>
 <body>
 
@@ -162,33 +192,13 @@ input {
   Вітаю! Оновлення 0.1: у цьому оновленні ми вийшли на новий рівень, а саме офіційність. Тепер ми в колі офіційних сайтів і з прямим посиланням.
 </div>
 
-<!-- ===== ДОДАНО: Стильна аудіо-панель (не змінює інші елементи) ===== -->
-<div class="audio-panel" id="audioPanel" aria-hidden="false">
-  <div class="audio-controls">
-    <button id="audioPlay" class="aud-btn" title="Відтворити інструкцію">▶️</button>
-    <button id="audioPause" class="aud-btn secondary" title="Пауза">⏸</button>
-    <button id="audioStop" class="aud-btn secondary" title="Зупинити">⏹</button>
-  </div>
-  <div class="eq" id="eq">
-    <div class="eq-bar" id="b1"></div>
-    <div class="eq-bar" id="b2"></div>
-    <div class="eq-bar" id="b3"></div>
-    <div class="eq-bar" id="b4"></div>
-    <div class="eq-bar" id="b5"></div>
-  </div>
-  <div class="audio-meta">
-    <div class="row">
-      <label for="voiceSelect" style="min-width:68px;">Голос:</label>
-      <select id="voiceSelect" style="flex:1;padding:6px;border-radius:8px;border:1px solid #cfe6ff;"></select>
-    </div>
-    <div class="row" style="align-items:center;">
-      <label for="speed" style="min-width:68px;">Швидкість:</label>
-      <input id="speed" type="range" min="0.7" max="1.5" step="0.05" value="0.95" style="flex:1;">
-      <div id="speedVal" style="width:40px;text-align:right;font-size:13px;color:#0b2b5a;">0.95x</div>
-    </div>
-  </div>
+<!-- ===== ДОДАНО: ОКРЕМА ІКОНКА АУДІО (не змінює існуючий код) ===== -->
+<div id="audioWrapper" style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+  <div id="audioIcon" class="audio-icon" title="Прослухати вітальний текст">🔊</div>
+  <!-- можна додати короткий підпис поруч -->
+  <div style="font-size:13px;color:#0b2b5a;">Натисніть, щоб прослухати привітання від Furry</div>
 </div>
-<!-- ===== Кінець аудіо-панелі ===== -->
+<!-- ===== Кінець додавання ===== -->
 
 <h1>Пошук покарань</h1>
 <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
@@ -258,178 +268,7 @@ document.getElementById("search").addEventListener("input", function(){
   resultBox.textContent=results.length>0?results.join('\n'):"Покарання не знайдено";
 });
 
-/* ===========================
-   AUDIO (Web Speech API)
-   =========================== */
-
-/* Інструкція, яку озвучуємо (можеш замінити текст на свій) */
-const AUDIO_INSTRUCTION = `Привіт, я Furry — помічник адміністратора UA Online.
-Я створений, щоб полегшити роботу адмінів: швидко знаходити покарання за порушення та пояснювати правила.
-Щоб скористатися пошуком, введіть ключове слово, наприклад: DM, DB, TK, SK, PG або нікнейм.
-Також зверніть увагу на офіційний Discord та правила проєкту.
-Якщо знайдете помилку, будь ласка, повідомте адміну. Удачі!`;
-
-const playBtn = document.getElementById('audioPlay');
-const pauseBtn = document.getElementById('audioPause');
-const stopBtn = document.getElementById('audioStop');
-const voiceSelect = document.getElementById('voiceSelect');
-const speedInput = document.getElementById('speed');
-const speedVal = document.getElementById('speedVal');
-const eqBars = [document.getElementById('b1'),document.getElementById('b2'),document.getElementById('b3'),document.getElementById('b4'),document.getElementById('b5')];
-
-let utter = null;
-let isPlaying = false;
-let eqInterval = null;
-
-/* Заповнення списку голосів (як тільки вони доступні) */
-function populateVoices() {
-  const voices = speechSynthesis.getVoices();
-  voiceSelect.innerHTML = '';
-  // спочатку україномовні/російськомовні, потім інші
-  const preferred = voices.filter(v=> v.lang && (v.lang.startsWith('uk') || v.lang.startsWith('ru')));
-  const others = voices.filter(v=> ! (v.lang && (v.lang.startsWith('uk') || v.lang.startsWith('ru'))));
-  const list = [...preferred, ...others];
-  if(list.length===0){
-    const opt = document.createElement('option'); opt.textContent = 'Голос недоступний'; opt.disabled=true; voiceSelect.appendChild(opt); return;
-  }
-  list.forEach(v=>{
-    const opt = document.createElement('option');
-    opt.value = v.name + '|' + v.lang;
-    opt.textContent = `${v.name} — ${v.lang}`;
-    voiceSelect.appendChild(opt);
-  });
-}
-
-/* Отримати об'єкт voice по вибору */
-function findVoiceBySelectValue(val){
-  if(!val) return null;
-  const [name,lang] = val.split('|');
-  const voices = speechSynthesis.getVoices();
-  return voices.find(v => v.name === name && v.lang === lang) || null;
-}
-
-/* Анімація еквалайзера */
-function startEq() {
-  stopEq();
-  eqInterval = setInterval(()=>{
-    eqBars.forEach((b,i)=>{
-      const h = Math.floor(Math.random()*18) + (i*2);
-      b.style.height = h + 'px';
-      b.classList.toggle('active', h>18);
-    });
-  }, 140);
-}
-function stopEq(){
-  if(eqInterval) clearInterval(eqInterval);
-  eqBars.forEach(b=>{ b.style.height='6px'; b.classList.remove('active'); });
-}
-
-/* Відтворити текст */
-function speak(text) {
-  if(!('speechSynthesis' in window)) {
-    alert('Озвучення не підтримується у вашому браузері.');
-    return;
-  }
-  // якщо вже йде — скинути
-  speechSynthesis.cancel();
-  utter = new SpeechSynthesisUtterance(text);
-  const sel = voiceSelect.value;
-  const voice = findVoiceBySelectValue(sel);
-  if(voice) utter.voice = voice;
-  utter.rate = parseFloat(speedInput.value || 0.95);
-  // намагатись установити мову UA
-  utter.lang = utter.voice && utter.voice.lang ? utter.voice.lang : 'uk-UA';
-  utter.onstart = ()=> {
-    isPlaying = true;
-    startEq();
-    playBtn.textContent = '🔊';
-  };
-  utter.onend = ()=> {
-    isPlaying = false;
-    stopEq();
-    playBtn.textContent = '▶️';
-  };
-  utter.onerror = ()=> {
-    isPlaying = false;
-    stopEq();
-    playBtn.textContent = '▶️';
-  };
-  speechSynthesis.speak(utter);
-}
-
-/* Pause / Resume */
-function pauseSpeech(){
-  if(speechSynthesis.speaking && !speechSynthesis.paused){
-    speechSynthesis.pause();
-    pauseBtn.textContent = '▶️';
-    stopEq();
-  } else if(speechSynthesis.paused){
-    speechSynthesis.resume();
-    pauseBtn.textContent = '⏸';
-    startEq();
-  }
-}
-
-/* Stop */
-function stopSpeech(){
-  speechSynthesis.cancel();
-  isPlaying = false;
-  stopEq();
-  playBtn.textContent = '▶️';
-  pauseBtn.textContent = '⏸';
-}
-
-/* Події */
-playBtn.addEventListener('click', ()=> {
-  // If speaking, restart
-  if(speechSynthesis.speaking){
-    speechSynthesis.cancel();
-    setTimeout(()=> speak(AUDIO_INSTRUCTION), 80);
-  } else {
-    speak(AUDIO_INSTRUCTION);
-  }
-});
-pauseBtn.addEventListener('click', pauseSpeech);
-stopBtn.addEventListener('click', stopSpeech);
-speedInput.addEventListener('input', ()=> { speedVal.textContent = parseFloat(speedInput.value).toFixed(2) + 'x'; });
-
-/* Заповнити голоси коли завантажаться */
-if ('speechSynthesis' in window) {
-  populateVoices();
-  // some browsers fire voiceschanged
-  speechSynthesis.onvoiceschanged = populateVoices;
-}
-
-/* Опціонально: після першої взаємодії з сайтом можна автоматично запитати відтворення
-   — але робити автопрогравання без дозволу користувача не рекомендую.
-   Тому робимо відтворення лише після першої клікової взаємодії (gesture).
-*/
-let playedOnGesture = false;
-function userGestureHandler(){
-  if(!playedOnGesture){
-    // якщо ще не прослухано (позначка у localStorage), спробуємо автоматично запустити
-    if(!localStorage.getItem('furry_instruction_played')){
-      // запускаємо із затримкою, користувач вже зробив жест
-      setTimeout(()=> {
-        try { speak(AUDIO_INSTRUCTION); localStorage.setItem('furry_instruction_played', '1'); } catch(e){}
-      }, 250);
-    }
-    playedOnGesture = true;
-    window.removeEventListener('click', userGestureHandler);
-    window.removeEventListener('keydown', userGestureHandler);
-  }
-}
-window.addEventListener('click', userGestureHandler);
-window.addEventListener('keydown', userGestureHandler);
-
-/* Clean up on unload */
-window.addEventListener('beforeunload', ()=> { speechSynthesis.cancel(); stopEq(); });
-
-/* End audio section */
-</script>
-
-<script>
-// --- Авторизація творця та панель (оригінальний скрипт без змін) ---
+// --- Авторизація творця та панель ---
 (function(){
   function createModal(title, bodyNode, actions){
     const backdrop=document.createElement('div'); backdrop.className='modal-backdrop';
@@ -457,7 +296,10 @@ window.addEventListener('beforeunload', ()=> { speechSynthesis.cancel(); stopEq(
     document.body.appendChild(modal);
 
     btnNo.addEventListener('click',()=>{ localStorage.setItem('userRole','user'); document.body.removeChild(modal); location.reload(); });
-    btnYes.addEventListener('click',()=>{ const nick=inputNick.value.trim(); const pass=inputPass.value.trim(); if(nick==='Artem_Furrry' && pass==='QazMlp123'){ localStorage.setItem('userRole','creator'); document.body.removeChild(modal); location.reload(); } else err.style.display='block'; });
+    btnYes.addEventListener('click',()=>{
+      const nick=inputNick.value.trim(); const pass=inputPass.value.trim();
+      if(nick==='Artem_Furrry' && pass==='QazMlp123'){ localStorage.setItem('userRole','creator'); document.body.removeChild(modal); location.reload(); } else err.style.display='block';
+    });
   }
 
   function addLogoutButton(){ const role=localStorage.getItem('userRole'); if(!role) return;
@@ -504,6 +346,55 @@ window.addEventListener('beforeunload', ()=> { speechSynthesis.cancel(); stopEq(
       const visitDiv=document.createElement('div'); visitDiv.textContent=`Відвідувачів сьогодні: ${visits[today]||0}`; visitDiv.style.marginBottom='15px'; document.body.appendChild(visitDiv);
     }
   });
+})();
+
+/* ===========================
+   ADDED: simple audio play button logic
+   - Does NOT add voice selection or change existing code.
+   - Uses browser default TTS voice.
+   =========================== */
+(function(){
+  const btn = document.getElementById('audioIcon');
+  if(!btn) return;
+
+  const TEXT = `Привіт! Я Furry — помічник адміністратора UA Online. 
+Я створений, щоб полегшити роботу адміністратора: знаходити покарання за порушення та пояснювати правила. 
+Використовуйте поле пошуку: введіть ключове слово, наприклад DM, DB, TK, SK, PG або нікнейм, і я покажу покарання. 
+Не забувайте про офіційний Discord та правила. Якщо знайдете помилку — повідомте адміну. Успіхів!`;
+
+  let utter = null;
+
+  function play() {
+    if(!('speechSynthesis' in window)) {
+      alert('Озвучення не підтримується у вашому браузері.');
+      return;
+    }
+    // якщо говорить — зупинити
+    if(window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      btn.classList.remove('playing');
+      btn.textContent = '🔊';
+      return;
+    
+    // нове висловлювання
+    utter = new SpeechSynthesisUtterance(TEXT);
+    // не вказуємо голос (використовується голос браузера за замовчуванням)
+    // встановлюємо мову (якщо браузер має підхопити)
+    utter.lang = 'uk-UA';
+    utter.rate = 0.95;
+    utter.onstart = function(){ btn.classList.add('playing'); btn.textContent = '⏸'; };
+    utter.onend = function(){ btn.classList.remove('playing'); btn.textContent = '🔊'; };
+    utter.onerror = function(){ btn.classList.remove('playing'); btn.textContent = '🔊'; };
+    try {
+      window.speechSynthesis.cancel(); // убираємо попередні
+      window.speechSynthesis.speak(utter);
+    } catch(e) {
+      console.error(e);
+      alert('Помилка відтворення озвучення.');
+    }
+  }
+
+  btn.addEventListener('click', play);
 })();
 </script>
 </body>
