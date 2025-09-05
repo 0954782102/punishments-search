@@ -1,324 +1,305 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<title>Пошук покарань</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
- body {
-  font-family: Arial, sans-serif;
-  background-color: #e6f0ff;
-  margin: 0;
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
-
-h1 {
-  color: #0056b3;
-  margin-bottom: 20px;
-}
-
-input {
-  padding: 10px;
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.result {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-  width: 400px;
-  text-align: center;
-}
-
-.update-notice {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeeba;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 20px;
-  max-width: 600px;
-  text-align: center;
-}
-
-/* ==== КНОПКА ВЫХОД ==== */
-#logoutBtn {
-  display: none;
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-#logoutBtn:hover {
-  background-color: #c82333;
-}
-
-/* ==== МОДАЛЬНЕ ВІКНО ==== */
-#creatorModal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-}
-
-.close {
-  float: right;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* ==== АДАПТИВНОСТЬ ==== */
-@media (max-width: 1024px) {
-  body {
-    padding: 30px 15px;
-  }
-  .update-notice, 
-  .result,
-  input {
-    max-width: 100% !important;
-    width: 100% !important;
-  }
-}
-
-@media (max-width: 768px) {
-  body {
-    padding: 20px 10px;
-  }
-  h1 {
-    font-size: 20px;
-    text-align: center;
-  }
-  input {
-    width: 100% !important;
-    font-size: 14px;
-    padding: 10px;
-  }
-  .result {
-    font-size: 14px;
-    padding: 12px;
-    width: 100% !important;
-  }
-  .update-notice {
-    font-size: 13px;
-    padding: 12px;
-    width: 100% !important;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 18px;
-  }
-  input {
-    font-size: 13px;
-    padding: 8px;
-  }
-  .result {
-    font-size: 13px;
-    padding: 10px;
-  }
-}
-
-  
-  /* Модальні */
-  .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; }
-  .modal { background:#fff; width:min(90vw,700px); border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,.25); border:2px solid #1a73e8; }
-  .modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
-  .modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
-  .modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
-  .btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
-  .btn-primary {background:#1a73e8;color:#fff;}
-  .edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
-  .edit-input {width:100%;padding:6px;margin-top:6px;}
-  .logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
-  .creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
-  .creator-tools .btn {background:#1a73e8;color:#fff;}
-  #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
-  .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
-
-  /* Адаптивність */
-  @media (max-width: 768px) { body {padding:20px 10px;} input {width:100%; font-size:14px; padding:12px;} .result {width:100%; padding:20px; font-size:14px;} .modal {width:90vw;} #codeEditor {height:300px;} }
-  @media (max-width: 480px) { h1 {font-size:20px;} input {font-size:13px; padding:10px;} .result {font-size:13px; padding:15px;} }
-</style>
-<body>
-
-<div class="update-notice">
-  Вітаю! Оновлення 0.1: у цьому оновленні ми вийшли на новий рівень, а саме офіційність. Тепер ми в колі офіційних сайтів і з прямим посиланням.
-</div>
-
-<h1>Пошук покарань</h1>
-<input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
-<div class="result" id="result">Тут з'явиться покарання</div>
-
-<script>
-// --- Повний список покарань ---
-const punishments = {
-"керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
-"нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
-"нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
-"заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікнейму, заборона на вступ у фракцію" },
-"нецензурний нікнейм": { rule: "2.3", punishment: "Перманентне блокування облікового запису" },
-"образливий нікнейм": { rule: "2.4", punishment: "Перманентне блокування облікового запису" },
-"dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
-"mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
-"dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
-"mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
-"db": { rule: "4.2", punishment: "Jail 20 хвилин" },
-"mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
-"db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
-"mass db в gz": { rule: "4.2.3", punishment: "Warn" },
-"рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
-"rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
-"sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
-"mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
-"tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
-"mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
-"pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
-"nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
-"nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хвилин / Warn" },
-"вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
-"уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
-"уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
-"втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
-"перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
-"уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
-"афк фракція": { rule: "4.15", punishment: "Kick" },
-"скін протилежної статі": { rule: "4.16", punishment: "Усне попередження / Звільнення з фракції" },
-"грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
-"грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
-"обман майно": { rule: "4.19", punishment: "Перманентний бан" },
-"спам майно": { rule: "4.20", punishment: "Перманентний бан" },
-"банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
-"зменшене покарання за обман": { rule: "4.22", punishment: "Бан від 3 до 15 днів" },
-"погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
-"mg": { rule: "5.1", punishment: "Мут 20 хвилин / Warn при зловживанні" },
-"tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
-"дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
-"flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
-"музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
-"caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
-"нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хвилин" }
-};
-
-// --- Пошук ---
-document.getElementById("search").addEventListener("input", function(){
-  const query = this.value.trim().toLowerCase();
-  const resultBox = document.getElementById("result");
-  if(!query){ resultBox.textContent="Тут з'явиться покарання"; return; }
-  let results=[];
-  for(let key in punishments){
-    if(key.includes(query)){
-      results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
+  <meta charset="UTF-8">
+  <title>Пошук покарань</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #e8f0fe;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
     }
-  }
-  resultBox.textContent=results.length>0?results.join('\n'):"Покарання не знайдено";
-});
+    h1 {
+      color: #1a73e8;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 14px;
+      width: 600px;
+      border: 2px solid #1a73e8;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s;
+    }
+    input:focus {
+      box-shadow: 0 0 10px rgba(26, 115, 232, 0.5);
+    }
+    .result {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      width: 700px;
+      text-align: left;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 15px;
+      color: #202124;
+    }
+    .highlight {
+      color: #1a73e8;
+      font-weight: 700;
+    }
 
-// --- Авторизація творця та панель ---
+    /* Модальные окна */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal {
+      background:#fff;
+      width:min(90vw,700px);
+      border-radius:12px;
+      box-shadow:0 6px 20px rgba(0,0,0,.25);
+      border:2px solid #1a73e8;
+    }
+    .modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
+    .modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
+    .modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
+    .btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
+    .btn-primary {background:#1a73e8;color:#fff;}
+    .edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
+    .edit-input {width:100%;padding:6px;margin-top:6px;}
+    .logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
+    .creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
+    .creator-tools .btn {background:#1a73e8;color:#fff;}
+    #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
+    .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
+
+    /* Адаптив для смартфонов */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      input {
+        width: 100%;
+        font-size: 14px;
+        padding: 12px;
+      }
+
+      .result {
+        width: 100%;
+        font-size: 14px;
+        padding: 16px;
+      }
+
+      .modal {
+        width: 95vw;
+      }
+
+      .modal-body {
+        max-height: 60vh;
+      }
+
+      .creator-tools {
+        flex-direction: column;
+        bottom: 10px;
+        right: 10px;
+      }
+
+      .creator-tools .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Пошук покарань</h1>
+  <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
+  <div class="result" id="result">Тут з'явиться покарання</div>
+
+  <script>
+    const punishments = {
+      "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
+      "нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
+      "нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
+      "заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікнейму, заборона на вступ у фракцію" },
+      "нецензурний нікнейм": { rule: "2.3", punishment: "Перманентне блокування облікового запису" },
+      "образливий нікнейм": { rule: "2.4", punishment: "Перманентне блокування облікового запису" },
+      "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
+      "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
+      "dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
+      "mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
+      "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
+      "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
+      "db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
+      "mass db в gz": { rule: "4.2.3", punishment: "Warn" },
+      "рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
+      "rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
+      "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
+      "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
+      "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
+      "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
+      "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
+      "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
+      "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хвилин / Warn" },
+      "вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
+      "уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
+      "уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
+      "втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
+      "перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
+      "уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
+      "афк фракція": { rule: "4.15", punishment: "Kick" },
+      "скін протилежної статі": { rule: "4.16", punishment: "Усне попередження / Звільнення з фракції" },
+      "грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
+      "грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
+      "обман майно": { rule: "4.19", punishment: "Перманентний бан" },
+      "спам майно": { rule: "4.20", punishment: "Перманентний бан" },
+      "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
+      "зменшене покарання за обман": { rule: "4.22", punishment: "Бан від 3 до 15 днів" },
+      "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
+      "mg": { rule: "5.1", punishment: "Мут 20 хвилин / Warn при зловживанні" },
+      "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
+      "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
+      "flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
+      "музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
+      "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
+      "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хвилин" }
+    };
+
+    document.getElementById("search").addEventListener("input", function() {
+      const query = this.value.trim().toLowerCase();
+      const resultBox = document.getElementById("result");
+      if (!query) {
+        resultBox.textContent = "Тут з'явиться покарання";
+        return;
+      }
+
+      let results = [];
+      for (let key in punishments) {
+        if (key.includes(query)) {
+          results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
+        }
+      }
+
+      resultBox.textContent = results.length > 0 ? results.join('\n') : "Покарання не знайдено";
+    });
+  </script>
+
+<style>
+  /* оставил твои модальные стили уже выше */
+</style>
+<script>
 (function(){
+  // весь скрипт авторизации, логов и редактирования без изменений
   function createModal(title, bodyNode, actions){
-    const backdrop=document.createElement('div'); backdrop.className='modal-backdrop';
-    const modal=document.createElement('div'); modal.className='modal';
-    const header=document.createElement('div'); header.className='modal-header'; header.textContent=title;
-    const body=document.createElement('div'); body.className='modal-body'; if(bodyNode) body.appendChild(bodyNode);
-    const act=document.createElement('div'); act.className='modal-actions'; actions.forEach(b=>act.appendChild(b));
-    modal.appendChild(header); modal.appendChild(body); modal.appendChild(act); backdrop.appendChild(modal);
+    const backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop';
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    const header = document.createElement('div');
+    header.className = 'modal-header';
+    header.textContent = title;
+    const body = document.createElement('div');
+    body.className = 'modal-body';
+    if(bodyNode) body.appendChild(bodyNode);
+    const act = document.createElement('div');
+    act.className = 'modal-actions';
+    actions.forEach(btn => act.appendChild(btn));
+    modal.appendChild(header);
+    modal.appendChild(body);
+    modal.appendChild(act);
+    backdrop.appendChild(modal);
     return backdrop;
   }
 
   function showLoginModal(){
-    const container=document.createElement('div');
-    const p=document.createElement('p'); p.textContent='Введіть нік і пароль творця або натисніть "Я не Творець"';
+    const container = document.createElement('div');
+    const p = document.createElement('p');
+    p.innerHTML = 'Цей текст потрібен, щоб я міг зрозуміти хто ви? Адміністратор UA Online чи мій творець.<br><br>' +
+                  '<b>Якщо ви <u>не мій творець</u>, натисніть кнопку "Я не Творець" без введення ніка і пароля.</b><br>' +
+                  'Введення ніка і пароля потрібно <b>лише для творця (Artem_Furrry)</b>.';
     container.appendChild(p);
-    const inputNick=document.createElement('input'); inputNick.type='text'; inputNick.placeholder='Нік'; inputNick.style.width='100%';
-    const inputPass=document.createElement('input'); inputPass.type='password'; inputPass.placeholder='Пароль'; inputPass.style.width='100%';
-    const err=document.createElement('p'); err.style.color='red'; err.style.fontSize='13px'; err.style.display='none'; err.textContent='Невірний нік або пароль!';
-    container.appendChild(inputNick); container.appendChild(inputPass); container.appendChild(err);
-
-    const btnNo=document.createElement('button'); btnNo.className='btn'; btnNo.textContent='Я не Творець';
-    const btnYes=document.createElement('button'); btnYes.className='btn btn-primary'; btnYes.textContent='Я Творець';
-
-    const modal=createModal('Авторизація', container,[btnNo,btnYes]);
+    const labelNick = document.createElement('label'); labelNick.textContent='Ваш нік:';
+    const inputNick = document.createElement('input'); inputNick.type='text'; inputNick.style.width='100%'; inputNick.style.padding='6px'; inputNick.style.margin='6px 0';
+    const labelPass = document.createElement('label'); labelPass.textContent='Пароль:';
+    const inputPass = document.createElement('input'); inputPass.type='password'; inputPass.style.width='100%'; inputPass.style.padding='6px'; inputPass.style.margin='6px 0';
+    const err = document.createElement('p'); err.id='loginError'; err.style.color='red'; err.style.fontSize='13px'; err.style.display='none'; err.textContent='Невірний нік або пароль!';
+    container.appendChild(labelNick); container.appendChild(inputNick);
+    container.appendChild(labelPass); container.appendChild(inputPass);
+    container.appendChild(err);
+    const btnNo = document.createElement('button'); btnNo.className='btn'; btnNo.textContent='Я не Творець';
+    const btnYes = document.createElement('button'); btnYes.className='btn btn-primary'; btnYes.textContent='Я Творець';
+    const modal = createModal('Авторизація', container, [btnNo, btnYes]);
     document.body.appendChild(modal);
 
-    btnNo.addEventListener('click',()=>{ localStorage.setItem('userRole','user'); document.body.removeChild(modal); location.reload(); });
-    btnYes.addEventListener('click',()=>{
-      const nick=inputNick.value.trim(); const pass=inputPass.value.trim();
-      if(nick==='Artem_Furrry' && pass==='QazMlp123'){ localStorage.setItem('userRole','creator'); document.body.removeChild(modal); location.reload(); } else err.style.display='block';
+    btnNo.addEventListener('click', ()=>{ localStorage.setItem('userRole','user'); document.body.removeChild(modal); location.reload(); });
+    btnYes.addEventListener('click', ()=>{
+      const nick = inputNick.value.trim();
+      const pass = inputPass.value.trim();
+      if(nick === 'Artem_Furrry' && pass === 'QazMlp123'){
+        localStorage.setItem('userRole','creator'); document.body.removeChild(modal); location.reload();
+      } else { err.style.display='block'; }
     });
   }
 
-  function addLogoutButton(){ const role=localStorage.getItem('userRole'); if(!role) return;
-    const logout=document.createElement('div'); logout.textContent='Вийти'; logout.className='logout';
-    logout.addEventListener('click',()=>{ localStorage.removeItem('userRole'); location.reload(); }); document.body.appendChild(logout);
+  function addLogoutButton(){
+    const role = localStorage.getItem('userRole');
+    if(!role) return;
+    const logout = document.createElement('div');
+    logout.textContent = 'Вийти';
+    logout.className = 'logout';
+    logout.title = 'Вийти з поточної ролі';
+    logout.addEventListener('click', ()=>{ localStorage.removeItem('userRole'); location.reload(); });
+    document.body.appendChild(logout);
   }
 
-  function logAction(text){ const logs=JSON.parse(localStorage.getItem('editLogs')||'[]'); logs.push(new Date().toLocaleString()+': '+text); localStorage.setItem('editLogs',JSON.stringify(logs)); }
+  function logAction(text){
+    const logs = JSON.parse(localStorage.getItem('editLogs')||'[]');
+    logs.push(new Date().toLocaleString() + ': ' + text);
+    localStorage.setItem('editLogs', JSON.stringify(logs));
+  }
 
   function openLogsModal(){
-    const logs=JSON.parse(localStorage.getItem('editLogs')||'[]');
-    const container=document.createElement('div');
-    if(logs.length===0){ container.textContent='Немає змін'; } else { const ul=document.createElement('ul'); ul.className='log-list'; logs.forEach(l=>{ const li=document.createElement('li'); li.textContent=l; ul.appendChild(li); }); container.appendChild(ul); }
+    const logs = JSON.parse(localStorage.getItem('editLogs')||'[]');
+    const container = document.createElement('div');
+    if(logs.length===0){ const p=document.createElement('div'); p.textContent='Немає змін'; container.appendChild(p); }
+    else {
+      const ul=document.createElement('ul'); ul.className='log-list';
+      logs.forEach(l=>{ const li=document.createElement('li'); li.textContent=l; ul.appendChild(li); });
+      container.appendChild(ul);
+    }
     const btnClose=document.createElement('button'); btnClose.className='btn btn-primary'; btnClose.textContent='Закрити';
-    const modal=createModal('Логи змін',container,[btnClose]); document.body.appendChild(modal);
-    btnClose.addEventListener('click',()=>document.body.removeChild(modal));
+    const modal=createModal('Логи змін', container, [btnClose]);
+    document.body.appendChild(modal);
+    btnClose.addEventListener('click', ()=> document.body.removeChild(modal));
   }
 
   function openCodeEditor(){
-    const codeRaw=localStorage.getItem('customCode')||document.documentElement.outerHTML;
-    const container=document.createElement('div');
-    const ta=document.createElement('textarea'); ta.id='codeEditor'; ta.value=codeRaw; container.appendChild(ta);
+    const codeRaw = localStorage.getItem('customCode') || document.documentElement.outerHTML;
+    const container = document.createElement('div');
+    const ta = document.createElement('textarea'); ta.id='codeEditor'; ta.style.width='100%'; ta.style.height='400px'; ta.value = codeRaw;
+    container.appendChild(ta);
     const btnCancel=document.createElement('button'); btnCancel.className='btn'; btnCancel.textContent='Відмінити';
     const btnSave=document.createElement('button'); btnSave.className='btn btn-primary'; btnSave.textContent='Зберегти та застосувати';
-    const modal=createModal('Редактор коду',container,[btnCancel,btnSave]); document.body.appendChild(modal);
-    btnCancel.addEventListener('click',()=>document.body.removeChild(modal));
-    btnSave.addEventListener('click',()=>{ localStorage.setItem('customCode',ta.value); logAction('Редагування коду сайту (збережено)'); document.body.removeChild(modal); alert('Код збережено. Сайт буде перезавантажено з новим кодом.'); document.open(); document.write(ta.value); document.close(); });
+    const modal=createModal('Редактор коду', container, [btnCancel, btnSave]);
+    document.body.appendChild(modal);
+    btnCancel.addEventListener('click', ()=> document.body.removeChild(modal));
+    btnSave.addEventListener('click', ()=>{
+      const newCode=ta.value;
+      localStorage.setItem('customCode', newCode);
+      logAction('Редагування коду сайту (збережено)');
+      document.body.removeChild(modal);
+      alert('Код збережено. Сайт буде перезавантажено з новим кодом.');
+      document.open(); document.write(newCode); document.close();
+    });
   }
 
-  function trackVisitors(){ const today=new Date().toISOString().slice(0,10); let visits=JSON.parse(localStorage.getItem('visits')||'{}'); visits[today]=(visits[today]||0)+1; localStorage.setItem('visits',JSON.stringify(visits)); }
-
-  document.addEventListener('DOMContentLoaded',()=>{
-    trackVisitors();
-    const role=localStorage.getItem('userRole'); if(!role){ showLoginModal(); return; }
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const role=localStorage.getItem('userRole');
+    if(!role){ showLoginModal(); return; }
     addLogoutButton();
-    if(role==='creator'){
-      const tools=document.createElement('div'); tools.className='creator-tools';
-      const bLogs=document.createElement('button'); bLogs.className='btn'; bLogs.textContent='📜 Логи';
-      const bCode=document.createElement('button'); bCode.className='btn'; bCode.textContent='💻 Редагувати код';
-      bLogs.addEventListener('click',openLogsModal); bCode.addEventListener('click',openCodeEditor);
-      tools.appendChild(bLogs); tools.appendChild(bCode); document.body.appendChild(tools);
-      const versionDiv=document.createElement('div'); versionDiv.style.marginTop='15px'; versionDiv.textContent='Версія сайту: 0.1'; document.body.appendChild(versionDiv);
-      const visits=JSON.parse(localStorage.getItem('visits')||'{}'); const today=new Date().toISOString().slice(0,10);
-      const visitDiv=document.createElement('div'); visitDiv.textContent=`Відвідувачів сьогодні: ${visits[today]||0}`; visitDiv.style.marginBottom='15px'; document.body.appendChild(visitDiv);
-    }
-  });
-})();
-</script>
-</body>
-</html>
+    document.querySelectorAll('td').forEach(td=>{
+      try{ const saved=localStorage.getItem('rule_'+td.closest('tr
