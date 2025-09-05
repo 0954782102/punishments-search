@@ -1,193 +1,133 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Пошук покарань - Furry</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: #e8f0fe;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 20px;
-    }
-    h1 {
-      color: #1a73e8;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    input {
-      padding: 14px;
-      width: 600px;
-      border: 2px solid #1a73e8;
-      border-radius: 12px;
-      margin-bottom: 30px;
-      font-size: 16px;
-      outline: none;
-      transition: 0.2s;
-    }
-    input:focus {
-      box-shadow: 0 0 10px rgba(26, 115, 232, 0.5);
-    }
-    .result {
-      background: #fff;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      width: 700px;
-      text-align: left;
-      white-space: pre-wrap;
-      line-height: 1.6;
-      font-size: 15px;
-      color: #202124;
-      margin-bottom: 40px;
-    }
-    .ai-chat-container {
-      background: #fff;
-      padding: 20px 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      width: 700px;
-      display: flex;
-      flex-direction: column;
-    }
-    #ai-chat {
-      max-height: 300px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      font-size: 14px;
-      line-height: 1.4;
-      border: 1px solid #1a73e8;
-      border-radius: 12px;
-      padding: 10px;
-      background: #f5f7ff;
-    }
-    #ai-input {
-      padding: 12px;
-      font-size: 14px;
-      border: 2px solid #1a73e8;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    #ai-btn {
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      background: #1a73e8;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    #ai-btn:hover {
-      background: #155ab6;
-    }
+<meta charset="UTF-8">
+<title>Пошук покарань - Furry</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #e8f0fe;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+}
+h1 { color: #1a73e8; margin-bottom: 20px; text-align: center; }
+input { padding: 14px; width: 600px; border: 2px solid #1a73e8; border-radius: 12px; margin-bottom: 30px; font-size: 16px; outline: none; transition: 0.2s; }
+input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
+.result { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 700px; text-align: left; white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #202124; margin-bottom: 40px; }
 
-    @media (max-width: 768px) {
-      body {
-        padding: 20px 10px;
-      }
-      input, .result, .ai-chat-container {
-        width: 100%;
-      }
-    }
-  </style>
+.ai-chat-container { background: #fff; padding: 20px 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 700px; display: flex; flex-direction: column; }
+#ai-chat { max-height: 300px; overflow-y: auto; margin-bottom: 10px; font-size: 14px; line-height: 1.4; border: 1px solid #1a73e8; border-radius: 12px; padding: 10px; background: #f5f7ff; }
+#ai-input { padding: 12px; font-size: 14px; border: 2px solid #1a73e8; border-radius: 8px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
+#ai-btn { padding: 12px; border-radius: 8px; font-weight: 600; background: #1a73e8; color: white; border: none; cursor: pointer; }
+#ai-btn:hover { background: #155ab6; }
+
+@media (max-width: 768px) {
+  body { padding: 20px 10px; }
+  input, .result, .ai-chat-container { width: 100%; }
+}
+</style>
 </head>
 <body>
 
-  <h1>Пошук покарань</h1>
+<h1>Пошук покарань</h1>
+<input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
+<div class="result" id="result">Тут з'явиться покарання</div>
 
-  <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
-  <div class="result" id="result">Тут з'явиться покарання</div>
-
-  <div class="ai-chat-container">
-    <h2>🤖 Чат з Furry</h2>
-    <div id="ai-chat">Тут буде історія чату...</div>
-    <input type="text" id="ai-input" placeholder="Напишіть запитання Furry...">
-    <button id="ai-btn">Запитати</button>
-  </div>
+<div class="ai-chat-container">
+  <h2>🤖 Чат з Furry</h2>
+  <div id="ai-chat"></div>
+  <input type="text" id="ai-input" placeholder="Напишіть запитання Furry...">
+  <button id="ai-btn">Запитати</button>
+</div>
 
 <script>
-  // ==== Пошук покарань ====
-  const punishments = {
-    "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
-    "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
-    "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
-    "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
-    "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
-    "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
-    "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
-    "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
-    "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
-    "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
-    "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хвилин / Warn" },
-    "вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
-    "уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
-    "уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
-    "втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
-    "перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
-    "уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
-    "афк фракція": { rule: "4.15", punishment: "Kick" },
-    "скін протилежної статі": { rule: "4.16", punishment: "Усне попередження / Звільнення з фракції" },
-    "грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
-    "грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
-    "обман майно": { rule: "4.19", punishment: "Перманентний бан" },
-    "спам майно": { rule: "4.20", punishment: "Перманентний бан" },
-    "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
-    "зменшене покарання за обман": { rule: "4.22", punishment: "Бан від 3 до 15 днів" },
-    "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
-    "mg": { rule: "5.1", punishment: "Мут 20 хвилин / Warn при зловживанні" },
-    "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
-    "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
-    "flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
-    "музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
-    "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
-    "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хвилин" }
-  };
+const punishments = {
+  "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
+  "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
+  "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
+  "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
+  "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
+  "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
+  "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
+  "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
+  "pg": { rule: "4.6", punishment: "Jail 20 хвилин" }
+};
 
-  document.getElementById("search").addEventListener("input", function() {
-    const query = this.value.trim().toLowerCase();
-    const resultBox = document.getElementById("result");
-    if (!query) {
-      resultBox.textContent = "Тут з'явиться покарання";
-      return;
-    }
-    let results = [];
-    for (let key in punishments) {
-      if (key.includes(query)) {
-        results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
+document.getElementById("search").addEventListener("input", function() {
+  const query = this.value.trim().toLowerCase();
+  const resultBox = document.getElementById("result");
+  if (!query) { resultBox.textContent = "Тут з'явиться покарання"; return; }
+  let results = [];
+  for (let key in punishments) { if (key.includes(query)) { results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`); } }
+  resultBox.textContent = results.length > 0 ? results.join('\n') : "Покарання не знайдено";
+});
+
+// ==== Чат Furry ====
+const aiChat = document.getElementById('ai-chat');
+const aiInput = document.getElementById('ai-input');
+const aiBtn = document.getElementById('ai-btn');
+
+let aiHistory = JSON.parse(localStorage.getItem('aiHistory') || '[]');
+
+// Початковий текст від Furry
+if(aiHistory.length===0){
+  const intro = "Привіт, я Furry 😺\nЯ допоможу знайти покарання та відповім на твої питання про сайт UA Online.\nПиши запит у форматі DM, DB, TK, SK, PG чи інше.\nДотримуйся правил офіційного Discord.";
+  aiHistory.push(intro);
+  localStorage.setItem('aiHistory', JSON.stringify(aiHistory));
+}
+
+function renderAI() {
+  aiChat.innerHTML = '';
+  aiHistory.forEach(m => {
+    const div = document.createElement('div');
+    div.textContent = m;
+    div.style.marginBottom = '6px';
+    aiChat.appendChild(div);
+  });
+  aiChat.scrollTop = aiChat.scrollHeight;
+}
+
+function aiResponse(query) {
+  const q = query.toLowerCase();
+  let reply = "";
+  if(q.includes("dm") || q.includes("db") || q.includes("tk") || q.includes("sk") || q.includes("pg")) {
+    // перевірка в базі
+    let found = [];
+    for(let key in punishments){
+      if(key.includes(q)){
+        found.push(`${punishments[key].rule}: ${key.toUpperCase()} → ${punishments[key].punishment}`);
       }
     }
-    resultBox.textContent = results.length > 0 ? results.join('\n') : "Покарання не знайдено";
-  });
-
-  // ==== Чат з AI ====
-  const aiChat = document.getElementById('ai-chat');
-  const aiInput = document.getElementById('ai-input');
-  const aiBtn = document.getElementById('ai-btn');
-
-  let aiHistory = JSON.parse(localStorage.getItem('aiHistory') || '[]');
-
-  function renderAI() {
-    aiChat.innerHTML = '';
-    if (aiHistory.length === 0) {
-      aiChat.textContent = "Тут буде історія чату...";
-    } else {
-      aiHistory.forEach(m => {
-        const div = document.createElement('div');
-        div.textContent = m;
-        div.style.marginBottom = '4px';
-        aiChat.appendChild(div);
-      });
-    }
-    aiChat.scrollTop = aiChat.scrollHeight;
+    reply = found.length>0 ? found.join('\n') : "Я не знайшов покарання за цим запитом.";
+  } else if(q.includes("як") || q.includes("інструкція") || q.includes("як користуватись")){
+    reply = "Щоб знайти покарання, введіть ключове слово у верхнє поле (наприклад: DM, DB, TK, SK, PG) та отримайте миттєву відповідь.";
+  } else {
+    reply = "Я отримав твоє запитання. Можу допомогти знайти покарання або надати інструкцію по сайту.";
   }
+  return reply;
+}
 
-  function aiResponse(q) {
-    const lowerCaseQuery = q.toLowerCase();
-    if (lowerCaseQuery.includes('покарання') || lowerCaseQuery.includes('
-::contentReference[oaicite:0]{index=0}
- 
+aiBtn.addEventListener('click', ()=>{
+  const query = aiInput.value.trim();
+  if(!query) return;
+  aiHistory.push("Ти: " + query);
+  const response = aiResponse(query);
+  aiHistory.push("Furry: " + response);
+  localStorage.setItem('aiHistory', JSON.stringify(aiHistory));
+  renderAI();
+  aiInput.value = '';
+});
+
+aiInput.addEventListener('keydown', e => {
+  if(e.key==='Enter') aiBtn.click();
+});
+
+// Ініціалізація
+renderAI();
+</script>
+
+</body>
+</html>
