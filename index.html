@@ -1,166 +1,230 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<title>Пошук покарань + Furry AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  body { font-family: 'Roboto', sans-serif; background: #e8f0fe; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
-  h1 { color: #1a73e8; margin-bottom: 20px; }
-  input { padding: 14px; width: 600px; border: 2px solid #1a73e8; border-radius: 12px; margin-bottom: 20px; font-size: 16px; outline: none; transition: 0.2s; }
-  input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
-  .result { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 700px; text-align: left; white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #202124; margin-bottom: 40px; }
-  .highlight { color: #1a73e8; font-weight: 700; }
-
-  /* Чат Furry */
-  .chat-container { width: 700px; max-width: 100%; background: #fff; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; }
-  #ai-chat { max-height: 300px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
-  .msg { padding: 10px 14px; border-radius: 12px; max-width: 80%; word-wrap: break-word; }
-  .msg.user { background: #1a73e8; color: #fff; align-self: flex-end; }
-  .msg.furry { background: #f1f3f4; color: #202124; align-self: flex-start; opacity: 0; transition: opacity 0.5s; }
-  .ai-input-container { display: flex; gap: 8px; }
-  #ai-input { flex: 1; padding: 12px; border-radius: 8px; border: 2px solid #1a73e8; outline: none; }
-  #ai-btn { padding: 12px 16px; border-radius: 8px; border: none; background: #1a73e8; color: #fff; font-weight: 600; cursor: pointer; }
-
-  @media (max-width: 768px){
-    input, .result, .chat-container { width: 100%; }
-    #ai-input { flex: 1; font-size: 14px; padding: 10px; }
-    #ai-btn { padding: 10px; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Пошук покарань та чат Furry</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #e8f0fe;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 15px;
+    }
+    h1 {
+      color: #1a73e8;
+      margin-bottom: 20px;
+      text-align:center;
+    }
+    input, button {
+      font-family: 'Roboto', sans-serif;
+    }
+    input[type="text"] {
+      padding: 12px;
+      width: 600px;
+      border: 2px solid #1a73e8;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s;
+    }
+    input[type="text"]:focus {
+      box-shadow: 0 0 10px rgba(26, 115, 232, 0.5);
+    }
+    .result {
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      width: 700px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 15px;
+      color: #202124;
+      margin-bottom: 30px;
+    }
+    /* Чат Furry */
+    .chat-container {
+      width: 700px;
+      max-width: 100%;
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      padding:15px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .messages {
+      max-height:300px;
+      overflow-y:auto;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:5px;
+    }
+    .message {
+      padding:8px 12px;
+      border-radius:12px;
+      max-width:80%;
+      word-wrap:break-word;
+    }
+    .message.user {
+      align-self:flex-end;
+      background:#1a73e8;
+      color:#fff;
+    }
+    .message.furry {
+      align-self:flex-start;
+      background:#e8f0fe;
+      color:#202124;
+    }
+    .chat-input {
+      display:flex;
+      gap:5px;
+    }
+    .chat-input input {
+      flex:1;
+      padding:10px;
+      border-radius:8px;
+      border:2px solid #1a73e8;
+      outline:none;
+    }
+    .chat-input button {
+      padding:10px 16px;
+      border-radius:8px;
+      background:#1a73e8;
+      color:#fff;
+      font-weight:600;
+      border:none;
+      cursor:pointer;
+    }
+    @media(max-width:768px){
+      input[type="text"], .result, .chat-container {width:100%;}
+    }
+  </style>
 </head>
 <body>
-<h1>Пошук покарань</h1>
-<input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, DB, TK, SK, PG, Нікнейм)...">
-<div class="result" id="result">Тут з'явиться покарання</div>
+  <h1>Пошук покарань</h1>
+  <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
+  <div class="result" id="result">Тут з'явиться покарання</div>
 
-<!-- Чат Furry -->
-<div class="chat-container">
-  <div id="ai-chat"></div>
-  <div class="ai-input-container">
-    <input type="text" id="ai-input" placeholder="Напишіть Furry...">
-    <button id="ai-btn">Відправити</button>
+  <div class="chat-container">
+    <div class="messages" id="aiChat"></div>
+    <div class="chat-input">
+      <input type="text" id="aiInput" placeholder="Напишіть своє запитання Furry...">
+      <button id="aiBtn">Відправити</button>
+    </div>
   </div>
-</div>
 
 <script>
-  // ==== Пошук покарань ====
-  const punishments = {
-    "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
-    "нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
-    "нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
-    "заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікнейму, заборона на вступ у фракцію" },
-    "нецензурний нікнейм": { rule: "2.3", punishment: "Перманентне блокування облікового запису" },
-    "образливий нікнейм": { rule: "2.4", punishment: "Перманентне блокування облікового запису" },
-    "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
-    "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
-    "dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
-    "mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
-    "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
-    "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
-    "db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
-    "mass db в gz": { rule: "4.2.3", punishment: "Warn" },
-    "рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
-    "rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
-    "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
-    "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
-    "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
-    "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
-    "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
-    "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
-    "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хвилин / Warn" },
-    "вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
-    "уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
-    "уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
-    "втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
-    "перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
-    "уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
-    "афк фракція": { rule: "4.15", punishment: "Kick" },
-    "скін протилежної статі": { rule: "4.16", punishment: "Усне попередження / Звільнення з фракції" },
-    "грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
-    "грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
-    "обман майно": { rule: "4.19", punishment: "Перманентний бан" },
-    "спам майно": { rule: "4.20", punishment: "Перманентний бан" },
-    "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
-    "зменшене покарання за обман": { rule: "4.22", punishment: "Бан від 3 до 15 днів" },
-    "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
-    "mg": { rule: "5.1", punishment: "Мут 20 хвилин / Warn при зловживанні" },
-    "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
-    "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
-    "flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
-    "музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
-    "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
-    "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хвилин" }
-  };
+const punishments = {
+  "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту може видавати покарання за явні порушення" },
+  "нікнейм": { rule: "2.1", punishment: "Нікнейм у форматі Ім’я_Прізвище латиницею. Попередження про зміну нікнейму" },
+  "нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
+  "заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікнейму, заборона на вступ у фракцію" },
+  "нецензурний нікнейм": { rule: "2.3", punishment: "Перманентне блокування облікового запису" },
+  "образливий нікнейм": { rule: "2.4", punishment: "Перманентне блокування облікового запису" },
+  "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
+  "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
+  "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
+  "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
+  "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
+  "pg": { rule: "4.6", punishment: "Jail 20 хвилин" }
+};
 
-  const searchInput = document.getElementById("search");
+document.getElementById("search").addEventListener("input", function() {
+  const query = this.value.trim().toLowerCase();
   const resultBox = document.getElementById("result");
-
-  searchInput.addEventListener("input", function(){
-    const query = this.value.trim().toLowerCase();
-    if(!query) { resultBox.textContent = "Тут з'явиться покарання"; return; }
-    let results = [];
-    for(let key in punishments){ if(key.includes(query)){ results.push(`${punishments[key].rule}: ${key.toUpperCase()} → ${punishments[key].punishment}`); } }
-    resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
-  });
-
-  // ==== Чат Furry ====
-  const aiChat = document.getElementById('ai-chat');
-  const aiInput = document.getElementById('ai-input');
-  const aiBtn = document.getElementById('ai-btn');
-
-  const furryIntro = `Привіт! Я Furry, адмін з 02 сервера.
-Я допоможу знайти покарання та дам інструкції по сайту.
-Не забувайте про офіційний Discord та його правила!`;
-
-  function addMessage(text, sender='furry', delay=0){
-    const div = document.createElement('div');
-    div.className = 'msg ' + sender;
-    div.textContent = text;
-    if(sender==='furry') div.style.opacity = 0;
-    setTimeout(()=>{
-      aiChat.appendChild(div);
-      if(sender==='furry') setTimeout(()=>div.style.opacity=1,50);
-      aiChat.scrollTop = aiChat.scrollHeight;
-    }, delay);
+  if(!query){resultBox.textContent="Тут з'явиться покарання"; return;}
+  let results = [];
+  for(let key in punishments){
+    if(key.includes(query)){
+      results.push(`${punishments[key].rule}: ${key.toUpperCase()} → ${punishments[key].punishment}`);
+    }
   }
+  resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
+});
 
-  addMessage(furryIntro,'furry');
+// ==== AI Furry ====
+const aiChat = document.getElementById('aiChat');
+const aiInput = document.getElementById('aiInput');
+const aiBtn = document.getElementById('aiBtn');
 
-  const aiAnswers = {
-    greetings: ["Привіт! Як можу допомогти?","Вітаю! Питай мене, я допоможу."],
-    instructions: ["Щоб знайти покарання, введіть ключове слово (DM, DB, TK, SK, PG, Нікнейм).","Введи порушення або нік і я покажу покарання."],
-    whoCreated: ["Мене створив адмін Artem_Furrry на 02 сервері.","Мій творець — Artem_Furrry."],
-    whatToDo: ["Використовуй пошук або питай мене в чаті, я допоможу зрозуміти, що робити.","Просто введи ключ і побачиш покарання, або питай мене."],
-    default: ["Я можу допомогти знайти покарання або дати інструкцію по сайту."]
-  };
+const aiAnswers = {
+  greetings: [
+    "Привіт! Як можу допомогти?",
+    "Вітаю! Питай мене, я допоможу.",
+    "Привіт! Я Furry, чат адмін з 02 сервера, запитуй будь-що."
+  ],
+  instructions: [
+    "Щоб знайти покарання, введіть ключове слово (DM, DB, TK, SK, PG, Нікнейм).",
+    "Введіть порушення або нік і я покажу покарання.",
+    "Можна писати частину слова, наприклад 'dm' або 'pg'."
+  ],
+  whoCreated: [
+    "Мене створив адмін Artem_Furrry на 02 сервері.",
+    "Мій творець — Artem_Furrry. він залишив тобі цей текст. Так я створив його, створив для вас, тож користуйтесь."
+  ],
+  whatToDo: [
+    "Використовуй пошук або питай мене в чаті, я допоможу зрозуміти, що робити.",
+    "Просто введи ключ слова по типу DM TK і побачиш покарання, або питай мене."
+  ],
+  default: [
+    "Я можу допомогти знайти покарання або дати інструкцію по сайту.",
+    "Спробуй запитати про покарання або як користуватись сайтом."
+  ]
+};
 
-  function aiResponse(query){
-    const q = query.toLowerCase();
-    const punishKeys = Object.keys(punishments);
-    const foundPunish = punishKeys.filter(k=>q.includes(k));
-    if(foundPunish.length>0) return foundPunish.map(k=>`${punishments[k].rule}: ${k.toUpperCase()} → ${punishments[k].punishment}`).join('\n');
-    if(q.includes("як")||q.includes("інструкція")||q.includes("як користуватись")||q.includes("поясни")) return aiAnswers.instructions[Math.floor(Math.random()*aiAnswers.instructions.length)];
-    if(q.includes("хто") && q.includes("створив")) return aiAnswers.whoCreated[Math.floor(Math.random()*aiAnswers.whoCreated.length)];
-    if(q.includes("що робити")||q.includes("що тут")||q.includes("як діяти")) return aiAnswers.whatToDo[Math.floor(Math.random()*aiAnswers.whatToDo.length)];
-    const greetings = ["привіт","здрастуй","доброго дня"];
-    if(greetings.some(g=>q.includes(g))) return aiAnswers.greetings[Math.floor(Math.random()*aiAnswers.greetings.length)];
-    return aiAnswers.default[Math.floor(Math.random()*aiAnswers.default.length)];
+function addMessage(text, type, delay=0){
+  const msg = document.createElement('div');
+  msg.className='message '+type;
+  msg.textContent=text;
+  if(delay>0){
+    setTimeout(()=>{aiChat.appendChild(msg); aiChat.scrollTop=aiChat.scrollHeight;},delay);
+  } else {
+    aiChat.appendChild(msg);
+    aiChat.scrollTop=aiChat.scrollHeight;
   }
+}
 
-  aiBtn.addEventListener('click', ()=>{
-    const query = aiInput.value.trim();
-    if(!query) return;
-    addMessage(query,'user');
-    aiInput.value='';
-    addMessage("Furry пише...","furry",200);
-    setTimeout(()=>{
-      aiChat.lastChild.remove();
-      addMessage(aiResponse(query),"furry");
-    }, 800);
-  });
+function aiResponse(query){
+  const q = query.toLowerCase();
+  const punishKeys = Object.keys(punishments);
+  const foundPunish = punishKeys.filter(k=>q.includes(k));
+  if(foundPunish.length>0)
+    return foundPunish.map(k=>`${punishments[k].rule}: ${k.toUpperCase()} → ${punishments[k].punishment}`).join('\n');
 
-  aiInput.addEventListener('keydown', e=>{ if(e.key==='Enter') aiBtn.click(); });
+  if(["як","інструкція","як користуватись","поясни","Що тут робить?", "Що робити?","Що писать?"].some(k=>q.includes(k)))
+    return aiAnswers.instructions[Math.floor(Math.random()*aiAnswers.instructions.length)];
+  if(["що робити","що тут","як діяти"].some(k=>q.includes(k)))
+    return aiAnswers.whatToDo[Math.floor(Math.random()*aiAnswers.whatToDo.length)];
+  if(q.includes("хто") && q.includes("створив"))
+    return aiAnswers.whoCreated[Math.floor(Math.random()*aiAnswers.whoCreated.length)];
+  if(["привіт","здрастуй","доброго дня"].some(k=>q.includes(k)))
+    return aiAnswers.greetings[Math.floor(Math.random()*aiAnswers.greetings.length)];
+  return aiAnswers.default[Math.floor(Math.random()*aiAnswers.default.length)];
+}
+
+aiBtn.addEventListener('click', ()=>{
+  const query = aiInput.value.trim();
+  if(!query) return;
+  addMessage(query,'user');
+  aiInput.value='';
+  addMessage("Furry пише...","furry",200);
+  setTimeout(()=>{
+    aiChat.lastChild.remove();
+    addMessage(aiResponse(query),'furry');
+  },800);
+});
+
+aiInput.addEventListener('keydown', e=>{ if(e.key==='Enter') aiBtn.click(); });
+
+// Привітальне повідомлення від Furry
+addMessage("Привіт! Я Furry, адмін з 02 сервера. Цей чат допоможе знайти покарання або дати інструкцію по сайту. Не забувайте про Discord",'furry',500);
 </script>
 </body>
 </html>
