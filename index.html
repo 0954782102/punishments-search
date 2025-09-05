@@ -10,14 +10,12 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-TMLWEX4GXT');
 </script>
 <!-- End Google Analytics -->
 
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-
   :root{--blue:#1a73e8;--bg:#e8f0fe;--card:#ffffff;--muted:#6b778c;--accent:#0b59d6;}
   html,body{height:100%;margin:0;}
   body { font-family: 'Roboto', sans-serif; background: var(--bg); display:flex; flex-direction:column; align-items:center; padding:30px 10px; box-sizing:border-box; }
@@ -39,39 +37,41 @@
   .chat-input input { flex:1; padding:10px; font-size:14px; border:2px solid var(--blue); border-radius:8px; }
   .chat-input button { padding:10px 16px; font-weight:700; border-radius:8px; background:var(--blue); color:#fff; border:none; cursor:pointer; }
 
-  /* modal / audio UI */
-  .modal-backdrop { position:fixed; inset:0; background:linear-gradient(rgba(7,19,43,.45), rgba(7,19,43,.45)); display:flex; align-items:center; justify-content:center; z-index:9999; }
-  .modal-audio { width:min(760px,94%); background:linear-gradient(180deg,#ffffff,#f7fbff); border-radius:14px; padding:18px; box-shadow:0 18px 50px rgba(5,30,80,.35); border:1px solid rgba(26,115,232,.08); display:flex; flex-direction:column; gap:12px; }
-  .modal-head { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-  .modal-title { font-weight:700; color:var(--blue); font-size:18px; }
-  .modal-close { background:transparent; border:none; font-size:18px; cursor:pointer; color:var(--muted); }
-
-  .audio-card { display:flex; gap:14px; align-items:center; }
-  .audio-icon { width:86px; height:86px; border-radius:12px; background:linear-gradient(180deg,var(--blue),#0958c2); display:flex; align-items:center; justify-content:center; color:#fff; font-size:34px; box-shadow:0 10px 24px rgba(10,30,80,0.12); }
-  .audio-meta { flex:1; display:flex; flex-direction:column; gap:8px; }
-  .audio-controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .big-btn { width:56px; height:56px; border-radius:12px; border:none; background:var(--accent); color:#fff; font-size:20px; cursor:pointer; box-shadow:0 8px 18px rgba(11,89,214,0.18); }
-  .secondary-btn { padding:10px 12px; border-radius:10px; border:1px solid rgba(11,89,214,0.12); background:#fff; cursor:pointer; color:var(--blue); font-weight:700; }
-
-  .progress-wrap { display:flex; gap:12px; align-items:center; }
-  .time { font-size:13px; color:var(--muted); min-width:56px; text-align:center; }
-  .progress { -webkit-appearance:none; appearance:none; width:100%; height:10px; border-radius:8px; background:linear-gradient(90deg,#dfeeff,#eef6ff); position:relative; overflow:hidden; }
-  .progress::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--blue); box-shadow:0 2px 8px rgba(26,115,232,.3); cursor:pointer; margin-top:-3px; border:3px solid #fff; }
-
-  .modal-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-  .small-muted { font-size:13px; color:var(--muted); }
-
-  .file-row{ display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap; }
-  .file-row input[type="file"]{ padding:6px; }
-
-  .url-input { display:flex; gap:8px; align-items:center; width:100%; }
-  .url-input input { flex:1; padding:8px; border-radius:8px; border:1px solid #cfdffb; }
-
-  @media(max-width:768px){
-    input.search { width:100%; }
-    .audio-icon{ width:68px; height:68px; font-size:28px;}
-    .big-btn{ width:48px; height:48px; }
-    .result, .chat-container{ width:100%; }
+  /* Announcement */
+  .announcement {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 300px;
+    background: #ffffff;
+    border-left: 6px solid var(--blue);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    z-index: 9999;
+    animation: fadeIn 0.6s ease-in-out;
+  }
+  .announcement h2 {
+    font-size: 16px;
+    margin: 0 0 10px;
+    color: var(--blue);
+  }
+  .announcement p { margin: 0 0 10px; color: #333; }
+  .announcement-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #888;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 </style>
 </head>
@@ -97,337 +97,20 @@
     </div>
   </div>
 
-  <!-- AUDIO MODAL WITH FILE INPUT & URL (prefilled with your Dropbox dl=1) -->
-  <div id="introModal" class="modal-backdrop" style="display:none;">
-    <div class="modal-audio" role="dialog" aria-modal="true">
-      <div class="modal-head">
-        <div class="modal-title">Відкриття сайту • Версія 0.1</div>
-        <button id="modalClose" class="modal-close" title="Закрити">✕</button>
-      </div>
-
-      <div class="audio-card">
-        <div class="audio-icon">🎙</div>
-        <div class="audio-meta">
-
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="font-weight:700;color:#0b2b5a;">Прослухайте інструкцію від Furry</div>
-            <div class="small-muted">Версія 0.1</div>
-          </div>
-
-          <div class="audio-controls">
-            <button id="playBtn" class="big-btn" title="Play">▶</button>
-            <button id="pauseBtn" class="secondary-btn" title="Pause">⏸</button>
-            <button id="stopBtn" class="secondary-btn" title="Stop">⏹</button>
-            <div style="flex:1"></div>
-            <div class="small-muted" id="audioSourceLabel">Джерело: не вибрано</div>
-          </div>
-
-          <div class="progress-wrap">
-            <div class="time" id="curTime">0:00</div>
-            <input id="seek" class="progress" type="range" min="0" max="100" value="0">
-            <div class="time" id="durTime">0:00</div>
-          </div>
-
-          <div class="file-row">
-            <label style="font-weight:600;">Оберіть локальний файл (MP3):</label>
-            <input id="fileInput" type="file" accept="audio/*">
-            <button id="useFileBtn" class="secondary-btn">Використати файл</button>
-          </div>
-
-          <div class="url-input">
-            <input id="urlInput" type="text" placeholder="Або вставте прямий URL на аудіо (https://.../file.mp3)">
-            <button id="useUrlBtn" class="secondary-btn">Використати URL</button>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <div class="small-muted">Порада: для надійного відтворення краще мати пряме посилання на `.mp3` або вибрати локальний файл.</div>
-        <div>
-          <button id="neverShow" class="btn">Не показувати знову</button>
-        </div>
-      </div>
-    </div>
+  <!-- Звернення від Furry -->
+  <div class="announcement" id="announcementBox">
+    <button class="announcement-close" id="announcementClose">✕</button>
+    <h2>📢 Звернення від Furry!</h2>
+    <p>Дорогі друзі та колеги! Не забувайте перевіряти офіційну інформацію у Discord <strong>"Загальні Правила Ua Online"</strong>.</p>
+    <p>Цей додаток може оновити пункти та їх покарання із запізненням. Тим самим може підвести вас!</p>
+    <p>Але сайт працює на повну 💪 За тестами він оновлюється, але із запізненням приблизно у <strong>2 години</strong>. Тож слідкуйте за цим!</p>
   </div>
 
 <script>
-/* =======================
-   Основна логіка пошуку / чат (не змінена по функціоналу)
-   ======================= */
-
-const punishments = {
-  "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
-  "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
-  "dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
-  "mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
-  "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
-  "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
-  "db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
-  "mass db в gz": { rule: "4.2.3", punishment: "Warn" },
-  "рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
-  "rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
-  "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
-  "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
-  "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
-  "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
-  "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
-  "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
-  "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хв / Warn" },
-  "вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
-  "уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
-  "уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
-  "втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
-  "перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
-  "уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
-  "афк фракція": { rule: "4.15", punishment: "Kick" },
-  "скін протилежної статі": { rule: "4.16", punishment: "Попередження / Звільнення" },
-  "грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
-  "грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
-  "обман майно": { rule: "4.19", punishment: "Перманентний бан" },
-  "спам майно": { rule: "4.20", punishment: "Перманентний бан" },
-  "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
-  "зменшене покарання за обман": { rule: "4.22", punishment: "Бан 3-15 днів" },
-  "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
-  "mg": { rule: "5.1", punishment: "Мут 20 хв / Warn" },
-  "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
-  "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
-  "flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
-  "музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
-  "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
-  "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хв" }
-};
-
-document.getElementById("search").addEventListener("input", function(){
-  const query = this.value.trim().toLowerCase();
-  const resultBox = document.getElementById("result");
-  if(!query){ resultBox.textContent = "Тут з'явиться покарання"; return; }
-  let results=[];
-  for(let key in punishments){
-    if(key.includes(query) || punishments[key].punishment.toLowerCase().includes(query)){
-      results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
-    }
-  }
-  resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
-});
-
-/* ===== Chat ===== */
-const chatInput = document.getElementById('chat-input');
-const chatSend = document.getElementById('chat-send');
-const chatMessages = document.getElementById('chat-messages');
-
-function appendMessage(text, className){
-  const div = document.createElement('div');
-  div.className = `message ${className}`;
-  div.textContent = text;
-  chatMessages.appendChild(div);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function searchPunishment(query){
-  query = query.toLowerCase();
-  let results = [];
-  for(let key in punishments){
-    if(key.includes(query) || punishments[key].punishment.toLowerCase().includes(query)){
-      results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
-    }
-  }
-  return results.length>0 ? results.join('\n') : null;
-}
-
-function getResponse(msg){
-  const m = msg.toLowerCase();
-  if(/привіт|здравствуй|hi/.test(m)) return "Привіт! Я Furry 😎. Можу показати покарання або дати інструкції.";
-  const punishment = searchPunishment(m);
-  if(punishment) return punishment;
-  if(/як|що робити|далі|як користуватись|що тут/.test(m)) return "Введи ключове слово порушення або нік і я покажу покарання. Наприклад: DM, DB, TK, SK, PG.";
-  if(/хто створив|твій творець|who created/i.test(m)) return "Мене створив Артем Процко, на основі мови програмування Python та скрипту Jarvis. Я допомагаю адміну ЮА онлайн. Версія 0.1, початковий автор Artem_Furrry. Маю свій сервер для чітких відповідей.";
-  if(/інструкц|як знайти|пошук/i.test(m)) return "Щоб знайти покарання, введи ключове слово (DM, DB, TK, SK, PG, Нікнейм) у поле пошуку або запитай мене в чаті.";
-  return "Я можу допомогти знайти покарання або дати інструкцію по сайту. Спробуй написати DM, DB, TK тощо.";
-}
-
-function furryReply(userMsg){
-  const typing = document.createElement('div');
-  typing.className='typing';
-  typing.textContent='Furry друкує...';
-  chatMessages.appendChild(typing);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-  setTimeout(()=>{
-    chatMessages.removeChild(typing);
-    appendMessage(getResponse(userMsg),'furry-msg');
-  }, 700 + Math.random()*500);
-}
-
-chatSend.addEventListener('click', ()=>{
-  const text = chatInput.value.trim();
-  if(!text) return;
-  appendMessage(text,'user-msg');
-  chatInput.value='';
-  furryReply(text);
-});
-chatInput.addEventListener('keydown', e=>{ if(e.key==='Enter') chatSend.click(); });
-
-/* ===== Audio modal logic: support direct Dropbox URL and local file ===== */
-(function(){
-  const modal = document.getElementById('introModal');
-  const playBtn = document.getElementById('playBtn');
-  const pauseBtn = document.getElementById('pauseBtn');
-  const stopBtn = document.getElementById('stopBtn');
-  const closeBtn = document.getElementById('modalClose');
-  const neverBtn = document.getElementById('neverShow');
-  const fileInput = document.getElementById('fileInput');
-  const useFileBtn = document.getElementById('useFileBtn');
-  const urlInput = document.getElementById('urlInput');
-  const useUrlBtn = document.getElementById('useUrlBtn');
-  const seek = document.getElementById('seek');
-  const curTime = document.getElementById('curTime');
-  const durTime = document.getElementById('durTime');
-  const audioSourceLabel = document.getElementById('audioSourceLabel');
-
-  // Pre-fill with твою пряму Dropbox-ссилку (dl=1)
-  const PREFILL_DIRECT = "https://www.dropbox.com/scl/fi/0e3gjm85cs1x9xdz1qono/ElevenLabs_2025-09-05T12_53_24_Dmytro-UA_pvc_sp100_s50_sb70_se15_b_m2.mp3?rlkey=kn5uv7i9c04p19g2h7lgji7vd&st=jmw1axgx&dl=1";
-  urlInput.value = PREFILL_DIRECT;
-
-  let audio = new Audio();
-  audio.preload = 'auto';
-  let objectUrl = null;
-
-  function shouldShow() { return localStorage.getItem('furry_modal_shown') !== 'true'; }
-  function markSeen(){ localStorage.setItem('furry_modal_shown','true'); }
-
-  function fmt(t){
-    if(isNaN(t) || !isFinite(t)) return '0:00';
-    const mins = Math.floor(t/60);
-    const secs = Math.floor(t%60).toString().padStart(2,'0');
-    return `${mins}:${secs}`;
-  }
-
-  function updateTime(){
-    curTime.textContent = fmt(audio.currentTime);
-    durTime.textContent = fmt(audio.duration);
-    if(audio.duration && !isNaN(audio.duration)) {
-      seek.value = Math.floor((audio.currentTime / audio.duration) * 100);
-    } else {
-      seek.value = 0;
-    }
-  }
-
-  audio.addEventListener('timeupdate', updateTime);
-  audio.addEventListener('loadedmetadata', ()=>{ durTime.textContent = fmt(audio.duration); });
-  audio.addEventListener('ended', ()=>{ playBtn.textContent = '▶'; seek.value = 100; });
-
-  audio.addEventListener('error', (e)=> {
-    console.warn('Audio error', e);
-    // показуємо алерт лише якщо є джерело, щоб не спамити
-    if(audio.src) alert('Не вдалось відтворити аудіо. Перевірте URL або формат файлу.');
-    audioSourceLabel.textContent = 'Джерело: помилка';
+  // Закриття звернення
+  document.getElementById("announcementClose").addEventListener("click", () => {
+    document.getElementById("announcementBox").style.display = "none";
   });
-
-  // Play
-  playBtn.addEventListener('click', ()=>{
-    if(!audio.src){
-      alert('Спочатку виберіть файл або натисніть "Використати URL".');
-      return;
-    }
-    audio.play().then(()=>{ playBtn.textContent='⏸'; }).catch(err=>{
-      console.warn('Play failed', err);
-      alert('Не вдалось відтворити аудіо: можливо браузер блокує відтворення або URL недоступний.');
-    });
-  });
-
-  // Pause
-  pauseBtn.addEventListener('click', ()=>{
-    if(!audio.src) return;
-    if(!audio.paused){ audio.pause(); playBtn.textContent='▶'; } else { audio.play().then(()=>playBtn.textContent='⏸').catch(()=>{}); }
-  });
-
-  // Stop
-  stopBtn.addEventListener('click', ()=>{
-    if(!audio.src) return;
-    audio.pause();
-    audio.currentTime = 0;
-    playBtn.textContent = '▶';
-    seek.value = 0;
-  });
-
-  // Seek
-  seek.addEventListener('input', ()=>{
-    if(audio.duration && !isNaN(audio.duration)) {
-      const pct = parseFloat(seek.value)/100;
-      audio.currentTime = pct * audio.duration;
-    }
-  });
-
-  // Use URL
-  function useUrl(url){
-    try {
-      // cleanup objectUrl if existed
-      if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl = null; }
-      audio.pause();
-      audio.src = url;
-      audio.load();
-      audioSourceLabel.textContent = 'Джерело: URL';
-      // Reset UI
-      playBtn.textContent = '▶';
-      seek.value = 0;
-      curTime.textContent = '0:00';
-      durTime.textContent = '0:00';
-    } catch(e){
-      console.error('useUrl error', e);
-      alert('Не вдалося підключити URL.');
-    }
-  }
-
-  useUrlBtn.addEventListener('click', ()=>{
-    const u = urlInput.value.trim();
-    if(!u){ alert('Вставте URL у поле.'); return; }
-    useUrl(u);
-  });
-
-  // Use local file
-  useFileBtn.addEventListener('click', ()=>{
-    const f = fileInput.files && fileInput.files[0];
-    if(!f){ alert('Файл не вибрано.'); return; }
-    if(!f.type.startsWith('audio')){ alert('Оберіть аудіофайл (mp3/ogg/m4a).'); return; }
-    if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl = null; }
-    objectUrl = URL.createObjectURL(f);
-    audio.pause();
-    audio.src = objectUrl;
-    audio.load();
-    audioSourceLabel.textContent = `Джерело: локальний файл (${f.name})`;
-    playBtn.textContent = '▶';
-    seek.value = 0;
-    curTime.textContent = '0:00';
-    durTime.textContent = '0:00';
-  });
-
-  // Close / never show
-  closeBtn.addEventListener('click', ()=>{
-    modal.style.display = 'none';
-    markSeen();
-    try { audio.pause(); audio.currentTime = 0; } catch(e){}
-  });
-  neverBtn.addEventListener('click', ()=>{
-    localStorage.setItem('furry_modal_shown','true');
-    modal.style.display = 'none';
-    try { audio.pause(); audio.currentTime = 0; } catch(e){}
-  });
-
-  // Show modal on first load and auto-fill URL (but NOT autoplay)
-  document.addEventListener('DOMContentLoaded', ()=>{
-    if(shouldShow()){
-      modal.style.display = 'flex';
-      // prefill URL already set; auto-call useUrl to prepare source (no autoplay)
-      useUrl(PREFILL_DIRECT);
-    }
-  });
-
-  // cleanup on unload
-  window.addEventListener('beforeunload', ()=>{
-    try { if(objectUrl) URL.revokeObjectURL(objectUrl); } catch(e){}
-  });
-
-})();
 </script>
 
 </body>
