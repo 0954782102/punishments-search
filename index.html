@@ -17,7 +17,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* Весь CSS залишив без змін */
+/* CSS без змін */
 :root{--blue:#1a73e8;--bg:#e8f0fe;--card:#ffffff;--muted:#6b778c;--accent:#0b59d6;}
 html,body{height:100%;margin:0;}
 body { font-family: 'Roboto', sans-serif; background: var(--bg); display:flex; flex-direction:column; align-items:center; padding:30px 10px; box-sizing:border-box; }
@@ -39,7 +39,6 @@ input.search:focus{ box-shadow:0 8px 20px rgba(26,115,232,.12); transform:transl
 .chat-input input { flex:1; padding:10px; font-size:14px; border:2px solid var(--blue); border-radius:8px; }
 .chat-input button { padding:10px 16px; font-weight:700; border-radius:8px; background:var(--blue); color:#fff; border:none; cursor:pointer; }
 
-/* modal / audio UI */
 .modal-backdrop { position:fixed; inset:0; background:linear-gradient(rgba(7,19,43,.45), rgba(7,19,43,.45)); display:flex; align-items:center; justify-content:center; z-index:9999; }
 .modal-audio { width:min(760px,94%); background:linear-gradient(180deg,#ffffff,#f7fbff); border-radius:14px; padding:18px; box-shadow:0 18px 50px rgba(5,30,80,.35); border:1px solid rgba(26,115,232,.08); display:flex; flex-direction:column; gap:12px; }
 .modal-head { display:flex; justify-content:space-between; align-items:center; gap:12px; }
@@ -97,12 +96,10 @@ input.search:focus{ box-shadow:0 8px 20px rgba(26,115,232,.12); transform:transl
   </div>
 </div>
 
-<!-- Audio modal код залишив без змін -->
-
 <script>
-/* ======================= */
-/* Об’єкт покарань - додано всі пункти */
-/* ======================= */
+// =======================
+// Об’єкт покарань - всі пункти
+// =======================
 const punishments = {
   "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
   "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
@@ -145,9 +142,65 @@ const punishments = {
   "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хв" }
 };
 
-/* ======================= */
-/* Весь інший JS (пошук, чат, аудіо модал) залишений без змін */
-/* ======================= */
+// =======================
+// Пошук покарань по ключовому слову
+// =======================
+const searchInput = document.getElementById('search');
+const resultDiv = document.getElementById('result');
+
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase().trim();
+  if (!query) {
+    resultDiv.textContent = "Тут з'явиться покарання";
+    return;
+  }
+
+  const matches = Object.keys(punishments).filter(key => key.includes(query));
+  if (matches.length === 0) {
+    resultDiv.textContent = "Покарання не знайдено.";
+    return;
+  }
+
+  const text = matches.map(key => {
+    const p = punishments[key];
+    return `${key.toUpperCase()} → Правило: ${p.rule}, Покарання: ${p.punishment}`;
+  }).join("\n\n");
+
+  resultDiv.textContent = text;
+});
+
+// =======================
+// Чат
+// =======================
+const chatInput = document.getElementById('chat-input');
+const chatSend = document.getElementById('chat-send');
+const chatMessages = document.getElementById('chat-messages');
+
+// Додаткове повідомлення Furry при завантаженні
+const furryNotice = document.createElement('div');
+furryNotice.className = 'furry-msg';
+furryNotice.textContent = `Звернення від Furry! Дорогі друзі, та колеги! Не забувайте перевіряти офіційну інформацію в Discord "Загальні Правила Ua Online". Цей додаток може оновити пункти та їх покарання із запізненням. Тим самим підвести вас! Але сайт працює на повну, по тестам він оновлюється, але з запізненням в 2 години. Тож слідкуйте за цим.`;
+chatMessages.appendChild(furryNotice);
+chatMessages.scrollTop = chatMessages.scrollHeight;
+
+chatSend.addEventListener('click', () => {
+  const msg = chatInput.value.trim();
+  if (!msg) return;
+
+  const userMsg = document.createElement('div');
+  userMsg.className = 'message user-msg';
+  userMsg.textContent = msg;
+  chatMessages.appendChild(userMsg);
+
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatInput.value = '';
+
+  const furryMsg = document.createElement('div');
+  furryMsg.className = 'message furry-msg';
+  furryMsg.textContent = `Я бачу ти написав: "${msg}". Щоб знайти покарання, введи ключове слово у полі зверху.`;
+  chatMessages.appendChild(furryMsg);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+});
 </script>
 
 </body>
