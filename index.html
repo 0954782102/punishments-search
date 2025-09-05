@@ -2,181 +2,509 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<title>Пошук покарань і чат Furry</title>
+<title>Пошук покарань</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  body { font-family: 'Roboto', sans-serif; background: #e8f0fe; display: flex; flex-direction: column; align-items: center; padding: 30px 10px; }
-  h1 { color: #1a73e8; margin-bottom: 10px; text-align:center;}
-  .logo { margin-bottom: 20px; }
-  .logo img { width: 120px; height: auto; border-radius: 12px; cursor: pointer; }
+ body {
+  font-family: Arial, sans-serif;
+  background-color: #e6f0ff;
+  margin: 0;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
 
-  input { padding: 14px; width: 600px; border: 2px solid #1a73e8; border-radius: 12px; margin-bottom: 20px; font-size: 16px; outline: none; transition: 0.2s; }
-  input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
-  .result { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 700px; text-align: left; white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #202124; margin-bottom:30px; }
-  
-  /* Чат Furry */
-  .chat-container { width: 700px; max-width: 100%; background:#fff; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:16px; display:flex; flex-direction:column; max-height:500px; overflow:hidden;}
-  .chat-messages { flex:1; overflow-y:auto; margin-bottom:10px; }
-  .message { margin-bottom:8px; padding:8px 12px; border-radius:12px; max-width:80%; line-height:1.4; }
-  .user-msg { background:#1a73e8; color:#fff; align-self:flex-end; }
-  .furry-msg { background:#e8f0fe; color:#202124; align-self:flex-start; position:relative;}
-  .typing { font-style:italic; font-size:13px; color:#666; margin-bottom:4px; }
+h1 {
+  color: #0056b3;
+  margin-bottom: 20px;
+}
 
-  .chat-input { display:flex; }
-  .chat-input input { flex:1; padding:10px; font-size:14px; border:2px solid #1a73e8; border-radius:8px; margin-right:8px; }
-  .chat-input button { padding:10px 16px; font-weight:600; border-radius:8px; background:#1a73e8; color:#fff; border:none; cursor:pointer; }
-  
-  @media(max-width:768px){ input{width:100%; font-size:14px; padding:12px;} .result,.chat-container{width:100%;} }
+input {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.result {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+  width: 400px;
+  text-align: center;
+}
+
+.update-notice {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  max-width: 600px;
+  text-align: center;
+}
+
+/* ==== AUDIO PANEL ==== */
+.audio-panel {
+  width: 420px;
+  max-width: 92%;
+  background: linear-gradient(180deg, #ffffff, #f3f8ff);
+  border: 1px solid rgba(26,115,232,0.12);
+  box-shadow: 0 6px 18px rgba(10,30,80,0.06);
+  padding: 12px 14px;
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+  transition: transform .18s ease;
+}
+.audio-panel:hover { transform: translateY(-3px); }
+
+.audio-controls { display:flex; gap:8px; align-items:center; }
+.aud-btn {
+  background:#1a73e8; color:#fff; border:none; padding:8px 10px; border-radius:10px; cursor:pointer; font-weight:700;
+  box-shadow: 0 4px 12px rgba(26,115,232,0.12);
+}
+.aud-btn.secondary { background:#fff; color:#1a73e8; border:2px solid #1a73e8; font-weight:600; }
+
+.eq {
+  display:flex; gap:3px; align-items:flex-end; height:24px; width:72px;
+}
+.eq-bar {
+  width:6px; height:6px; background:#cfe6ff; border-radius:3px; transition:height .12s linear, background .12s;
+}
+.eq-bar.active { background:#1a73e8; }
+
+/* voice selector + speed */
+.audio-meta { display:flex; flex-direction:column; gap:6px; font-size:13px; color:#0b2b5a; width:100%; }
+.row { display:flex; gap:8px; align-items:center; }
+
+/* Adaptive tweaks */
+@media (max-width: 1024px) {
+  body {
+    padding: 30px 15px;
+  }
+  .update-notice, 
+  .result,
+  input {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 20px 10px;
+  }
+  h1 {
+    font-size: 20px;
+    text-align: center;
+  }
+  input {
+    width: 100% !important;
+    font-size: 14px;
+    padding: 10px;
+  }
+  .result {
+    font-size: 14px;
+    padding: 12px;
+    width: 100% !important;
+  }
+  .update-notice {
+    font-size: 13px;
+    padding: 12px;
+    width: 100% !important;
+  }
+  .audio-panel { width:100%; }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 18px;
+  }
+  input {
+    font-size: 13px;
+    padding: 8px;
+  }
+  .result {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
+/* Модальні (твій оригінал) */
+.modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; }
+.modal { background:#fff; width:min(90vw,700px); border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,.25); border:2px solid #1a73e8; }
+.modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
+.modal-body {padding:16px 18px;max-height:70vh;overflow:auto;}
+.modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
+.btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
+.btn-primary {background:#1a73e8;color:#fff;}
+.edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
+.edit-input {width:100%;padding:6px;margin-top:6px;}
+.logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
+.creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
+.creator-tools .btn {background:#1a73e8;color:#fff;}
+#codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
+.log-list {max-height:60vh;overflow:auto;padding-left:18px;}
 </style>
-</head>
 <body>
 
-<div class="logo">
-  <a href="https://ibb.co/5bsnjyM" target="_blank">
-    <img src="https://i.ibb.co/5bsnjyM/logo.png" alt="Furry Logo">
-  </a>
+<div class="update-notice">
+  Вітаю! Оновлення 0.1: у цьому оновленні ми вийшли на новий рівень, а саме офіційність. Тепер ми в колі офіційних сайтів і з прямим посиланням.
 </div>
+
+<!-- ===== ДОДАНО: Стильна аудіо-панель (не змінює інші елементи) ===== -->
+<div class="audio-panel" id="audioPanel" aria-hidden="false">
+  <div class="audio-controls">
+    <button id="audioPlay" class="aud-btn" title="Відтворити інструкцію">▶️</button>
+    <button id="audioPause" class="aud-btn secondary" title="Пауза">⏸</button>
+    <button id="audioStop" class="aud-btn secondary" title="Зупинити">⏹</button>
+  </div>
+  <div class="eq" id="eq">
+    <div class="eq-bar" id="b1"></div>
+    <div class="eq-bar" id="b2"></div>
+    <div class="eq-bar" id="b3"></div>
+    <div class="eq-bar" id="b4"></div>
+    <div class="eq-bar" id="b5"></div>
+  </div>
+  <div class="audio-meta">
+    <div class="row">
+      <label for="voiceSelect" style="min-width:68px;">Голос:</label>
+      <select id="voiceSelect" style="flex:1;padding:6px;border-radius:8px;border:1px solid #cfe6ff;"></select>
+    </div>
+    <div class="row" style="align-items:center;">
+      <label for="speed" style="min-width:68px;">Швидкість:</label>
+      <input id="speed" type="range" min="0.7" max="1.5" step="0.05" value="0.95" style="flex:1;">
+      <div id="speedVal" style="width:40px;text-align:right;font-size:13px;color:#0b2b5a;">0.95x</div>
+    </div>
+  </div>
+</div>
+<!-- ===== Кінець аудіо-панелі ===== -->
 
 <h1>Пошук покарань</h1>
-<input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, DB, TK, SK, PG, Нікнейм)...">
+<input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
 <div class="result" id="result">Тут з'явиться покарання</div>
 
-<div class="chat-container">
-  <div class="chat-messages" id="chat-messages">
-    <div class="furry-msg">Привіт, я Furry 😎. Я можу допомогти знайти покарання або дати інструкцію по сайту. Не забувайте про офіційний Discord та правила!</div>
-  </div>
-  <div class="chat-input">
-    <input type="text" id="chat-input" placeholder="Напишіть повідомлення...">
-    <button id="chat-send">Відправити</button>
-  </div>
-</div>
-
 <script>
-// ====== Покарання ======
+// --- Повний список покарань ---
 const punishments = {
-  "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
-  "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
-  "dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
-  "mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
-  "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
-  "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
-  "db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
-  "mass db в gz": { rule: "4.2.3", punishment: "Warn" },
-  "рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
-  "rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
-  "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
-  "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
-  "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
-  "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
-  "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
-  "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
-  "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хв / Warn" },
-  "вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
-  "уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
-  "уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
-  "втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
-  "перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
-  "уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
-  "афк фракція": { rule: "4.15", punishment: "Kick" },
-  "скін протилежної статі": { rule: "4.16", punishment: "Попередження / Звільнення" },
-  "грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
-  "грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
-  "обман майно": { rule: "4.19", punishment: "Перманентний бан" },
-  "спам майно": { rule: "4.20", punishment: "Перманентний бан" },
-  "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
-  "зменшене покарання за обман": { rule: "4.22", punishment: "Бан 3-15 днів" },
-  "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
-  "mg": { rule: "5.1", punishment: "Мут 20 хв / Warn" },
-  "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
-  "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
-  "flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
-  "музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
-  "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
-  "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хв" }
+"керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
+"нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
+"нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
+"заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікнейму, заборона на вступ у фракцію" },
+"нецензурний нікнейм": { rule: "2.3", punishment: "Перманентне блокування облікового запису" },
+"образливий нікнейм": { rule: "2.4", punishment: "Перманентне блокування облікового запису" },
+"dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
+"mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
+"dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
+"mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
+"db": { rule: "4.2", punishment: "Jail 20 хвилин" },
+"mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
+"db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
+"mass db в gz": { rule: "4.2.3", punishment: "Warn" },
+"рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
+"rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
+"sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
+"mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
+"tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
+"mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
+"pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
+"nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
+"nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хвилин / Warn" },
+"вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
+"уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
+"уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
+"втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
+"перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
+"уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
+"афк фракція": { rule: "4.15", punishment: "Kick" },
+"скін протилежної статі": { rule: "4.16", punishment: "Усне попередження / Звільнення з фракції" },
+"грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
+"грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
+"обман майно": { rule: "4.19", punishment: "Перманентний бан" },
+"спам майно": { rule: "4.20", punishment: "Перманентний бан" },
+"банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
+"зменшене покарання за обман": { rule: "4.22", punishment: "Бан від 3 до 15 днів" },
+"погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
+"mg": { rule: "5.1", punishment: "Мут 20 хвилин / Warn при зловживанні" },
+"tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
+"дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
+"flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
+"музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
+"caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
+"нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хвилин" }
 };
 
-// ====== Пошук покарань ======
+// --- Пошук ---
 document.getElementById("search").addEventListener("input", function(){
   const query = this.value.trim().toLowerCase();
   const resultBox = document.getElementById("result");
-  if(!query){ resultBox.textContent = "Тут з'явиться покарання"; return; }
+  if(!query){ resultBox.textContent="Тут з'явиться покарання"; return; }
   let results=[];
   for(let key in punishments){
     if(key.includes(query)){
       results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
     }
   }
-  resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
+  resultBox.textContent=results.length>0?results.join('\n'):"Покарання не знайдено";
 });
 
-// ====== Чат Furry ======
-const chatInput = document.getElementById('chat-input');
-const chatSend = document.getElementById('chat-send');
-const chatMessages = document.getElementById('chat-messages');
+/* ===========================
+   AUDIO (Web Speech API)
+   =========================== */
 
-function appendMessage(text, className){
-  const div = document.createElement('div');
-  div.className = `message ${className}`;
-  div.textContent = text;
-  chatMessages.appendChild(div);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+/* Інструкція, яку озвучуємо (можеш замінити текст на свій) */
+const AUDIO_INSTRUCTION = `Привіт, я Furry — помічник адміністратора UA Online.
+Я створений, щоб полегшити роботу адмінів: швидко знаходити покарання за порушення та пояснювати правила.
+Щоб скористатися пошуком, введіть ключове слово, наприклад: DM, DB, TK, SK, PG або нікнейм.
+Також зверніть увагу на офіційний Discord та правила проєкту.
+Якщо знайдете помилку, будь ласка, повідомте адміну. Удачі!`;
 
-function searchPunishment(query){
-  query = query.toLowerCase();
-  let results = [];
-  for(let key in punishments){
-    if(key.includes(query) || punishments[key].punishment.toLowerCase().includes(query)){
-      results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
-    }
+const playBtn = document.getElementById('audioPlay');
+const pauseBtn = document.getElementById('audioPause');
+const stopBtn = document.getElementById('audioStop');
+const voiceSelect = document.getElementById('voiceSelect');
+const speedInput = document.getElementById('speed');
+const speedVal = document.getElementById('speedVal');
+const eqBars = [document.getElementById('b1'),document.getElementById('b2'),document.getElementById('b3'),document.getElementById('b4'),document.getElementById('b5')];
+
+let utter = null;
+let isPlaying = false;
+let eqInterval = null;
+
+/* Заповнення списку голосів (як тільки вони доступні) */
+function populateVoices() {
+  const voices = speechSynthesis.getVoices();
+  voiceSelect.innerHTML = '';
+  // спочатку україномовні/російськомовні, потім інші
+  const preferred = voices.filter(v=> v.lang && (v.lang.startsWith('uk') || v.lang.startsWith('ru')));
+  const others = voices.filter(v=> ! (v.lang && (v.lang.startsWith('uk') || v.lang.startsWith('ru'))));
+  const list = [...preferred, ...others];
+  if(list.length===0){
+    const opt = document.createElement('option'); opt.textContent = 'Голос недоступний'; opt.disabled=true; voiceSelect.appendChild(opt); return;
   }
-  return results.length>0 ? results.join('\n') : null;
+  list.forEach(v=>{
+    const opt = document.createElement('option');
+    opt.value = v.name + '|' + v.lang;
+    opt.textContent = `${v.name} — ${v.lang}`;
+    voiceSelect.appendChild(opt);
+  });
 }
 
-function getResponse(msg){
-  const m = msg.toLowerCase();
-
-  if(/привіт|здравствуй|hi/.test(m)) 
-      return "Привіт! Я Furry 😎. Можу показати покарання або дати інструкції.";
-
-  const punishment = searchPunishment(m);
-  if(punishment) return punishment;
-
-  if(/як|що робити|далі|як користуватись|що тут/.test(m))
-      return "Введи ключове слово порушення або нік і я покажу покарання. Наприклад: DM, DB, TK, SK, PG.";
-
-  if(/хто створив|твій творець|who created/i.test(m))
-      return "Мене створив Артем Процко, на основі мови програмування Python та скрипту Jarvis. Я допомагаю адміну ЮА онлайн. Версія 0.1, початковий автор Artem_Furrry. Маю свій сервер для чітких відповідей.";
-
-  if(/інструкц|як знайти|пошук/i.test(m))
-      return "Щоб знайти покарання, введи ключове слово (DM, DB, TK, SK, PG, Нікнейм) у поле пошуку або запитай мене в чаті.";
-
-  return "Я можу допомогти знайти покарання або дати інструкцію по сайту. Спробуй написати DM, DB, TK тощо.";
+/* Отримати об'єкт voice по вибору */
+function findVoiceBySelectValue(val){
+  if(!val) return null;
+  const [name,lang] = val.split('|');
+  const voices = speechSynthesis.getVoices();
+  return voices.find(v => v.name === name && v.lang === lang) || null;
 }
 
-function furryReply(userMsg){
-  const typing = document.createElement('div');
-  typing.className='typing';
-  typing.textContent='Furry друкує...';
-  chatMessages.appendChild(typing);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-  setTimeout(()=>{
-    chatMessages.removeChild(typing);
-    appendMessage(getResponse(userMsg),'furry-msg');
-  }, 800 + Math.random()*600);
+/* Анімація еквалайзера */
+function startEq() {
+  stopEq();
+  eqInterval = setInterval(()=>{
+    eqBars.forEach((b,i)=>{
+      const h = Math.floor(Math.random()*18) + (i*2);
+      b.style.height = h + 'px';
+      b.classList.toggle('active', h>18);
+    });
+  }, 140);
+}
+function stopEq(){
+  if(eqInterval) clearInterval(eqInterval);
+  eqBars.forEach(b=>{ b.style.height='6px'; b.classList.remove('active'); });
 }
 
-chatSend.addEventListener('click', ()=>{
-  const text = chatInput.value.trim();
-  if(!text) return;
-  appendMessage(text,'user-msg');
-  chatInput.value='';
-  furryReply(text);
+/* Відтворити текст */
+function speak(text) {
+  if(!('speechSynthesis' in window)) {
+    alert('Озвучення не підтримується у вашому браузері.');
+    return;
+  }
+  // якщо вже йде — скинути
+  speechSynthesis.cancel();
+  utter = new SpeechSynthesisUtterance(text);
+  const sel = voiceSelect.value;
+  const voice = findVoiceBySelectValue(sel);
+  if(voice) utter.voice = voice;
+  utter.rate = parseFloat(speedInput.value || 0.95);
+  // намагатись установити мову UA
+  utter.lang = utter.voice && utter.voice.lang ? utter.voice.lang : 'uk-UA';
+  utter.onstart = ()=> {
+    isPlaying = true;
+    startEq();
+    playBtn.textContent = '🔊';
+  };
+  utter.onend = ()=> {
+    isPlaying = false;
+    stopEq();
+    playBtn.textContent = '▶️';
+  };
+  utter.onerror = ()=> {
+    isPlaying = false;
+    stopEq();
+    playBtn.textContent = '▶️';
+  };
+  speechSynthesis.speak(utter);
+}
+
+/* Pause / Resume */
+function pauseSpeech(){
+  if(speechSynthesis.speaking && !speechSynthesis.paused){
+    speechSynthesis.pause();
+    pauseBtn.textContent = '▶️';
+    stopEq();
+  } else if(speechSynthesis.paused){
+    speechSynthesis.resume();
+    pauseBtn.textContent = '⏸';
+    startEq();
+  }
+}
+
+/* Stop */
+function stopSpeech(){
+  speechSynthesis.cancel();
+  isPlaying = false;
+  stopEq();
+  playBtn.textContent = '▶️';
+  pauseBtn.textContent = '⏸';
+}
+
+/* Події */
+playBtn.addEventListener('click', ()=> {
+  // If speaking, restart
+  if(speechSynthesis.speaking){
+    speechSynthesis.cancel();
+    setTimeout(()=> speak(AUDIO_INSTRUCTION), 80);
+  } else {
+    speak(AUDIO_INSTRUCTION);
+  }
 });
+pauseBtn.addEventListener('click', pauseSpeech);
+stopBtn.addEventListener('click', stopSpeech);
+speedInput.addEventListener('input', ()=> { speedVal.textContent = parseFloat(speedInput.value).toFixed(2) + 'x'; });
 
-chatInput.addEventListener('keydown', e=>{
-  if(e.key==='Enter') chatSend.click();
-});
+/* Заповнити голоси коли завантажаться */
+if ('speechSynthesis' in window) {
+  populateVoices();
+  // some browsers fire voiceschanged
+  speechSynthesis.onvoiceschanged = populateVoices;
+}
+
+/* Опціонально: після першої взаємодії з сайтом можна автоматично запитати відтворення
+   — але робити автопрогравання без дозволу користувача не рекомендую.
+   Тому робимо відтворення лише після першої клікової взаємодії (gesture).
+*/
+let playedOnGesture = false;
+function userGestureHandler(){
+  if(!playedOnGesture){
+    // якщо ще не прослухано (позначка у localStorage), спробуємо автоматично запустити
+    if(!localStorage.getItem('furry_instruction_played')){
+      // запускаємо із затримкою, користувач вже зробив жест
+      setTimeout(()=> {
+        try { speak(AUDIO_INSTRUCTION); localStorage.setItem('furry_instruction_played', '1'); } catch(e){}
+      }, 250);
+    }
+    playedOnGesture = true;
+    window.removeEventListener('click', userGestureHandler);
+    window.removeEventListener('keydown', userGestureHandler);
+  }
+}
+window.addEventListener('click', userGestureHandler);
+window.addEventListener('keydown', userGestureHandler);
+
+/* Clean up on unload */
+window.addEventListener('beforeunload', ()=> { speechSynthesis.cancel(); stopEq(); });
+
+/* End audio section */
+</script>
+
+<script>
+// --- Авторизація творця та панель (оригінальний скрипт без змін) ---
+(function(){
+  function createModal(title, bodyNode, actions){
+    const backdrop=document.createElement('div'); backdrop.className='modal-backdrop';
+    const modal=document.createElement('div'); modal.className='modal';
+    const header=document.createElement('div'); header.className='modal-header'; header.textContent=title;
+    const body=document.createElement('div'); body.className='modal-body'; if(bodyNode) body.appendChild(bodyNode);
+    const act=document.createElement('div'); act.className='modal-actions'; actions.forEach(b=>act.appendChild(b));
+    modal.appendChild(header); modal.appendChild(body); modal.appendChild(act); backdrop.appendChild(modal);
+    return backdrop;
+  }
+
+  function showLoginModal(){
+    const container=document.createElement('div');
+    const p=document.createElement('p'); p.textContent='Введіть нік і пароль творця або натисніть "Я не Творець"';
+    container.appendChild(p);
+    const inputNick=document.createElement('input'); inputNick.type='text'; inputNick.placeholder='Нік'; inputNick.style.width='100%';
+    const inputPass=document.createElement('input'); inputPass.type='password'; inputPass.placeholder='Пароль'; inputPass.style.width='100%';
+    const err=document.createElement('p'); err.style.color='red'; err.style.fontSize='13px'; err.style.display='none'; err.textContent='Невірний нік або пароль!';
+    container.appendChild(inputNick); container.appendChild(inputPass); container.appendChild(err);
+
+    const btnNo=document.createElement('button'); btnNo.className='btn'; btnNo.textContent='Я не Творець';
+    const btnYes=document.createElement('button'); btnYes.className='btn btn-primary'; btnYes.textContent='Я Творець';
+
+    const modal=createModal('Авторизація', container,[btnNo,btnYes]);
+    document.body.appendChild(modal);
+
+    btnNo.addEventListener('click',()=>{ localStorage.setItem('userRole','user'); document.body.removeChild(modal); location.reload(); });
+    btnYes.addEventListener('click',()=>{ const nick=inputNick.value.trim(); const pass=inputPass.value.trim(); if(nick==='Artem_Furrry' && pass==='QazMlp123'){ localStorage.setItem('userRole','creator'); document.body.removeChild(modal); location.reload(); } else err.style.display='block'; });
+  }
+
+  function addLogoutButton(){ const role=localStorage.getItem('userRole'); if(!role) return;
+    const logout=document.createElement('div'); logout.textContent='Вийти'; logout.className='logout';
+    logout.addEventListener('click',()=>{ localStorage.removeItem('userRole'); location.reload(); }); document.body.appendChild(logout);
+  }
+
+  function logAction(text){ const logs=JSON.parse(localStorage.getItem('editLogs')||'[]'); logs.push(new Date().toLocaleString()+': '+text); localStorage.setItem('editLogs',JSON.stringify(logs)); }
+
+  function openLogsModal(){
+    const logs=JSON.parse(localStorage.getItem('editLogs')||'[]');
+    const container=document.createElement('div');
+    if(logs.length===0){ container.textContent='Немає змін'; } else { const ul=document.createElement('ul'); ul.className='log-list'; logs.forEach(l=>{ const li=document.createElement('li'); li.textContent=l; ul.appendChild(li); }); container.appendChild(ul); }
+    const btnClose=document.createElement('button'); btnClose.className='btn btn-primary'; btnClose.textContent='Закрити';
+    const modal=createModal('Логи змін',container,[btnClose]); document.body.appendChild(modal);
+    btnClose.addEventListener('click',()=>document.body.removeChild(modal));
+  }
+
+  function openCodeEditor(){
+    const codeRaw=localStorage.getItem('customCode')||document.documentElement.outerHTML;
+    const container=document.createElement('div');
+    const ta=document.createElement('textarea'); ta.id='codeEditor'; ta.value=codeRaw; container.appendChild(ta);
+    const btnCancel=document.createElement('button'); btnCancel.className='btn'; btnCancel.textContent='Відмінити';
+    const btnSave=document.createElement('button'); btnSave.className='btn btn-primary'; btnSave.textContent='Зберегти та застосувати';
+    const modal=createModal('Редактор коду',container,[btnCancel,btnSave]); document.body.appendChild(modal);
+    btnCancel.addEventListener('click',()=>document.body.removeChild(modal));
+    btnSave.addEventListener('click',()=>{ localStorage.setItem('customCode',ta.value); logAction('Редагування коду сайту (збережено)'); document.body.removeChild(modal); alert('Код збережено. Сайт буде перезавантажено з новим кодом.'); document.open(); document.write(ta.value); document.close(); });
+  }
+
+  function trackVisitors(){ const today=new Date().toISOString().slice(0,10); let visits=JSON.parse(localStorage.getItem('visits')||'{}'); visits[today]=(visits[today]||0)+1; localStorage.setItem('visits',JSON.stringify(visits)); }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    trackVisitors();
+    const role=localStorage.getItem('userRole'); if(!role){ showLoginModal(); return; }
+    addLogoutButton();
+    if(role==='creator'){
+      const tools=document.createElement('div'); tools.className='creator-tools';
+      const bLogs=document.createElement('button'); bLogs.className='btn'; bLogs.textContent='📜 Логи';
+      const bCode=document.createElement('button'); bCode.className='btn'; bCode.textContent='💻 Редагувати код';
+      bLogs.addEventListener('click',openLogsModal); bCode.addEventListener('click',openCodeEditor);
+      tools.appendChild(bLogs); tools.appendChild(bCode); document.body.appendChild(tools);
+      const versionDiv=document.createElement('div'); versionDiv.style.marginTop='15px'; versionDiv.textContent='Версія сайту: 0.1'; document.body.appendChild(versionDiv);
+      const visits=JSON.parse(localStorage.getItem('visits')||'{}'); const today=new Date().toISOString().slice(0,10);
+      const visitDiv=document.createElement('div'); visitDiv.textContent=`Відвідувачів сьогодні: ${visits[today]||0}`; visitDiv.style.marginBottom='15px'; document.body.appendChild(visitDiv);
+    }
+  });
+})();
 </script>
 </body>
 </html>
