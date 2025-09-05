@@ -17,7 +17,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* CSS без змін */
+/* CSS без змін + анімації */
 :root{--blue:#1a73e8;--bg:#e8f0fe;--card:#ffffff;--muted:#6b778c;--accent:#0b59d6;}
 html,body{height:100%;margin:0;}
 body { font-family: 'Roboto', sans-serif; background: var(--bg); display:flex; flex-direction:column; align-items:center; padding:30px 10px; box-sizing:border-box; }
@@ -31,7 +31,8 @@ input.search:focus{ box-shadow:0 8px 20px rgba(26,115,232,.12); transform:transl
 
 .chat-container { width:700px; max-width:96%; background:var(--card); border-radius:14px; box-shadow:0 6px 18px rgba(10,30,80,0.06); padding:14px; display:flex; flex-direction:column; max-height:520px; overflow:hidden; }
 .chat-messages { flex:1; overflow-y:auto; padding:6px; }
-.message { margin-bottom:8px; padding:8px 12px; border-radius:12px; max-width:80%; line-height:1.4; word-break:break-word; }
+.message { margin-bottom:8px; padding:8px 12px; border-radius:12px; max-width:80%; line-height:1.4; word-break:break-word; opacity:0; transform:translateY(10px); transition: all 0.3s ease; }
+.message.show { opacity:1; transform:translateY(0); }
 .user-msg { background:var(--accent); color:#fff; align-self:flex-end; }
 .furry-msg { background:#f1f8ff; color:#0b2b5a; align-self:flex-start; }
 .typing { font-style:italic; font-size:13px; color:var(--muted); margin-bottom:6px; }
@@ -39,37 +40,18 @@ input.search:focus{ box-shadow:0 8px 20px rgba(26,115,232,.12); transform:transl
 .chat-input input { flex:1; padding:10px; font-size:14px; border:2px solid var(--blue); border-radius:8px; }
 .chat-input button { padding:10px 16px; font-weight:700; border-radius:8px; background:var(--blue); color:#fff; border:none; cursor:pointer; }
 
-.modal-backdrop { position:fixed; inset:0; background:linear-gradient(rgba(7,19,43,.45), rgba(7,19,43,.45)); display:flex; align-items:center; justify-content:center; z-index:9999; }
-.modal-audio { width:min(760px,94%); background:linear-gradient(180deg,#ffffff,#f7fbff); border-radius:14px; padding:18px; box-shadow:0 18px 50px rgba(5,30,80,.35); border:1px solid rgba(26,115,232,.08); display:flex; flex-direction:column; gap:12px; }
-.modal-head { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-.modal-title { font-weight:700; color:var(--blue); font-size:18px; }
-.modal-close { background:transparent; border:none; font-size:18px; cursor:pointer; color:var(--muted); }
+/* modal / нагадування Furry */
+.modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; pointer-events:none; transition:.3s; }
+.modal-backdrop.show { opacity:1; pointer-events:auto; }
+.modal-content { background:var(--card); border-radius:12px; padding:20px; max-width:600px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.25); animation:fadeIn 0.5s ease; }
+.modal-content h2 { color:var(--blue); margin-bottom:12px; }
+.modal-content p { color:#202124; line-height:1.5; font-size:15px; }
+.modal-close { margin-top:12px; padding:8px 14px; background:var(--blue); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:700; }
 
-.audio-card { display:flex; gap:14px; align-items:center; }
-.audio-icon { width:86px; height:86px; border-radius:12px; background:linear-gradient(180deg,var(--blue),#0958c2); display:flex; align-items:center; justify-content:center; color:#fff; font-size:34px; box-shadow:0 10px 24px rgba(10,30,80,0.12); }
-.audio-meta { flex:1; display:flex; flex-direction:column; gap:8px; }
-.audio-controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-.big-btn { width:56px; height:56px; border-radius:12px; border:none; background:var(--accent); color:#fff; font-size:20px; cursor:pointer; box-shadow:0 8px 18px rgba(11,89,214,0.18); }
-.secondary-btn { padding:10px 12px; border-radius:10px; border:1px solid rgba(11,89,214,0.12); background:#fff; cursor:pointer; color:var(--blue); font-weight:700; }
-
-.progress-wrap { display:flex; gap:12px; align-items:center; }
-.time { font-size:13px; color:var(--muted); min-width:56px; text-align:center; }
-.progress { -webkit-appearance:none; appearance:none; width:100%; height:10px; border-radius:8px; background:linear-gradient(90deg,#dfeeff,#eef6ff); position:relative; overflow:hidden; }
-.progress::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--blue); box-shadow:0 2px 8px rgba(26,115,232,.3); cursor:pointer; margin-top:-3px; border:3px solid #fff; }
-
-.modal-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-.small-muted { font-size:13px; color:var(--muted); }
-
-.file-row{ display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap; }
-.file-row input[type="file"]{ padding:6px; }
-
-.url-input { display:flex; gap:8px; align-items:center; width:100%; }
-.url-input input { flex:1; padding:8px; border-radius:8px; border:1px solid #cfdffb; }
+@keyframes fadeIn { from {opacity:0; transform:translateY(-15px);} to {opacity:1; transform:translateY(0);} }
 
 @media(max-width:768px){
   input.search { width:100%; }
-  .audio-icon{ width:68px; height:68px; font-size:28px;}
-  .big-btn{ width:48px; height:48px; }
   .result, .chat-container{ width:100%; }
 }
 </style>
@@ -88,11 +70,20 @@ input.search:focus{ box-shadow:0 8px 20px rgba(26,115,232,.12); transform:transl
 
 <div class="chat-container">
   <div class="chat-messages" id="chat-messages">
-    <div class="furry-msg">Привіт, я Furry 😎. Я можу допомогти знайти покарання або дати інструкцію по сайту. Не забувайте про офіційний Discord та правила!</div>
+    <div class="furry-msg message show">Привіт, я Furry 😎. Я можу допомогти знайти покарання або дати інструкцію по сайту. Не забувайте про офіційний Discord та правила!</div>
   </div>
   <div class="chat-input">
     <input type="text" id="chat-input" placeholder="Напишіть повідомлення...">
     <button id="chat-send">Відправити</button>
+  </div>
+</div>
+
+<!-- Modal повідомлення Furry -->
+<div class="modal-backdrop" id="furry-modal">
+  <div class="modal-content">
+    <h2>Звернення від Furry!</h2>
+    <p>Дорогі друзі, та колеги! Не забувайте перевіряти офіційну інформацію в Discord "Загальні Правила Ua Online". Цей додаток може оновити пункти та їх покарання із запізненням. Тим самим підвести вас! Але сайт працює на повну, по тестам він оновлюється, але з запізненням в 2 години. Тож слідкуйте за цим.</p>
+    <button class="modal-close" id="close-modal">Закрити</button>
   </div>
 </div>
 
@@ -143,45 +134,25 @@ const punishments = {
 };
 
 // =======================
-// Пошук покарань по ключовому слову
+// Пошук покарань
 // =======================
 const searchInput = document.getElementById('search');
 const resultDiv = document.getElementById('result');
-
 searchInput.addEventListener('input', () => {
   const query = searchInput.value.toLowerCase().trim();
-  if (!query) {
-    resultDiv.textContent = "Тут з'явиться покарання";
-    return;
-  }
-
+  if (!query) { resultDiv.textContent = "Тут з'явиться покарання"; return; }
   const matches = Object.keys(punishments).filter(key => key.includes(query));
-  if (matches.length === 0) {
-    resultDiv.textContent = "Покарання не знайдено.";
-    return;
-  }
-
-  const text = matches.map(key => {
-    const p = punishments[key];
-    return `${key.toUpperCase()} → Правило: ${p.rule}, Покарання: ${p.punishment}`;
-  }).join("\n\n");
-
+  if (!matches.length) { resultDiv.textContent = "Покарання не знайдено."; return; }
+  const text = matches.map(key => `${key.toUpperCase()} → Правило: ${punishments[key].rule}, Покарання: ${punishments[key].punishment}`).join("\n\n");
   resultDiv.textContent = text;
 });
 
 // =======================
-// Чат
+// Чат з анімацією повідомлень
 // =======================
 const chatInput = document.getElementById('chat-input');
 const chatSend = document.getElementById('chat-send');
 const chatMessages = document.getElementById('chat-messages');
-
-// Додаткове повідомлення Furry при завантаженні
-const furryNotice = document.createElement('div');
-furryNotice.className = 'furry-msg';
-furryNotice.textContent = `Звернення від Furry! Дорогі друзі, та колеги! Не забувайте перевіряти офіційну інформацію в Discord "Загальні Правила Ua Online". Цей додаток може оновити пункти та їх покарання із запізненням. Тим самим підвести вас! Але сайт працює на повну, по тестам він оновлюється, але з запізненням в 2 години. Тож слідкуйте за цим.`;
-chatMessages.appendChild(furryNotice);
-chatMessages.scrollTop = chatMessages.scrollHeight;
 
 chatSend.addEventListener('click', () => {
   const msg = chatInput.value.trim();
@@ -191,15 +162,29 @@ chatSend.addEventListener('click', () => {
   userMsg.className = 'message user-msg';
   userMsg.textContent = msg;
   chatMessages.appendChild(userMsg);
+  setTimeout(() => userMsg.classList.add('show'), 10);
 
-  chatMessages.scrollTop = chatMessages.scrollHeight;
   chatInput.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 
   const furryMsg = document.createElement('div');
   furryMsg.className = 'message furry-msg';
   furryMsg.textContent = `Я бачу ти написав: "${msg}". Щоб знайти покарання, введи ключове слово у полі зверху.`;
   chatMessages.appendChild(furryMsg);
+  setTimeout(() => furryMsg.classList.add('show'), 10);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+});
+
+// =======================
+// Modal Furry
+// =======================
+const furryModal = document.getElementById('furry-modal');
+const closeModal = document.getElementById('close-modal');
+window.addEventListener('load', () => {
+  furryModal.classList.add('show');
+});
+closeModal.addEventListener('click', () => {
+  furryModal.classList.remove('show');
 });
 </script>
 
