@@ -2,11 +2,14 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<title>Пошук покарань і чат Furry-Артем Фюрии</title>
+<title>Пошук покарань і чат Furry</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   body { font-family: 'Roboto', sans-serif; background: #e8f0fe; display: flex; flex-direction: column; align-items: center; padding: 30px 10px; }
-  h1 { color: #1a73e8; margin-bottom: 20px; text-align:center;}
+  h1 { color: #1a73e8; margin-bottom: 10px; text-align:center;}
+  .logo { margin-bottom: 20px; }
+  .logo img { width: 120px; height: auto; border-radius: 12px; cursor: pointer; }
+
   input { padding: 14px; width: 600px; border: 2px solid #1a73e8; border-radius: 12px; margin-bottom: 20px; font-size: 16px; outline: none; transition: 0.2s; }
   input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
   .result { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 700px; text-align: left; white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #202124; margin-bottom:30px; }
@@ -27,6 +30,13 @@
 </style>
 </head>
 <body>
+
+<div class="logo">
+  <a href="https://ibb.co/5bsnjyM" target="_blank">
+    <img src="https://i.ibb.co/5bsnjyM/logo.png" alt="Furry Logo">
+  </a>
+</div>
+
 <h1>Пошук покарань</h1>
 <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, DB, TK, SK, PG, Нікнейм)...">
 <div class="result" id="result">Тут з'явиться покарання</div>
@@ -42,60 +52,47 @@
 </div>
 
 <script>
-// ====== Повний список покарань ======
+// ====== Покарання ======
 const punishments = {
-  // Розділ 2
-  "2.17": { rule: "2.17", punishment: "Заборонено брати участь у конкурсах сторонніх груп, що займаються продажем акаунтів/ігрової валюти/читів. | [Перманентне блокування облікового запису]" },
-  "2.18": { rule: "2.18", punishment: "Заборонено обмін ігрової валюти/продаж/спроба або обмін майна між серверами проекту. | [Перманентне блокування облікового запису на всіх серверах]" },
-  // Розділ 3 (неповний, щоб не перевантажувати, додати всі підпункти аналогічно)
-  "3.1": { rule: "3.1", punishment: "Заборонено використання будь-яких програм, скриптів, читів, що надають перевагу над іншими гравцями. | [Бан 30 днів - постійне блокування]" },
-  "3.2": { rule: "3.2", punishment: "Заборонено використання шкідливих чит-програм. | [ЧС проекту]" },
-  "3.3": { rule: "3.3", punishment: "Заборонено використання багів мода. | [Jail 120 / Warn / Бан 15+ днів]" },
-  "3.4": { rule: "3.4", punishment: "Заборонено використання багів для отримання майна/віртів/донату. | [Перманентне блокування облікового запису]" },
-  "3.5": { rule: "3.5", punishment: "Заборонено махінації з віртуальною валютою. | [Перманентне блокування облікового запису]" },
-  "3.6": { rule: "3.6", punishment: "Заборонено більше однієї сесії онлайн з одного пристрою. | [Бан 30 - Перманентне блокування]" },
-  // ... додаєте інші пункти 3.7-3.32
-  // Розділ 4
-  "4.1": { rule: "4.1", punishment: "DM - Death Match. | [Jail 20 хвилин]" },
-  "4.1.1": { rule: "4.1.1", punishment: "Mass DM - 3+ гравця. | [Jail 120 хвилин]" },
-  "4.1.2": { rule: "4.1.2", punishment: "DM GZ - шкода у громадських місцях. | [Jail 30 хвилин]" },
-  "4.1.3": { rule: "4.1.3", punishment: "Mass DM in GZ. | [Warn]" },
-  "4.2": { rule: "4.2", punishment: "DB - Drive By. | [Jail 20 хвилин]" },
-  "4.2.1": { rule: "4.2.1", punishment: "Mass DB - 3+ гравця. | [Jail 60 хвилин]" },
-  "4.2.2": { rule: "4.2.2", punishment: "DB in GZ. | [Jail 30 хвилин]" },
-  "4.2.3": { rule: "4.2.3", punishment: "Mass DB in GZ. | [Warn]" },
-  "4.3": { rule: "4.3", punishment: "RK - Revenge Kill. | [Jail 20 хвилин]" },
-  "4.3.1": { rule: "4.3.1", punishment: "RPK - повторне вбивство. | [Jail 30 хвилин]" },
-  "4.4": { rule: "4.4", punishment: "SK - Spawn Kill. | [Jail 30 хвилин]" },
-  "4.4.1": { rule: "4.4.1", punishment: "Mass SK - 3+ гравця. | [Jail 120 хвилин]" },
-  "4.5": { rule: "4.5", punishment: "TK - Team Kill. | [Jail 20 хвилин]" },
-  "4.5.1": { rule: "4.5.1", punishment: "Mass TK - 3+ члени команди. | [Jail 60 хвилин]" },
-  "4.6": { rule: "4.6", punishment: "PG - Powergaming. | [Jail 20 хвилин]" },
-  "4.7": { rule: "4.7", punishment: "NonRP. | [Jail 20 хвилин]" },
-  "4.7.1": { rule: "4.7.1", punishment: "NonRP Cop. | [Jail 60 хв / Warn]" },
-  "4.8": { rule: "4.8", punishment: "Вихід під час РП-ситуацій. | [Jail 30 хвилин]" },
-  "4.9": { rule: "4.9", punishment: "Уникання поліцейської погоні (інтер'єри). | [Jail 20 хвилин]" },
-  "4.10": { rule: "4.10", punishment: "Уникання поліцейської погоні по воді. | [Jail 20 хвилин]" },
-  "4.11": { rule: "4.11", punishment: "Втручання в RP-ситуації. | [Jail 10 хвилин]" },
-  "4.12": { rule: "4.12", punishment: "Перешкоди РП. | [Jail 30 хвилин]" },
-  "4.13": { rule: "4.13", punishment: "Уникання РП. | [Jail 30 хвилин]" },
-  "4.15": { rule: "4.15", punishment: "AFK фракція. | [Kick]" },
-  "4.16": { rule: "4.16", punishment: "Скін протилежної статі. | [Попередження / Звільнення]" },
-  "4.17": { rule: "4.17", punishment: "Грошові махінації малі. | [Бан до 60 днів]" },
-  "4.18": { rule: "4.18", punishment: "Грошові махінації великі. | [Перманентний бан]" },
-  "4.19": { rule: "4.19", punishment: "Обман майно. | [Перманентний бан]" },
-  "4.20": { rule: "4.20", punishment: "Спам майно. | [Перманентний бан]" },
-  "4.21": { rule: "4.21", punishment: "Банківські послуги. | [Перманентний бан]" },
-  "4.22": { rule: "4.22", punishment: "Зменшене покарання за обман. | [Бан 3-15 днів]" },
-  "4.23": { rule: "4.23", punishment: "Погрози. | [Jail / Mute 30 хвилин]" },
-  // Розділ 5
-  "5.1": { rule: "5.1", punishment: "MG. | [Мут 20 хв / Warn]" },
-  "5.2": { rule: "5.2", punishment: "TL. | [Мут 5 хвилин]" },
-  "5.3": { rule: "5.3", punishment: "Дужки IC. | [Мут 5 хвилин]" },
-  "5.4": { rule: "5.4", punishment: "Flood. | [Мут 10 хвилин]" },
-  "5.5": { rule: "5.5", punishment: "Музика/зміна голосу. | [Мут 15 хвилин]" },
-  "5.6": { rule: "5.6", punishment: "Caps. | [Мут 5 хвилин]" },
-  "5.7": { rule: "5.7", punishment: "Нецензурна лексика. | [Мут 20-60 хв]" }
+  "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
+  "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
+  "dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
+  "mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
+  "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
+  "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
+  "db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
+  "mass db в gz": { rule: "4.2.3", punishment: "Warn" },
+  "рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
+  "rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
+  "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
+  "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
+  "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
+  "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
+  "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
+  "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
+  "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хв / Warn" },
+  "вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
+  "уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
+  "уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
+  "втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
+  "перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
+  "уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
+  "афк фракція": { rule: "4.15", punishment: "Kick" },
+  "скін протилежної статі": { rule: "4.16", punishment: "Попередження / Звільнення" },
+  "грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
+  "грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
+  "обман майно": { rule: "4.19", punishment: "Перманентний бан" },
+  "спам майно": { rule: "4.20", punishment: "Перманентний бан" },
+  "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
+  "зменшене покарання за обман": { rule: "4.22", punishment: "Бан 3-15 днів" },
+  "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
+  "mg": { rule: "5.1", punishment: "Мут 20 хв / Warn" },
+  "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
+  "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
+  "flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
+  "музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
+  "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
+  "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хв" }
 };
 
 // ====== Пошук покарань ======
@@ -105,7 +102,7 @@ document.getElementById("search").addEventListener("input", function(){
   if(!query){ resultBox.textContent = "Тут з'явиться покарання"; return; }
   let results=[];
   for(let key in punishments){
-    if(key.includes(query) || punishments[key].punishment.toLowerCase().includes(query)){
+    if(key.includes(query)){
       results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
     }
   }
@@ -117,14 +114,6 @@ const chatInput = document.getElementById('chat-input');
 const chatSend = document.getElementById('chat-send');
 const chatMessages = document.getElementById('chat-messages');
 
-const responses = {
-  greetings: ["Привіт! Як можу допомогти?","Вітаю! Питай мене, я допоможу."],
-  instructions: ["Щоб знайти покарання, введіть ключове слово (DM, DB, TK, SK, PG, Нікнейм).","Введи порушення або нік і я покажу покарання."],
-  whoCreated: ["Мене створив адмін Artem_Furrry на 02 сервері.","Мій творець — Artem_Furrry."],
-  whatToDo: ["Використовуй пошук або питай мене в чаті, я допоможу зрозуміти, що робити.","Просто введи ключ і побачиш покарання, або питай мене."],
-  default: ["Я можу допомогти знайти покарання або дати інструкцію по сайту.","Спробуй написати DM, DB, TK тощо, щоб знайти покарання."]
-};
-
 function appendMessage(text, className){
   const div = document.createElement('div');
   div.className = `message ${className}`;
@@ -133,13 +122,36 @@ function appendMessage(text, className){
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+function searchPunishment(query){
+  query = query.toLowerCase();
+  let results = [];
+  for(let key in punishments){
+    if(key.includes(query) || punishments[key].punishment.toLowerCase().includes(query)){
+      results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
+    }
+  }
+  return results.length>0 ? results.join('\n') : null;
+}
+
 function getResponse(msg){
   const m = msg.toLowerCase();
-  if(/привіт|здравствуй|hi/.test(m)) return responses.greetings[Math.floor(Math.random()*responses.greetings.length)];
-  if(/як|що робити|далі|як користуватись|як працювати|що тут/.test(m)) return responses.whatToDo[Math.floor(Math.random()*responses.whatToDo.length)];
-  if(/хто створив|твій творець|who created/i.test(m)) return responses.whoCreated[Math.floor(Math.random()*responses.whoCreated.length)];
-  if(/інструкц|як знайти|пошук/i.test(m)) return responses.instructions[Math.floor(Math.random()*responses.instructions.length)];
-  return responses.default[Math.floor(Math.random()*responses.default.length)];
+
+  if(/привіт|здравствуй|hi/.test(m)) 
+      return "Привіт! Я Furry 😎. Можу показати покарання або дати інструкції.";
+
+  const punishment = searchPunishment(m);
+  if(punishment) return punishment;
+
+  if(/як|що робити|далі|як користуватись|що тут/.test(m))
+      return "Введи ключове слово порушення або нік і я покажу покарання. Наприклад: DM, DB, TK, SK, PG.";
+
+  if(/хто створив|твій творець|who created/i.test(m))
+      return "Мене створив Артем Процко, на основі мови програмування Python та скрипту Jarvis. Я допомагаю адміну ЮА онлайн. Версія 0.1, початковий автор Artem_Furrry. Маю свій сервер для чітких відповідей.";
+
+  if(/інструкц|як знайти|пошук/i.test(m))
+      return "Щоб знайти покарання, введи ключове слово (DM, DB, TK, SK, PG, Нікнейм) у поле пошуку або запитай мене в чаті.";
+
+  return "Я можу допомогти знайти покарання або дати інструкцію по сайту. Спробуй написати DM, DB, TK тощо.";
 }
 
 function furryReply(userMsg){
