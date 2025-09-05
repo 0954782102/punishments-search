@@ -109,7 +109,8 @@ document.getElementById("search").addEventListener("input", function() {
   resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
 });
 
-// ====== Чат Furry ======
+<!-- snippet для вставки замість старого скрипта чату Furry -->
+<script>
 const aiChat = document.getElementById('ai-chat');
 const aiInput = document.getElementById('ai-input');
 const aiBtn = document.getElementById('ai-btn');
@@ -123,16 +124,45 @@ const furryIntro = `Привіт! Я Furry, адмін з 02 сервера.
 let aiHistory = [];
 aiHistory.push(furryIntro);
 
-function renderAI(){
+function renderAI(newMsg=false){
   aiChat.innerHTML = '';
-  aiHistory.forEach(m=>{
+  aiHistory.forEach((m,i)=>{
     const div = document.createElement('div');
     div.className = 'ai-msg';
     div.innerHTML = m.replace(/\n/g,'<br>');
+    if(newMsg && i === aiHistory.length-1) {
+      div.style.opacity = 0;
+      setTimeout(()=>div.style.transition='opacity 0.5s',0);
+      setTimeout(()=>div.style.opacity=1,50);
+    }
     aiChat.appendChild(div);
   });
   aiChat.scrollTop = aiChat.scrollHeight;
 }
+
+// Масив варіантів відповідей для різних питань
+const aiAnswers = {
+  greetings: [
+    "Привіт! Я Furry 😺. Можу допомогти знайти покарання або дати поради по сайту.",
+    "Вітаю! Питай мене, і я допоможу з пошуком покарань або інструкціями."
+  ],
+  instructions: [
+    "Щоб знайти покарання:\n- Введіть ключове слово у верхнє поле (DM, DB, TK, SK, PG, Нікнейм)\n- Результат з'явиться у блоці 'Тут з'явиться покарання'\n- Можеш також запитати мене в чаті, і я дам поради.",
+    "Просто введи тип порушення або нік, і ти побачиш покарання. Питай мене, якщо щось незрозуміло."
+  ],
+  whoCreated: [
+    "Мене створив адмін Artem_Furrry на 02 сервері 😊.",
+    "Мій творець — Artem_Furrry, він відповідає за сайт і логіку чату."
+  ],
+  whatToDo: [
+    "Використовуй пошук покарань або питай мене у чаті. Я допоможу зрозуміти, що робити.",
+    "Просто введи ключове слово і отримай покарання, або питай мене, якщо потрібна інструкція."
+  ],
+  default: [
+    "Я отримав твоє запитання. Можу допомогти знайти покарання або надати інструкцію по сайту.",
+    "Можу пояснити роботу сайту та допомогти з пошуком покарань."
+  ]
+};
 
 function aiResponse(query){
   const q = query.toLowerCase();
@@ -141,19 +171,28 @@ function aiResponse(query){
   if(foundPunish.length>0){
     return foundPunish.map(k=>`${punishments[k].rule}: ${k.toUpperCase()} → ${punishments[k].punishment}`).join('\n');
   }
-  if(q.includes("як")||q.includes("інструкція")||q.includes("що робити")||q.includes("як користуватись")){
-    return `Щоб знайти покарання:\n- Введіть ключове слово у верхнє поле (DM, DB, TK, SK, PG, Нікнейм)\n- Результат з'явиться у блоці "Тут з'явиться покарання"\n- Можеш також запитати мене в чаті, і я дам поради.`;
+  if(q.includes("як")||q.includes("інструкція")||q.includes("як користуватись")||q.includes("поясни")){
+    return aiAnswers.instructions[Math.floor(Math.random()*aiAnswers.instructions.length)];
+  }
+  if(q.includes("хто тебе створив")||q.includes("творець")||q.includes("creator")){
+    return aiAnswers.whoCreated[Math.floor(Math.random()*aiAnswers.whoCreated.length)];
+  }
+  if(q.includes("що робити")||q.includes("що тут")||q.includes("як діяти")){
+    return aiAnswers.whatToDo[Math.floor(Math.random()*aiAnswers.whatToDo.length)];
   }
   const greetings = ["привіт","здрастуй","доброго дня"];
-  if(greetings.some(g=>q.includes(g))) return "Привіт! Я Furry 😺. Можу допомогти знайти покарання або дати поради по сайту.";
-  return "Я отримав твоє запитання. Можу допомогти знайти покарання або надати інструкцію по сайту.";
+  if(greetings.some(g=>q.includes(g))) return aiAnswers.greetings[Math.floor(Math.random()*aiAnswers.greetings.length)];
+  return aiAnswers.default[Math.floor(Math.random()*aiAnswers.default.length)];
 }
 
 aiBtn.addEventListener('click', ()=>{
   const query = aiInput.value.trim();
   if(!query) return;
   aiHistory.push("Ти: " + query);
-  aiHistory.push("Furry: " + aiResponse(query));
+  setTimeout(()=>{
+    aiHistory.push("Furry: " + aiResponse(query));
+    renderAI(true);
+  }, 400); // невелика затримка для ефекту "думки"
   renderAI();
   aiInput.value='';
 });
@@ -165,6 +204,7 @@ aiInput.addEventListener('keydown', e=>{
 // Початковий рендер
 renderAI();
 </script>
+
 
 </body>
 </html>
