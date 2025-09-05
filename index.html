@@ -47,7 +47,7 @@
       font-weight: 700;
     }
 
-    /* Модальные окна */
+    /* Модальні вікна */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -77,40 +77,73 @@
     #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
     .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
 
-    /* Адаптив для телефонов */
+    /* Вікно побажань */
+    .wishes-container {
+      margin-top: 40px;
+      width: 700px;
+    }
+    .wishes-list {
+      max-height: 300px;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    #wish-input {
+      width: 80%;
+      padding: 12px;
+      font-size: 14px;
+      border: 2px solid #1a73e8;
+      border-radius: 8px;
+      margin-right: 8px;
+    }
+    #wish-btn {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* Адаптив */
     @media (max-width: 768px) {
       body {
         padding: 20px 10px;
       }
-
       input {
         width: 100%;
         font-size: 14px;
         padding: 12px;
       }
-
-      .result {
+      .result, .wishes-container {
         width: 100%;
+      }
+      .result {
         font-size: 14px;
         padding: 16px;
       }
-
       .modal {
         width: 95vw;
       }
-
       .modal-body {
         max-height: 60vh;
       }
-
       .creator-tools {
         flex-direction: column;
         bottom: 10px;
         right: 10px;
       }
-
       .creator-tools .btn {
         width: 100%;
+      }
+      #wish-input {
+        width: 70%;
+        margin-bottom: 10px;
+      }
+      #wish-btn {
+        width: 28%;
       }
     }
   </style>
@@ -120,7 +153,16 @@
   <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
   <div class="result" id="result">Тут з'явиться покарання</div>
 
+  <!-- Вікно побажань -->
+  <div class="wishes-container">
+    <h2>💬 Побажання</h2>
+    <div id="wishes-list" class="wishes-list">Тут з'являться усі побажання</div>
+    <input type="text" id="wish-input" placeholder="Напишіть своє побажання...">
+    <button id="wish-btn" class="btn btn-primary">Відправити</button>
+  </div>
+
   <script>
+    // ==== Пошук покарань ====
     const punishments = {
       "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
       "нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
@@ -176,22 +218,60 @@
         resultBox.textContent = "Тут з'явиться покарання";
         return;
       }
-
       let results = [];
       for (let key in punishments) {
         if (key.includes(query)) {
           results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
         }
       }
-
       resultBox.textContent = results.length > 0 ? results.join('\n') : "Покарання не знайдено";
     });
+
+    // ==== Вікно побажань ====
+    const wishInput = document.getElementById('wish-input');
+    const wishBtn = document.getElementById('wish-btn');
+    const wishesList = document.getElementById('wishes-list');
+
+    let wishes = JSON.parse(localStorage.getItem('wishes')||'[]');
+
+    function renderWishes() {
+      if(wishes.length===0){
+        wishesList.textContent = "Тут з'являться усі побажання";
+        return;
+      }
+      wishesList.innerHTML = '';
+      wishes.forEach(w => {
+        const div = document.createElement('div');
+        div.textContent = w;
+        div.style.padding='6px 0';
+        div.style.borderBottom='1px solid #eee';
+        wishesList.appendChild(div);
+      });
+      wishesList.scrollTop = wishesList.scrollHeight;
+    }
+
+    wishBtn.addEventListener('click', ()=>{
+      const text = wishInput.value.trim();
+      if(!text) return;
+      wishes.push(text);
+      localStorage.setItem('wishes', JSON.stringify(wishes));
+      wishInput.value='';
+      renderWishes();
+    });
+
+    wishInput.addEventListener('keypress', (e)=>{
+      if(e.key==='Enter'){
+        wishBtn.click();
+      }
+    });
+
+    renderWishes();
   </script>
 
-<!-- Скрипт авторизації, логов та редактора кода без змін -->
-<script>
-(function(){/* твій скрипт авторизації, логов і редактора кода як був */})();
-</script>
+  <!-- Скрипт авторизації, логи, редактор кода без змін -->
+  <script>
+  (function(){/* твій скрипт авторизації, логов і редактора кода як був */})();
+  </script>
 
 </body>
 </html>
