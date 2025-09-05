@@ -302,4 +302,41 @@
     if(!role){ showLoginModal(); return; }
     addLogoutButton();
     document.querySelectorAll('td').forEach(td=>{
-      try{ const saved=localStorage.getItem('rule_'+td.closest('tr
+      try{ const saved=localStorage.getItem('rule_'+td.closest('tr').rowIndex+'_'+td.cellIndex); if(saved) td.textContent=saved; }catch(e){}
+    });
+    if(role==='creator'){
+      document.querySelectorAll('td').forEach(td=>{
+        try{
+          if(td.textContent.match(/Jail|Ban|хв|бізнес|Ban|Jail/i)){
+            const saved=localStorage.getItem('rule_'+td.closest('tr').rowIndex+'_'+td.cellIndex); if(saved) td.textContent=saved;
+            const btn=document.createElement('span'); btn.className='edit-btn'; btn.textContent='✏️';
+            btn.title='Редагувати';
+            btn.addEventListener('click', ()=>{
+              const current=td.textContent;
+              const input=document.createElement('input'); input.type='text'; input.className='edit-input'; input.value=current;
+              td.innerHTML=''; td.appendChild(input); input.focus();
+              input.addEventListener('blur', ()=>{
+                td.textContent=input.value;
+                localStorage.setItem('rule_'+td.closest('tr').rowIndex+'_'+td.cellIndex,input.value);
+                td.appendChild(btn);
+                logAction('Змінено правило в рядку '+td.closest('tr').rowIndex+' колонка '+td.cellIndex+' на "'+input.value+'"');
+              });
+            });
+            td.appendChild(btn);
+          }
+        }catch(e){}
+      });
+      const tools=document.createElement('div'); tools.className='creator-tools';
+      const bLogs=document.createElement('button'); bLogs.className='btn'; bLogs.textContent='📜 Логи';
+      const bCode=document.createElement('button'); bCode.className='btn'; bCode.textContent='💻 Редагувати код';
+      bLogs.addEventListener('click', openLogsModal);
+      bCode.addEventListener('click', openCodeEditor);
+      tools.appendChild(bLogs); tools.appendChild(bCode);
+      document.body.appendChild(tools);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
