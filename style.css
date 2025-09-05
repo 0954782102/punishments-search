@@ -105,6 +105,7 @@ input {
   }
   h1 {
     font-size: 20px;
+    text-align: center;
   }
   input {
     width: 100% !important;
@@ -112,29 +113,3 @@ input {
     padding: 10px;
   }
   .result {
-    font-size: 14px;
-    padding: 12px;
-  }
-  .update-notice {
-    font-size: 13px;
-    padding: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 18px;
-  }
-  input {
-    font-size: 13px;
-    padding: 8px;
-  }
-  .result {
-    font-size: 13px;
-    padding: 10px;
-  }
-  .update-notice {
-    font-size: 12px;
-    padding: 10px;
-  }
-}
