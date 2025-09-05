@@ -11,7 +11,7 @@
   input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
   .result { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 700px; text-align: left; white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #202124; margin-bottom:30px; }
   
- /* Чат Furry */
+  /* Чат Furry */
   .chat-container { width: 700px; max-width: 100%; background:#fff; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:16px; display:flex; flex-direction:column; max-height:500px; overflow:hidden;}
   .chat-messages { flex:1; overflow-y:auto; margin-bottom:10px; }
   .message { margin-bottom:8px; padding:8px 12px; border-radius:12px; max-width:80%; line-height:1.4; }
@@ -112,24 +112,18 @@ document.getElementById("search").addEventListener("input", function(){
   resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
 });
 
-// ====== Пошук покарань у полі ======
-document.getElementById("search").addEventListener("input", function(){
-  const query = this.value.trim().toLowerCase();
-  const resultBox = document.getElementById("result");
-  if(!query){ resultBox.textContent = "Тут з'явиться покарання"; return; }
-  let results=[];
-  for(let key in punishments){
-    if(key.includes(query)){
-      results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
-    }
-  }
-  resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
-});
-
-// ====== Чат Furry з пошуком покарань ======
+// ====== Чат Furry ======
 const chatInput = document.getElementById('chat-input');
 const chatSend = document.getElementById('chat-send');
 const chatMessages = document.getElementById('chat-messages');
+
+const responses = {
+  greetings: ["Привіт! Як можу допомогти?","Вітаю! Питай мене, я допоможу."],
+  instructions: ["Щоб знайти покарання, введіть ключове слово (DM, DB, TK, SK, PG, Нікнейм).","Введи порушення або нік і я покажу покарання."],
+  whoCreated: ["Мене створив адмін Artem_Furrry на 02 сервері.","Мій творець — Artem_Furrry."],
+  whatToDo: ["Використовуй пошук або питай мене в чаті, я допоможу зрозуміти, що робити.","Просто введи ключ і побачиш покарання, або питай мене."],
+  default: ["Я можу допомогти знайти покарання або дати інструкцію по сайту.","Спробуй написати DM, DB, TK тощо, щоб знайти покарання."]
+};
 
 function appendMessage(text, className){
   const div = document.createElement('div');
@@ -139,42 +133,13 @@ function appendMessage(text, className){
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function searchPunishment(query){
-  query = query.toLowerCase();
-  let results = [];
-  for(let key in punishments){
-    if(key.includes(query) || punishments[key].punishment.toLowerCase().includes(query)){
-      results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
-    }
-  }
-  return results.length>0 ? results.join('\n') : null;
-}
-
 function getResponse(msg){
   const m = msg.toLowerCase();
-
-  // Привітання
-  if(/привіт|здравствуй|hi/.test(m)) 
-      return "Привіт! Я Furry 😎. Можу показати покарання або дати інструкції.";
-
-  // Пошук покарань
-  const punishment = searchPunishment(m);
-  if(punishment) return punishment;
-
-  // Інструкції
-  if(/як|що робити|далі|як користуватись|що тут/.test(m))
-      return "Введи ключове слово порушення або нік і я покажу покарання. Наприклад: DM, DB, TK, SK, PG.";
-
-  // Хто створив
-  if(/хто створив|твій творець|who created/i.test(m))
-      return "Мене створив адмін Artem_Furrry на 02 сервері. 🐾";
-
-  // Інші інструкції
-  if(/інструкц|як знайти|пошук/i.test(m))
-      return "Щоб знайти покарання, введи ключове слово (DM, DB, TK, SK, PG, Нікнейм) у поле пошуку або запитай мене в чаті.";
-
-  // За замовчуванням
-  return "Я можу допомогти знайти покарання або дати інструкцію по сайту. Спробуй написати DM, DB, TK тощо.";
+  if(/привіт|здравствуй|hi/.test(m)) return responses.greetings[Math.floor(Math.random()*responses.greetings.length)];
+  if(/як|що робити|далі|як користуватись|як працювати|що тут/.test(m)) return responses.whatToDo[Math.floor(Math.random()*responses.whatToDo.length)];
+  if(/хто створив|твій творець|who created/i.test(m)) return responses.whoCreated[Math.floor(Math.random()*responses.whoCreated.length)];
+  if(/інструкц|як знайти|пошук/i.test(m)) return responses.instructions[Math.floor(Math.random()*responses.instructions.length)];
+  return responses.default[Math.floor(Math.random()*responses.default.length)];
 }
 
 function furryReply(userMsg){
