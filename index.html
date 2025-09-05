@@ -14,7 +14,7 @@ body {
   padding: 30px 20px;
 }
 h1 { color: #1a73e8; margin-bottom: 20px; text-align: center; }
-input { padding: 14px; width: 600px; border: 2px solid #1a73e8; border-radius: 12px; margin-bottom: 30px; font-size: 16px; outline: none; transition: 0.2s; }
+input { padding: 14px; width: 600px; border: 2px solid #1a73e8; border-radius: 12px; margin-bottom: 20px; font-size: 16px; outline: none; transition: 0.2s; }
 input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
 .result { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 700px; text-align: left; white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #202124; margin-bottom: 40px; }
 
@@ -23,6 +23,9 @@ input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
 #ai-input { padding: 12px; font-size: 14px; border: 2px solid #1a73e8; border-radius: 8px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
 #ai-btn { padding: 12px; border-radius: 8px; font-weight: 600; background: #1a73e8; color: white; border: none; cursor: pointer; }
 #ai-btn:hover { background: #155ab6; }
+
+.ai-msg { margin-bottom: 8px; }
+.ai-msg span { display: block; }
 
 @media (max-width: 768px) {
   body { padding: 20px 10px; }
@@ -44,7 +47,7 @@ input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
 </div>
 
 <script>
-// ==== Покарання (повний перелік) ====
+// ====== Покарання ======
 const punishments = {
   "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
   "нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
@@ -96,68 +99,72 @@ const punishments = {
 document.getElementById("search").addEventListener("input", function() {
   const query = this.value.trim().toLowerCase();
   const resultBox = document.getElementById("result");
-  if (!query) { resultBox.textContent = "Тут з'явиться покарання"; return; }
+  if(!query) { resultBox.textContent = "Тут з'явиться покарання"; return; }
   let results = [];
-  for (let key in punishments) { if (key.includes(query)) { results.push(`${punishments[key].rule}: ${key.toUpperCase()} → ${punishments[key].punishment}`); } }
-  resultBox.textContent = results.length > 0 ? results.join('\n') : "Покарання не знайдено";
+  for(let key in punishments){ 
+    if(key.includes(query)){ 
+      results.push(`${punishments[key].rule}: ${key.toUpperCase()} → ${punishments[key].punishment}`); 
+    } 
+  }
+  resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
 });
 
-// ==== Чат Furry ====
+// ====== Чат Furry ======
 const aiChat = document.getElementById('ai-chat');
 const aiInput = document.getElementById('ai-input');
 const aiBtn = document.getElementById('ai-btn');
 
-let aiHistory = JSON.parse(localStorage.getItem('aiHistory') || '[]');
+const furryIntro = `Привіт! Я Furry, адмін з 02 сервера.
+Я сподіваюся, що цей сайт допоможе тобі у роботі.
+Не забувайте про офіційний Discord та його правила!
+Я можу пояснити роботу сайту та допомогти знайти покарання.
+Щоб знайти покарання, використовуйте ключові слова: DM, DB, TK, SK, PG, Нікнейм.`;
 
-const furryIntro = `Привіт! Я Furry, адмін з 02 сервера.\nЯ сподіваюся, що цей сайт допоможе тобі у роботі.\nНе забувайте про офіційний Discord та його правила!\nЯ можу пояснити роботу сайту та допомогти знайти покарання.\nЗадавайте питання нижче, і я дам детальні відповіді.\nЩоб знайти покарання, використовуйте ключові слова: DM, DB, TK, SK, PG, Нікнейм.`;
+let aiHistory = [];
+aiHistory.push(furryIntro);
 
-if(aiHistory.length===0){
-  aiHistory.push(furryIntro);
-  localStorage.setItem('aiHistory', JSON.stringify(aiHistory));
-}
-
-function renderAI() {
+function renderAI(){
   aiChat.innerHTML = '';
-  aiHistory.forEach(m => {
+  aiHistory.forEach(m=>{
     const div = document.createElement('div');
-    div.textContent = m;
-    div.style.marginBottom = '6px';
+    div.className = 'ai-msg';
+    div.innerHTML = m.replace(/\n/g,'<br>');
     aiChat.appendChild(div);
   });
   aiChat.scrollTop = aiChat.scrollHeight;
 }
 
-function aiResponse(query) {
+function aiResponse(query){
   const q = query.toLowerCase();
-  let reply = "";
-
   const punishKeys = Object.keys(punishments);
-  const foundPunish = punishKeys.filter(k => q.includes(k));
+  const foundPunish = punishKeys.filter(k=>q.includes(k));
   if(foundPunish.length>0){
-    reply = foundPunish.map(k=>`${punishments[k].rule}: ${k.toUpperCase()} → ${punishments[k].punishment}`).join('\n');
-    return reply;
+    return foundPunish.map(k=>`${punishments[k].rule}: ${k.toUpperCase()} → ${punishments[k].punishment}`).join('\n');
   }
-
-  if(q.includes("як") || q.includes("інструкція") || q.includes("що робити") || q.includes("як користуватись")){
-    reply = `Щоб знайти покарання:\n- Введи ключове слово у верхнє поле (DM, DB, TK, SK, PG)\n- Результат з'явиться одразу в блоці "Тут з'явиться покарання"\n- Можеш запитати мене в чаті, і я дам поради щодо правил та сайту.`;
-    return reply;
+  if(q.includes("як")||q.includes("інструкція")||q.includes("що робити")||q.includes("як користуватись")){
+    return `Щоб знайти покарання:\n- Введіть ключове слово у верхнє поле (DM, DB, TK, SK, PG, Нікнейм)\n- Результат з'явиться у блоці "Тут з'явиться покарання"\n- Можеш також запитати мене в чаті, і я дам поради.`;
   }
-
   const greetings = ["привіт","здрастуй","доброго дня"];
-  if(greetings.some(g => q.includes(g))){
-    reply = "Привіт! Я Furry 😺. Можу допомогти знайти покарання або дати поради по сайту.";
-    return reply;
-  }
-
-  reply = "Я отримав твоє запитання. Можу допомогти знайти покарання або надати інструкцію по сайту. Спробуй запитати про DM, DB, TK, SK, PG або правила.";
-  return reply;
+  if(greetings.some(g=>q.includes(g))) return "Привіт! Я Furry 😺. Можу допомогти знайти покарання або дати поради по сайту.";
+  return "Я отримав твоє запитання. Можу допомогти знайти покарання або надати інструкцію по сайту.";
 }
 
 aiBtn.addEventListener('click', ()=>{
   const query = aiInput.value.trim();
   if(!query) return;
   aiHistory.push("Ти: " + query);
-  const response = aiResponse(query);
-  aiHistory.push("Furry: " + response);
-  localStorage.setItem('aiHistory', JSON.stringify(aiHistory));
-  renderAI
+  aiHistory.push("Furry: " + aiResponse(query));
+  renderAI();
+  aiInput.value='';
+});
+
+aiInput.addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ aiBtn.click(); }
+});
+
+// Початковий рендер
+renderAI();
+</script>
+
+</body>
+</html>
