@@ -2,171 +2,33 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<title>Пошук покарань</title>
+<title>Пошук покарань і чат Furry</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
- body {
-  font-family: Arial, sans-serif;
-  background-color: #e6f0ff;
-  margin: 0;
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
+  body { font-family: 'Roboto', sans-serif; background: #e8f0fe; display: flex; flex-direction: column; align-items: center; padding: 30px 10px; }
+  h1 { color: #1a73e8; margin-bottom: 10px; text-align:center;}
+  .logo { margin-bottom: 20px; }
+  .logo img { width: 120px; height: auto; border-radius: 12px; cursor: pointer; }
 
-h1 {
-  color: #0056b3;
-  margin-bottom: 20px;
-}
-
-input {
-  padding: 10px;
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.result {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-  width: 400px;
-  text-align: center;
-}
-
-.update-notice {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeeba;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 12px;
-  max-width: 600px;
-  text-align: center;
-}
-
-/* ==== AUDIO ICON (added) ==== */
-.audio-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(180deg,#1a73e8,#165ec9);
-  color:#fff;
-  font-size:20px;
-  border: 2px solid rgba(255,255,255,0.12);
-  box-shadow: 0 6px 18px rgba(10,30,80,0.12);
-  cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s;
-  margin-bottom: 18px;
-}
-.audio-icon:hover { transform: translateY(-3px); }
-.audio-icon.playing { background: linear-gradient(180deg,#0b57d0,#053b9a); box-shadow: 0 10px 24px rgba(10,30,80,0.18); }
-
-/* ==== КНОПКА ВЫХОД ==== */
-#logoutBtn {
-  display: none;
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-#logoutBtn:hover {
-  background-color: #c82333;
-}
-
-/* ==== МОДАЛЬНЕ ВІКНО ==== */
-#creatorModal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-}
-
-.close {
-  float: right;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* ==== АДАПТИВНОСТЬ ==== */
-@media (max-width: 1024px) {
-  body {
-    padding: 30px 15px;
-  }
-  .update-notice, 
-  .result,
-  input {
-    max-width: 100% !important;
-    width: 100% !important;
-  }
-}
-
-@media (max-width: 768px) {
-  body {
-    padding: 20px 10px;
-  }
-  h1 {
-    font-size: 20px;
-    text-align: center;
-  }
-  input {
-    width: 100% !important;
-    font-size: 14px;
-    padding: 10px;
-  }
-  .result {
-    font-size: 14px;
-    padding: 12px;
-    width: 100% !important;
-  }
-  .update-notice {
-    font-size: 13px;
-    padding: 12px;
-    width: 100% !important;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 18px;
-  }
-  input {
-    font-size: 13px;
-    padding: 8px;
-  }
-  .result {
-    font-size: 13px;
-    padding: 10px;
-  }
-}
-
+  input { padding: 14px; width: 600px; border: 2px solid #1a73e8; border-radius: 12px; margin-bottom: 20px; font-size: 16px; outline: none; transition: 0.2s; }
+  input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
+  .result { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 700px; text-align: left; white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #202124; margin-bottom:30px; }
   
-  /* Модальні */
+  /* Чат Furry */
+  .chat-container { width: 700px; max-width: 100%; background:#fff; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:16px; display:flex; flex-direction:column; max-height:500px; overflow:hidden;}
+  .chat-messages { flex:1; overflow-y:auto; margin-bottom:10px; }
+  .message { margin-bottom:8px; padding:8px 12px; border-radius:12px; max-width:80%; line-height:1.4; }
+  .user-msg { background:#1a73e8; color:#fff; align-self:flex-end; }
+  .furry-msg { background:#e8f0fe; color:#202124; align-self:flex-start; position:relative;}
+  .typing { font-style:italic; font-size:13px; color:#666; margin-bottom:4px; }
+
+  .chat-input { display:flex; }
+  .chat-input input { flex:1; padding:10px; font-size:14px; border:2px solid #1a73e8; border-radius:8px; margin-right:8px; }
+  .chat-input button { padding:10px 16px; font-weight:600; border-radius:8px; background:#1a73e8; color:#fff; border:none; cursor:pointer; }
+  
+  @media(max-width:768px){ input{width:100%; font-size:14px; padding:12px;} .result,.chat-container{width:100%;} }
+
+  /* модал (вже використовувані стилі в твоєму коді — тут зберігаю однаковий вигляд) */
   .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; }
   .modal { background:#fff; width:min(90vw,700px); border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,.25); border:2px solid #1a73e8; }
   .modal-header {padding:14px 18px;background:#e8f0fe;font-weight:700;font-size:17px;color:#1a73e8;}
@@ -174,228 +36,322 @@ input {
   .modal-actions {display:flex;justify-content:space-between;padding:12px 18px 16px;}
   .btn {padding:8px 14px;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;font-weight:600;}
   .btn-primary {background:#1a73e8;color:#fff;}
-  .edit-btn {margin-left:10px;cursor:pointer;color:#1a73e8;font-size:13px;}
-  .edit-input {width:100%;padding:6px;margin-top:6px;}
-  .logout {position:fixed;top:10px;right:10px;background:#f44336;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;z-index:10000;}
-  .creator-tools {position:fixed;bottom:10px;right:10px;z-index:10000;display:flex;gap:8px;}
-  .creator-tools .btn {background:#1a73e8;color:#fff;}
-  #codeEditor {width:100%;height:400px;font-family:monospace;white-space:pre;}
-  .log-list {max-height:60vh;overflow:auto;padding-left:18px;}
-
-  /* Адаптивність */
-  @media (max-width: 768px) { body {padding:20px 10px;} input {width:100%; font-size:14px; padding:12px;} .result {width:100%; padding:20px; font-size:14px;} .modal {width:90vw;} #codeEditor {height:300px;} }
-  @media (max-width: 480px) { h1 {font-size:20px;} input {font-size:13px; padding:10px;} .result {font-size:13px; padding:15px;} }
+  /* невелика настройка для елементів плеєра */
+  .audio-row { display:flex; gap:8px; align-items:center; margin-top:12px; }
+  .progress { flex:1; }
+  .small { font-size:13px; color:#333; }
 </style>
+</head>
 <body>
 
-<div class="update-notice">
-  Вітаю! Оновлення 0.1: у цьому оновленні ми вийшли на новий рівень, а саме офіційність. Тепер ми в колі офіційних сайтів і з прямим посиланням.
-</div>
+<!-- ===== ДОДАНО: МОДАЛЬНЕ ВІКНО ПРИ ПЕРШОМУ ЗАПУСКУ ===== -->
+<div id="introModal" class="modal-backdrop" style="display:none;">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">Відкриття сайту • Версія 0.1</div>
+    <div class="modal-body">
+      <p class="small">Відкриття сайту. Версія 0.1 — прослухайте інструкцію від Furry.</p>
 
-<!-- ===== ДОДАНО: ОКРЕМА ІКОНКА АУДІО (не змінює існуючий код) ===== -->
-<div id="audioWrapper" style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
-  <div id="audioIcon" class="audio-icon" title="Прослухати вітальний текст">🔊</div>
-  <!-- можна додати короткий підпис поруч -->
-  <div style="font-size:13px;color:#0b2b5a;">Натисніть, щоб прослухати привітання від Furry</div>
+      <div class="audio-row">
+        <button id="introPlay" class="btn btn-primary">▶️ Старт</button>
+        <button id="introPause" class="btn">⏸ Пауза</button>
+        <button id="introStop" class="btn">⏹ Стоп</button>
+        <input id="introProgress" class="progress" type="range" min="0" max="100" value="0" />
+      </div>
+
+      <audio id="introAudio" preload="auto" crossorigin="anonymous"
+        src="https://screenapp.io/app/#/shared/Gs0yBmr6L_">
+        <!-- Якщо цей src не є прямим файлом, браузер може не відтворити його. -->
+      </audio>
+
+      <p class="small" style="margin-top:8px;color:#666">Якщо відтворення не працює — натисніть Старт і, у випадку помилки, інструкція буде озвучена через браузер.</p>
+    </div>
+    <div class="modal-actions">
+      <button id="introClose" class="btn">Закрити</button>
+      <button id="introNever" class="btn btn-primary">Не показувати знову</button>
+    </div>
+  </div>
 </div>
-<!-- ===== Кінець додавання ===== -->
+<!-- ===== КІНЕЦЬ МОДАЛЬНОГО ВІКНА ===== -->
+
+<div class="logo">
+  <a href="https://ibb.co/5bsnjyM" target="_blank">
+    <img src="https://i.ibb.co/5bsnjyM/logo.png" alt="Furry Logo">
+  </a>
+</div>
 
 <h1>Пошук покарань</h1>
-<input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
+<input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, DB, TK, SK, PG, Нікнейм)...">
 <div class="result" id="result">Тут з'явиться покарання</div>
 
+<div class="chat-container">
+  <div class="chat-messages" id="chat-messages">
+    <div class="furry-msg">Привіт, я Furry 😎. Я можу допомогти знайти покарання або дати інструкцію по сайту. Не забувайте про офіційний Discord та правила!</div>
+  </div>
+  <div class="chat-input">
+    <input type="text" id="chat-input" placeholder="Напишіть повідомлення...">
+    <button id="chat-send">Відправити</button>
+  </div>
+</div>
+
 <script>
-// --- Повний список покарань ---
+// ====== Покарання ======
 const punishments = {
-"керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
-"нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
-"нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
-"заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікнейму, заборона на вступ у фракцію" },
-"нецензурний нікнейм": { rule: "2.3", punishment: "Перманентне блокування облікового запису" },
-"образливий нікнейм": { rule: "2.4", punishment: "Перманентне блокування облікового запису" },
-"dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
-"mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
-"dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
-"mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
-"db": { rule: "4.2", punishment: "Jail 20 хвилин" },
-"mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
-"db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
-"mass db в gz": { rule: "4.2.3", punishment: "Warn" },
-"рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
-"rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
-"sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
-"mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
-"tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
-"mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
-"pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
-"nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
-"nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хвилин / Warn" },
-"вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
-"уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
-"уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
-"втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
-"перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
-"уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
-"афк фракція": { rule: "4.15", punishment: "Kick" },
-"скін протилежної статі": { rule: "4.16", punishment: "Усне попередження / Звільнення з фракції" },
-"грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
-"грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
-"обман майно": { rule: "4.19", punishment: "Перманентний бан" },
-"спам майно": { rule: "4.20", punishment: "Перманентний бан" },
-"банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
-"зменшене покарання за обман": { rule: "4.22", punishment: "Бан від 3 до 15 днів" },
-"погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
-"mg": { rule: "5.1", punishment: "Мут 20 хвилин / Warn при зловживанні" },
-"tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
-"дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
-"flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
-"музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
-"caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
-"нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хвилин" }
+  "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
+  "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
+  "dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
+  "mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
+  "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
+  "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
+  "db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
+  "mass db в gz": { rule: "4.2.3", punishment: "Warn" },
+  "рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
+  "rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
+  "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
+  "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
+  "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
+  "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
+  "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
+  "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
+  "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хв / Warn" },
+  "вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
+  "уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
+  "уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
+  "втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
+  "перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
+  "уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
+  "афк фракція": { rule: "4.15", punishment: "Kick" },
+  "скін протилежної статі": { rule: "4.16", punishment: "Попередження / Звільнення" },
+  "грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
+  "грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
+  "обман майно": { rule: "4.19", punishment: "Перманентний бан" },
+  "спам майно": { rule: "4.20", punishment: "Перманентний бан" },
+  "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
+  "зменшене покарання за обман": { rule: "4.22", punishment: "Бан 3-15 днів" },
+  "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
+  "mg": { rule: "5.1", punishment: "Мут 20 хв / Warn" },
+  "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
+  "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
+  "flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
+  "музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
+  "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
+  "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хв" }
 };
 
-// --- Пошук ---
+// ====== Пошук покарань ======
 document.getElementById("search").addEventListener("input", function(){
   const query = this.value.trim().toLowerCase();
   const resultBox = document.getElementById("result");
-  if(!query){ resultBox.textContent="Тут з'явиться покарання"; return; }
+  if(!query){ resultBox.textContent = "Тут з'явиться покарання"; return; }
   let results=[];
   for(let key in punishments){
     if(key.includes(query)){
       results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
     }
   }
-  resultBox.textContent=results.length>0?results.join('\n'):"Покарання не знайдено";
+  resultBox.textContent = results.length>0 ? results.join('\n') : "Покарання не знайдено";
 });
 
-// --- Авторизація творця та панель ---
+// ====== Чат Furry ======
+const chatInput = document.getElementById('chat-input');
+const chatSend = document.getElementById('chat-send');
+const chatMessages = document.getElementById('chat-messages');
+
+function appendMessage(text, className){
+  const div = document.createElement('div');
+  div.className = `message ${className}`;
+  div.textContent = text;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function searchPunishment(query){
+  query = query.toLowerCase();
+  let results = [];
+  for(let key in punishments){
+    if(key.includes(query) || punishments[key].punishment.toLowerCase().includes(query)){
+      results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`);
+    }
+  }
+  return results.length>0 ? results.join('\n') : null;
+}
+
+function getResponse(msg){
+  const m = msg.toLowerCase();
+
+  if(/привіт|здравствуй|hi/.test(m)) 
+      return "Привіт! Я Furry 😎. Можу показати покарання або дати інструкції.";
+
+  const punishment = searchPunishment(m);
+  if(punishment) return punishment;
+
+  if(/як|що робити|далі|як користуватись|що тут/.test(m))
+      return "Введи ключове слово порушення або нік і я покажу покарання. Наприклад: DM, DB, TK, SK, PG.";
+
+  if(/хто створив|твій творець|who created/i.test(m))
+      return "Мене створив Артем Процко, на основі мови програмування Python та скрипту Jarvis. Я допомагаю адміну ЮА онлайн. Версія 0.1, початковий автор Artem_Furrry. Маю свій сервер для чітких відповідей.";
+
+  if(/інструкц|як знайти|пошук/i.test(m))
+      return "Щоб знайти покарання, введи ключове слово (DM, DB, TK, SK, PG, Нікнейм) у поле пошуку або запитай мене в чаті.";
+
+  return "Я можу допомогти знайти покарання або дати інструкцію по сайту. Спробуй написати DM, DB, TK тощо.";
+}
+
+function furryReply(userMsg){
+  const typing = document.createElement('div');
+  typing.className='typing';
+  typing.textContent='Furry друкує...';
+  chatMessages.appendChild(typing);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  setTimeout(()=>{
+    chatMessages.removeChild(typing);
+    appendMessage(getResponse(userMsg),'furry-msg');
+  }, 800 + Math.random()*600);
+}
+
+chatSend.addEventListener('click', ()=>{
+  const text = chatInput.value.trim();
+  if(!text) return;
+  appendMessage(text,'user-msg');
+  chatInput.value='';
+  furryReply(text);
+});
+
+chatInput.addEventListener('keydown', e=>{
+  if(e.key==='Enter') chatSend.click();
+});
+
+/* ========== Логіка модалки з аудіо ========== */
 (function(){
-  function createModal(title, bodyNode, actions){
-    const backdrop=document.createElement('div'); backdrop.className='modal-backdrop';
-    const modal=document.createElement('div'); modal.className='modal';
-    const header=document.createElement('div'); header.className='modal-header'; header.textContent=title;
-    const body=document.createElement('div'); body.className='modal-body'; if(bodyNode) body.appendChild(bodyNode);
-    const act=document.createElement('div'); act.className='modal-actions'; actions.forEach(b=>act.appendChild(b));
-    modal.appendChild(header); modal.appendChild(body); modal.appendChild(act); backdrop.appendChild(modal);
-    return backdrop;
+  const modal = document.getElementById('introModal');
+  const audio = document.getElementById('introAudio');
+  const playBtn = document.getElementById('introPlay');
+  const pauseBtn = document.getElementById('introPause');
+  const stopBtn = document.getElementById('introStop');
+  const closeBtn = document.getElementById('introClose');
+  const neverBtn = document.getElementById('introNever');
+  const progress = document.getElementById('introProgress');
+
+  const SPOKEN_TEXT = "Відкриття сайту. Версія 0.1. Прослухайте інструкцію від Furry.";
+
+  // Показати модалку при першому візиті
+  function shouldShow() {
+    return localStorage.getItem('furry_intro_seen') !== 'true';
+  }
+  function markSeen() {
+    localStorage.setItem('furry_intro_seen', 'true');
   }
 
-  function showLoginModal(){
-    const container=document.createElement('div');
-    const p=document.createElement('p'); p.textContent='Введіть нік і пароль творця або натисніть "Я не Творець"';
-    container.appendChild(p);
-    const inputNick=document.createElement('input'); inputNick.type='text'; inputNick.placeholder='Нік'; inputNick.style.width='100%';
-    const inputPass=document.createElement('input'); inputPass.type='password'; inputPass.placeholder='Пароль'; inputPass.style.width='100%';
-    const err=document.createElement('p'); err.style.color='red'; err.style.fontSize='13px'; err.style.display='none'; err.textContent='Невірний нік або пароль!';
-    container.appendChild(inputNick); container.appendChild(inputPass); container.appendChild(err);
-
-    const btnNo=document.createElement('button'); btnNo.className='btn'; btnNo.textContent='Я не Творець';
-    const btnYes=document.createElement('button'); btnYes.className='btn btn-primary'; btnYes.textContent='Я Творець';
-
-    const modal=createModal('Авторизація', container,[btnNo,btnYes]);
-    document.body.appendChild(modal);
-
-    btnNo.addEventListener('click',()=>{ localStorage.setItem('userRole','user'); document.body.removeChild(modal); location.reload(); });
-    btnYes.addEventListener('click',()=>{
-      const nick=inputNick.value.trim(); const pass=inputPass.value.trim();
-      if(nick==='Artem_Furrry' && pass==='QazMlp123'){ localStorage.setItem('userRole','creator'); document.body.removeChild(modal); location.reload(); } else err.style.display='block';
-    });
+  function showModal(){
+    modal.style.display = 'flex';
+  }
+  function hideModal(){
+    modal.style.display = 'none';
   }
 
-  function addLogoutButton(){ const role=localStorage.getItem('userRole'); if(!role) return;
-    const logout=document.createElement('div'); logout.textContent='Вийти'; logout.className='logout';
-    logout.addEventListener('click',()=>{ localStorage.removeItem('userRole'); location.reload(); }); document.body.appendChild(logout);
+  // fallback: якщо аудіо не програється, говоримо через speechSynthesis
+  function ttsSpeak(text) {
+    if(!('speechSynthesis' in window)) return;
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'uk-UA';
+      u.rate = 0.95;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    } catch(e) { /* ignore */ }
   }
 
-  function logAction(text){ const logs=JSON.parse(localStorage.getItem('editLogs')||'[]'); logs.push(new Date().toLocaleString()+': '+text); localStorage.setItem('editLogs',JSON.stringify(logs)); }
-
-  function openLogsModal(){
-    const logs=JSON.parse(localStorage.getItem('editLogs')||'[]');
-    const container=document.createElement('div');
-    if(logs.length===0){ container.textContent='Немає змін'; } else { const ul=document.createElement('ul'); ul.className='log-list'; logs.forEach(l=>{ const li=document.createElement('li'); li.textContent=l; ul.appendChild(li); }); container.appendChild(ul); }
-    const btnClose=document.createElement('button'); btnClose.className='btn btn-primary'; btnClose.textContent='Закрити';
-    const modal=createModal('Логи змін',container,[btnClose]); document.body.appendChild(modal);
-    btnClose.addEventListener('click',()=>document.body.removeChild(modal));
+  // Обновлення прогресу
+  function updateProgress(){
+    if(!audio.duration || isNaN(audio.duration)) { progress.value = 0; return; }
+    const pct = (audio.currentTime / audio.duration) * 100;
+    progress.value = Math.floor(pct);
   }
 
-  function openCodeEditor(){
-    const codeRaw=localStorage.getItem('customCode')||document.documentElement.outerHTML;
-    const container=document.createElement('div');
-    const ta=document.createElement('textarea'); ta.id='codeEditor'; ta.value=codeRaw; container.appendChild(ta);
-    const btnCancel=document.createElement('button'); btnCancel.className='btn'; btnCancel.textContent='Відмінити';
-    const btnSave=document.createElement('button'); btnSave.className='btn btn-primary'; btnSave.textContent='Зберегти та застосувати';
-    const modal=createModal('Редактор коду',container,[btnCancel,btnSave]); document.body.appendChild(modal);
-    btnCancel.addEventListener('click',()=>document.body.removeChild(modal));
-    btnSave.addEventListener('click',()=>{ localStorage.setItem('customCode',ta.value); logAction('Редагування коду сайту (збережено)'); document.body.removeChild(modal); alert('Код збережено. Сайт буде перезавантажено з новим кодом.'); document.open(); document.write(ta.value); document.close(); });
-  }
+  // Події кнопок
+  playBtn.addEventListener('click', ()=>{
+    // спробувати відтворити audio; якщо помилка — fallback to TTS
+    if(audio.src && audio.src.trim().length>0) {
+      audio.play().catch(err=>{
+        // fallback
+        ttsSpeak(SPOKEN_TEXT);
+      });
+    } else {
+      ttsSpeak(SPOKEN_TEXT);
+    }
+  });
 
-  function trackVisitors(){ const today=new Date().toISOString().slice(0,10); let visits=JSON.parse(localStorage.getItem('visits')||'{}'); visits[today]=(visits[today]||0)+1; localStorage.setItem('visits',JSON.stringify(visits)); }
+  pauseBtn.addEventListener('click', ()=>{
+    if(audio.paused) {
+      // resume
+      audio.play().catch(err=>{
+        ttsSpeak(SPOKEN_TEXT);
+      });
+    } else {
+      audio.pause();
+    }
+  });
 
-  document.addEventListener('DOMContentLoaded',()=>{
-    trackVisitors();
-    const role=localStorage.getItem('userRole'); if(!role){ showLoginModal(); return; }
-    addLogoutButton();
-    if(role==='creator'){
-      const tools=document.createElement('div'); tools.className='creator-tools';
-      const bLogs=document.createElement('button'); bLogs.className='btn'; bLogs.textContent='📜 Логи';
-      const bCode=document.createElement('button'); bCode.className='btn'; bCode.textContent='💻 Редагувати код';
-      bLogs.addEventListener('click',openLogsModal); bCode.addEventListener('click',openCodeEditor);
-      tools.appendChild(bLogs); tools.appendChild(bCode); document.body.appendChild(tools);
-      const versionDiv=document.createElement('div'); versionDiv.style.marginTop='15px'; versionDiv.textContent='Версія сайту: 0.1'; document.body.appendChild(versionDiv);
-      const visits=JSON.parse(localStorage.getItem('visits')||'{}'); const today=new Date().toISOString().slice(0,10);
-      const visitDiv=document.createElement('div'); visitDiv.textContent=`Відвідувачів сьогодні: ${visits[today]||0}`; visitDiv.style.marginBottom='15px'; document.body.appendChild(visitDiv);
+  stopBtn.addEventListener('click', ()=>{
+    audio.pause();
+    audio.currentTime = 0;
+    updateProgress();
+    // Also cancel any TTS if running
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+  });
+
+  // progress seek
+  progress.addEventListener('input', ()=>{
+    if(audio.duration && !isNaN(audio.duration)) {
+      const pct = parseFloat(progress.value) / 100;
+      audio.currentTime = Math.max(0, Math.min(audio.duration * pct, audio.duration));
+    }
+  });
+
+  // sync UI
+  audio.addEventListener('timeupdate', updateProgress);
+  audio.addEventListener('ended', ()=> { progress.value = 100; });
+  audio.addEventListener('error', ()=> {
+    // on audio error — fallback TTS and notify user
+    ttsSpeak(SPOKEN_TEXT);
+  });
+
+  closeBtn.addEventListener('click', ()=>{
+    hideModal();
+    markSeen(); // закрили — вважати побаченим
+    // не зупиняємо автоматично — зупиняємо аудіо
+    try{ audio.pause(); audio.currentTime = 0; }catch(e){}
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+  });
+
+  neverBtn.addEventListener('click', ()=>{
+    hideModal();
+    localStorage.setItem('furry_intro_seen', 'true');
+    try{ audio.pause(); audio.currentTime = 0; }catch(e){}
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+  });
+
+  // Якщо браузер блокує автоплеєр — ми чекаємо на жест користувача (натиск)
+  // Показуємо модалку на першому візиті
+  document.addEventListener('DOMContentLoaded', ()=>{
+    if(shouldShow()) {
+      showModal();
+      // optional: try to preload or try to play on a user gesture
+      // but we won't auto-play without gesture
+      // add click listener to page to try one-time autoplay after gesture
+      function oneGesture() {
+        // try to play once (silently catch)
+        try {
+          audio.play().then(()=>{}).catch(()=>{ /* ignore */ });
+        } catch(e){}
+        window.removeEventListener('click', oneGesture);
+        window.removeEventListener('keydown', oneGesture);
+      }
+      window.addEventListener('click', oneGesture);
+      window.addEventListener('keydown', oneGesture);
     }
   });
 })();
-
-/* ===========================
-   ADDED: simple audio play button logic
-   - Does NOT add voice selection or change existing code.
-   - Uses browser default TTS voice.
-   =========================== */
-(function(){
-  const btn = document.getElementById('audioIcon');
-  if(!btn) return;
-
-  const TEXT = `Привіт! Я Furry — помічник адміністратора UA Online. 
-Я створений, щоб полегшити роботу адміністратора: знаходити покарання за порушення та пояснювати правила. 
-Використовуйте поле пошуку: введіть ключове слово, наприклад DM, DB, TK, SK, PG або нікнейм, і я покажу покарання. 
-Не забувайте про офіційний Discord та правила. Якщо знайдете помилку — повідомте адміну. Успіхів!`;
-
-  let utter = null;
-
-  function play() {
-    if(!('speechSynthesis' in window)) {
-      alert('Озвучення не підтримується у вашому браузері.');
-      return;
-    }
-    // якщо говорить — зупинити
-    if(window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
-      btn.classList.remove('playing');
-      btn.textContent = '🔊';
-      return;
-    
-    // нове висловлювання
-    utter = new SpeechSynthesisUtterance(TEXT);
-    // не вказуємо голос (використовується голос браузера за замовчуванням)
-    // встановлюємо мову (якщо браузер має підхопити)
-    utter.lang = 'uk-UA';
-    utter.rate = 0.95;
-    utter.onstart = function(){ btn.classList.add('playing'); btn.textContent = '⏸'; };
-    utter.onend = function(){ btn.classList.remove('playing'); btn.textContent = '🔊'; };
-    utter.onerror = function(){ btn.classList.remove('playing'); btn.textContent = '🔊'; };
-    try {
-      window.speechSynthesis.cancel(); // убираємо попередні
-      window.speechSynthesis.speak(utter);
-    } catch(e) {
-      console.error(e);
-      alert('Помилка відтворення озвучення.');
-    }
-  }
-
-  btn.addEventListener('click', play);
-})();
 </script>
+
 </body>
 </html>
