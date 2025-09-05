@@ -11,20 +11,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 50px 20px;
+  padding: 30px 15px;
+  margin: 0;
 }
 
 h1 {
   color: #1a73e8;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  font-size: 26px;
+  text-align: center;
 }
 
 input {
-  padding: 14px;
-  width: 600px;
+  padding: 12px;
+  width: 100%;
+  max-width: 600px;
   border: 2px solid #1a73e8;
   border-radius: 12px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   font-size: 16px;
   outline: none;
   transition: 0.2s;
@@ -36,10 +40,11 @@ input:focus {
 
 .result {
   background: #fff;
-  padding: 25px;
+  padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  width: 700px;
+  width: 100%;
+  max-width: 700px;
   text-align: left;
   white-space: pre-wrap;
   line-height: 1.6;
@@ -47,26 +52,21 @@ input:focus {
   color: #202124;
 }
 
-.highlight {
-  color: #1a73e8;
-  font-weight: 700;
-}
-
 .update-notice {
   background: #fff3cd;
   border: 1px solid #ffeeba;
-  padding: 15px 20px;
+  padding: 12px 15px;
   border-radius: 12px;
-  width: 90%;
+  width: 100%;
   max-width: 700px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #856404;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.4;
   text-align: center;
 }
 
-/* Модальні */
+/* --- Модалки --- */
 .modal-backdrop {
   position: fixed;
   inset:0;
@@ -79,25 +79,108 @@ input:focus {
 
 .modal {
   background:#fff;
-  width:min(90vw,700px);
+  width:min(95vw,600px);
   border-radius:12px;
   box-shadow:0 6px 20px rgba(0,0,0,.25);
   border:2px solid #1a73e8;
 }
 
 .modal-header {
-  padding:14px 18px;
+  padding:12px 16px;
   background:#e8f0fe;
   font-weight:700;
-  font-size:17px;
+  font-size:16px;
   color:#1a73e8;
 }
 
 .modal-body {
-  padding:16px 18px;
+  padding:14px 16px;
   max-height:70vh;
   overflow:auto;
+  font-size:14px;
 }
+
+.modal-actions {
+  display:flex;
+  justify-content:space-between;
+  padding:12px 16px 14px;
+}
+
+.btn {
+  padding:8px 12px;
+  border-radius:8px;
+  border:2px solid #1a73e8;
+  cursor:pointer;
+  font-weight:600;
+  font-size:14px;
+}
+
+.btn-primary {
+  background:#1a73e8;
+  color:#fff;
+}
+
+.logout {
+  position:fixed;
+  top:8px;
+  right:8px;
+  background:#f44336;
+  color:#fff;
+  padding:5px 8px;
+  border-radius:6px;
+  cursor:pointer;
+  z-index:10000;
+  font-size:13px;
+}
+
+.creator-tools {
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  z-index:10000;
+  display:flex;
+  gap:6px;
+}
+
+.creator-tools .btn {
+  background:#1a73e8;
+  color:#fff;
+  font-size:13px;
+  padding:6px 10px;
+}
+
+#codeEditor {
+  width:100%;
+  height:300px;
+  font-family:monospace;
+  white-space:pre;
+  font-size:13px;
+}
+
+.log-list {
+  max-height:60vh;
+  overflow:auto;
+  padding-left:16px;
+  font-size:13px;
+}
+
+/* --- Адаптивность --- */
+@media (max-width: 768px) {
+  body { padding: 20px 10px; }
+  h1 { font-size: 22px; margin-bottom: 12px; }
+  input { font-size: 14px; padding: 10px; }
+  .result { font-size: 14px; padding: 15px; }
+  .update-notice { font-size: 13px; padding: 10px; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 20px; }
+  input { font-size: 13px; padding: 8px; }
+  .result { font-size: 13px; padding: 12px; }
+  .btn { font-size: 12px; padding: 6px 10px; }
+  .creator-tools { gap: 4px; }
+}
+
 
 .modal-actions {
   display:flex;
