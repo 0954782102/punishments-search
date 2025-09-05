@@ -107,7 +107,8 @@
 <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
 <div class="result" id="result">Тут з'явиться покарання</div>
 
-const punishments = {
+ <script>
+    const punishments = {
       "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
       "нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
       "нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
@@ -154,7 +155,6 @@ const punishments = {
       "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
       "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хвилин" }
     };
-
 
 document.getElementById("search").addEventListener("input", function() {
   const query = this.value.trim().toLowerCase();
