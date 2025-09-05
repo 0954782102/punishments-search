@@ -44,17 +44,6 @@
       color: #202124;
       margin-bottom: 40px;
     }
-    .welcome {
-      background: #fff;
-      padding: 20px 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      width: 700px;
-      font-size: 15px;
-      margin-bottom: 30px;
-      line-height: 1.5;
-      color: #202124;
-    }
     .ai-chat-container {
       background: #fff;
       padding: 20px 25px;
@@ -101,7 +90,7 @@
       body {
         padding: 20px 10px;
       }
-      input, .result, .welcome, .ai-chat-container {
+      input, .result, .ai-chat-container {
         width: 100%;
       }
     }
@@ -110,15 +99,6 @@
 <body>
 
   <h1>Пошук покарань</h1>
-
-  <div class="welcome">
-    <strong>Привіт!</strong> Я <strong>Furry</strong>, той адмін, який з 02 сервера. 
-    Я сподіваюся, що цей сайт сподобається тобі та допоможе полегшити роботу. 
-    Не забувайте про офіційний Discord та його правила! 
-    Якщо знайдеш помилку — одразу повідом мене (дякую). 
-    Внизу ти бачиш чат з AI, його звуть <strong>Furry</strong>. 
-    Ти можеш запитати як користуватися сайтом та що до чого тут.
-  </div>
 
   <input type="text" id="search" placeholder="Введіть ключове слово (наприклад DM, SK, PG, Нікнейм)...">
   <div class="result" id="result">Тут з'явиться покарання</div>
@@ -133,26 +113,14 @@
 <script>
   // ==== Пошук покарань ====
   const punishments = {
-    "керівництво": { rule: "1.15-1.17", punishment: "Керівництво проєкту та головна адміністрація може видавати покарання на свій розгляд/за явні порушення, без зміни інтервалів покарань" },
-    "нікнейм": { rule: "2.1", punishment: "Нікнейм має бути у форматі Ім’я_Прізвище, латиницею. [Попередження про зміну нікнейму]" },
-    "нрп нікнейм": { rule: "2.1.1", punishment: "Може змінити НонРП нік на РП один раз" },
-    "заборонені імена": { rule: "2.2", punishment: "Попередження про зміну нікнейму, заборона на вступ у фракцію" },
-    "нецензурний нікнейм": { rule: "2.3", punishment: "Перманентне блокування облікового запису" },
-    "образливий нікнейм": { rule: "2.4", punishment: "Перманентне блокування облікового запису" },
     "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
     "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
-    "dm в gz": { rule: "4.1.2", punishment: "Jail 30 хвилин" },
-    "mass dm в gz": { rule: "4.1.3", punishment: "Warn" },
     "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
     "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
-    "db в gz": { rule: "4.2.2", punishment: "Jail 30 хвилин" },
-    "mass db в gz": { rule: "4.2.3", punishment: "Warn" },
-    "рк": { rule: "4.3", punishment: "Jail 20 хвилин" },
-    "rpk": { rule: "4.3.1", punishment: "Jail 30 хвилин" },
-    "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
-    "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
     "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
     "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
+    "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
+    "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
     "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
     "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
     "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хвилин / Warn" },
@@ -201,45 +169,25 @@
   const aiInput = document.getElementById('ai-input');
   const aiBtn = document.getElementById('ai-btn');
 
-  let aiHistory = JSON.parse(localStorage.getItem('aiHistory')||'[]');
+  let aiHistory = JSON.parse(localStorage.getItem('aiHistory') || '[]');
 
   function renderAI() {
     aiChat.innerHTML = '';
-    if(aiHistory.length===0){
-      aiChat.textContent="Тут буде історія чату...";
+    if (aiHistory.length === 0) {
+      aiChat.textContent = "Тут буде історія чату...";
     } else {
-      aiHistory.forEach(m=>{
-        const div=document.createElement('div');
-        div.textContent=m;
-        div.style.marginBottom='4px';
+      aiHistory.forEach(m => {
+        const div = document.createElement('div');
+        div.textContent = m;
+        div.style.marginBottom = '4px';
         aiChat.appendChild(div);
       });
     }
     aiChat.scrollTop = aiChat.scrollHeight;
   }
 
-  function aiResponse(q){
-    q=q.toLowerCase();
-    if(q.includes('пошук')||q.includes('покарання')) return "Furry: Використай поле пошуку для знаходження покарань.";
-    if(q.includes('чат')||q.includes('furry')) return "Furry: Я тут, щоб допомогти. Пиши запитання, і я дам пораду.";
-    return "Furry: Я отримав твоє запитання. Даю загальну пораду по сайту.";
-  }
-
-  aiBtn.addEventListener('click', ()=>{
-    const q = aiInput.value.trim();
-    if(!q) return;
-    aiHistory.push("Ти: " + q);
-    aiHistory.push(aiResponse(q));
-    localStorage.setItem('aiHistory', JSON.stringify(aiHistory));
-    renderAI();
-    aiInput.value='';
-  });
-
-  aiInput.addEventListener('keydown', e=>{
-    if(e.key==='Enter') aiBtn.click();
-  });
-
-  renderAI();
-</script>
-</body>
-</html>
+  function aiResponse(q) {
+    const lowerCaseQuery = q.toLowerCase();
+    if (lowerCaseQuery.includes('покарання') || lowerCaseQuery.includes('
+::contentReference[oaicite:0]{index=0}
+ 
