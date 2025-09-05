@@ -44,24 +44,49 @@ input:focus { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
 </div>
 
 <script>
+// ==== Пошук покарань ====
 const punishments = {
   "dm": { rule: "4.1", punishment: "Jail 20 хвилин" },
-  "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
-  "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
-  "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
-  "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
-  "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
-  "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
-  "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
-  "pg": { rule: "4.6", punishment: "Jail 20 хвилин" }
-};
+    "mass dm": { rule: "4.1.1", punishment: "Jail 120 хвилин" },
+    "db": { rule: "4.2", punishment: "Jail 20 хвилин" },
+    "mass db": { rule: "4.2.1", punishment: "Jail 60 хвилин" },
+    "tk": { rule: "4.5", punishment: "Jail 20 хвилин" },
+    "mass tk": { rule: "4.5.1", punishment: "Jail 60 хвилин" },
+    "sk": { rule: "4.4", punishment: "Jail 30 хвилин" },
+    "mass sk": { rule: "4.4.1", punishment: "Jail 120 хвилин" },
+    "pg": { rule: "4.6", punishment: "Jail 20 хвилин" },
+    "nonrp": { rule: "4.7", punishment: "Jail 20 хвилин" },
+    "nonrp cop": { rule: "4.7.1", punishment: "Jail 60 хвилин / Warn" },
+    "вихід під час рп": { rule: "4.8", punishment: "Jail 30 хвилин" },
+    "уникання погони інтер'єри": { rule: "4.9", punishment: "Jail 20 хвилин" },
+    "уникання погони вода": { rule: "4.10", punishment: "Jail 20 хвилин" },
+    "втручання в рп": { rule: "4.11", punishment: "Jail 10 хвилин" },
+    "перешкоди рп": { rule: "4.12", punishment: "Jail 30 хвилин" },
+    "уникання рп": { rule: "4.13", punishment: "Jail 30 хвилин" },
+    "афк фракція": { rule: "4.15", punishment: "Kick" },
+    "скін протилежної статі": { rule: "4.16", punishment: "Усне попередження / Звільнення з фракції" },
+    "грошові махінації малі": { rule: "4.17", punishment: "Бан до 60 днів" },
+    "грошові махінації великі": { rule: "4.18", punishment: "Перманентний бан" },
+    "обман майно": { rule: "4.19", punishment: "Перманентний бан" },
+    "спам майно": { rule: "4.20", punishment: "Перманентний бан" },
+    "банківські послуги": { rule: "4.21", punishment: "Перманентний бан" },
+    "зменшене покарання за обман": { rule: "4.22", punishment: "Бан від 3 до 15 днів" },
+    "погрози": { rule: "4.23", punishment: "Jail / Mute 30 хвилин" },
+    "mg": { rule: "5.1", punishment: "Мут 20 хвилин / Warn при зловживанні" },
+    "tl": { rule: "5.2", punishment: "Мут 5 хвилин" },
+    "дужки ic": { rule: "5.3", punishment: "Мут 5 хвилин" },
+    "flood": { rule: "5.4", punishment: "Мут 10 хвилин" },
+    "музика/зміна голосу": { rule: "5.5", punishment: "Мут 15 хвилин" },
+    "caps": { rule: "5.6", punishment: "Мут 5 хвилин" },
+    "нецензурна лексика": { rule: "5.7", punishment: "Мут 20-60 хвилин" }
+  };
 
 document.getElementById("search").addEventListener("input", function() {
   const query = this.value.trim().toLowerCase();
   const resultBox = document.getElementById("result");
   if (!query) { resultBox.textContent = "Тут з'явиться покарання"; return; }
   let results = [];
-  for (let key in punishments) { if (key.includes(query)) { results.push(`${punishments[key].rule}: ${key.toUpperCase()}: ${punishments[key].punishment}`); } }
+  for (let key in punishments) { if (key.includes(query)) { results.push(`${punishments[key].rule}: ${key.toUpperCase()} → ${punishments[key].punishment}`); } }
   resultBox.textContent = results.length > 0 ? results.join('\n') : "Покарання не знайдено";
 });
 
@@ -72,10 +97,11 @@ const aiBtn = document.getElementById('ai-btn');
 
 let aiHistory = JSON.parse(localStorage.getItem('aiHistory') || '[]');
 
-// Початковий текст від Furry
+// Вступний текст від Furry
+const furryIntro = `Привіт, я Furry 😺\nЯ Furry, той адміністратор з 02 сервера.\nЯ допоможу тобі знаходити покарання та відповім на питання про UA Online.\nНе забувай про офіційний Discord та його правила!\nВнизу ти можеш писати мені питання, а я дам логічні відповіді.\nЩоб знайти покарання, введи ключове слово: DM, DB, TK, SK, PG або Нікнейм.`;
+
 if(aiHistory.length===0){
-  const intro = "Привіт, я Furry 😺\nЯ допоможу знайти покарання та відповім на твої питання про сайт UA Online.\nПиши запит у форматі DM, DB, TK, SK, PG чи інше.\nДотримуйся правил офіційного Discord.";
-  aiHistory.push(intro);
+  aiHistory.push(furryIntro);
   localStorage.setItem('aiHistory', JSON.stringify(aiHistory));
 }
 
@@ -93,20 +119,30 @@ function renderAI() {
 function aiResponse(query) {
   const q = query.toLowerCase();
   let reply = "";
-  if(q.includes("dm") || q.includes("db") || q.includes("tk") || q.includes("sk") || q.includes("pg")) {
-    // перевірка в базі
-    let found = [];
-    for(let key in punishments){
-      if(key.includes(q)){
-        found.push(`${punishments[key].rule}: ${key.toUpperCase()} → ${punishments[key].punishment}`);
-      }
-    }
-    reply = found.length>0 ? found.join('\n') : "Я не знайшов покарання за цим запитом.";
-  } else if(q.includes("як") || q.includes("інструкція") || q.includes("як користуватись")){
-    reply = "Щоб знайти покарання, введіть ключове слово у верхнє поле (наприклад: DM, DB, TK, SK, PG) та отримайте миттєву відповідь.";
-  } else {
-    reply = "Я отримав твоє запитання. Можу допомогти знайти покарання або надати інструкцію по сайту.";
+
+  // Якщо запит містить покарання
+  const punishKeys = Object.keys(punishments);
+  const foundPunish = punishKeys.filter(k => q.includes(k));
+  if(foundPunish.length>0){
+    reply = foundPunish.map(k=>`${punishments[k].rule}: ${k.toUpperCase()} → ${punishments[k].punishment}`).join('\n');
+    return reply;
   }
+
+  // Інструкція
+  if(q.includes("як") || q.includes("інструкція") || q.includes("як користуватись") || q.includes("що робити")){
+    reply = `Щоб знайти покарання:\n- Введи ключове слово у верхнє поле (наприклад: DM, DB, TK, SK, PG)\n- Результат з'явиться одразу в блоці "Тут з'явиться покарання"\n- Можеш також писати мені сюди, і я дам поради щодо правил та сайту.`;
+    return reply;
+  }
+
+  // Загальні відповіді
+  const greetings = ["привіт","здрастуй","доброго дня"];
+  if(greetings.some(g => q.includes(g))){
+    reply = "Привіт! Я Furry 😺. Можу допомогти знайти покарання або дати поради по сайту.";
+    return reply;
+  }
+
+  // Всі інші запити
+  reply = "Я отримав твоє запитання. Можу допомогти знайти покарання або надати інструкцію по сайту. Спробуй запитати про DM, DB, TK, SK, PG або правила.";
   return reply;
 }
 
@@ -123,7 +159,6 @@ aiBtn.addEventListener('click', ()=>{
 
 aiInput.addEventListener('keydown', e => {
   if(e.key==='Enter') aiBtn.click();
-});
 
 // Ініціалізація
 renderAI();
