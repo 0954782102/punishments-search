@@ -249,15 +249,10 @@
       { code: "8.11", title: "хабар за звільнення з в'язниці", punishment: "Warn", text: "Заборонено випускати за хабар або зменшувати час.", aliases:["випустив за хабар"] },
     ];
 
-    // Створимо індекс поля search haystack для швидкості
-     const DATA = RULES.map((r, i) => ({
+   const DATA = RULES.map((r, i) => ({
       ...r,
       _id: i + 1,
-      hay: [r.code, r.title]
-        .concat(r.aliases || [])
-        .concat((r.text || "").split(/[^\p{L}\p{N}_]+/u))
-        .join(" ")
-        .toLowerCase()
+      hay: [r.code, r.title].concat(r.aliases || []).concat((r.text || "").split(/[^\p{L}\p{N}_]+/u)).join(" ").toLowerCase()
     }));
 
     const elQ = document.getElementById('q');
@@ -286,6 +281,7 @@
             </div>
           </div>
           <p class="text-slate-400 text-sm safe-wrap">${escapeHTML(item.text || "")}</p>
+          <p class="text-indigo-400 text-sm safe-wrap mt-1"><b>Покарання:</b> ${escapeHTML(item.punishment || "")}</p>
         `;
         frag.appendChild(card);
       });
@@ -303,7 +299,7 @@
     elClear.addEventListener('click', ()=> { elQ.value=''; render([]); });
     elShowAll.addEventListener('click', ()=> render(DATA));
 
-    render([]); // спочатку пусто
+    render([]); 
   </script>
 </body>
 </html>
