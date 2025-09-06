@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Furry — Пошук покарань</title>
+  <title>Reglament Finder — пошук порушень і покарань</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -21,14 +21,14 @@
 <body class="bg-slate-950 text-slate-100">
   <div class="max-w-6xl mx-auto px-4 py-8">
     <header class="mb-6">
-      <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Furry</h1>
-      <p class="text-slate-400 text-sm md:text-base mt-1">Швидкий пошук покарань. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">оск</span>, <span class="kbd">нон рп нік</span>…</p>
+      <h1 class="text-2xl md:text-3xl font-bold tracking-tight">⚖️ Reglament Finder</h1>
+      <p class="text-slate-400 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">оск</span>, <span class="kbd">нон рп нік</span>, <span class="kbd">nonrp drive</span>, <span class="kbd">образа адміна</span>, <span class="kbd">донат</span>…</p>
     </header>
 
     <section class="mb-6">
       <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
         <div class="relative flex-1">
-          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="Пошук покарань…">
+          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="Пошук за ключем або описом… (напр. «оск адміна», «mass dm gz», «5.10»)" autofocus>
           <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 opacity-70" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.2-5.2M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
           </svg>
@@ -38,19 +38,26 @@
           <button id="showAllBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Показати всі</button>
         </div>
       </div>
+      <div class="text-xs text-slate-400 mt-2 flex flex-wrap gap-2">
+        <span class="tag">Підказка: шукай і за кодом правила — <span class="mono">4.1.2</span>, <span class="mono">5.11</span></span>
+        <span class="tag">Синоніми: «оск адміна» == «образа адміністрації»</span>
+        <span class="tag">UPD застосовані (16.08, 28.08 тощо)</span>
+      </div>
     </section>
 
     <section id="stats" class="text-slate-300 text-sm mb-3"></section>
+
     <section id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
 
     <footer class="mt-12 text-slate-500 text-xs">
       <div class="space-y-1">
+        <p>Останні зміни включено: правки до <span class="mono">3.10</span>, <span class="mono">3.30</span>, <span class="mono">3.31</span> (999+), видалений <span class="mono">3.33</span> (старий), оновлені <span class="mono">4.1.1</span>, <span class="mono">4.4.1</span>, <span class="mono">4.25</span>, <span class="mono">4.28</span>, <span class="mono">5.10</span>, <span class="mono">5.11</span>, <span class="mono">5.15</span>, <span class="mono">5.24</span>.</p>
         <p>UI зроблено на Tailwind. Увесь контент локально вмонтований у сторінку.</p>
       </div>
     </footer>
   </div>
 
- <script>
+  <script>
     // ====== ДАНІ ПРАВИЛ ======
     // Поля:
     // code — номер правила (рядок)
@@ -224,20 +231,23 @@
       { code: "8.10", title: "лідер/зам може брати хабар", punishment: "РП-покарання від СБУ: штраф/арешт", text: "Адміністрація не втручається в РП.", aliases:["керівник хабар"] },
       { code: "8.11", title: "хабар за звільнення з в'язниці", punishment: "Warn", text: "Заборонено випускати за хабар або зменшувати час.", aliases:["випустив за хабар"] },
     ];
-   
-   const DATA = RULES.map((r, i) => ({
+
+    // Створимо індекс поля search haystack для швидкості
+    const DATA = RULES.map((r, i) => ({
       ...r,
       _id: i + 1,
-      hay: [r.code, r.title].concat(r.aliases || []).concat((r.text || "").split(/[^\p{L}\p{N}_]+/u)).join(" ").toLowerCase()
+      hay: [r.code, r.title]
+        .concat(r.aliases || [])
+        .concat((r.text || "").split(/[^\p{L}\p{N}_]+/u))
+        .join(" ")
+        .toLowerCase()
     }));
 
-    const elQ = document.getElementById('q'
+    const elQ = document.getElementById('q');
     const elResults = document.getElementById('results');
     const elStats = document.getElementById('stats');
     const elClear = document.getElementById('clearBtn');
     const elShowAll = document.getElementById('showAllBtn');
-
-    function escapeHTML(str=""){ return str.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
 
     function render(list){
       elResults.innerHTML = "";
@@ -246,6 +256,7 @@
         return;
       }
       elStats.innerHTML = `Знайдено <b>${list.length}</b> пункт(ів).`;
+
       const frag = document.createDocumentFragment();
       list.forEach(item => {
         const card = document.createElement('div');
@@ -260,7 +271,10 @@
           <p class="text-slate-300 text-sm safe-wrap">${escapeHTML(item.text || "")}</p>
           <div class="mt-3 flex flex-wrap gap-2 items-center">
             <span class="px-2 py-1 pill bg-indigo-600/20 text-indigo-300 border border-indigo-700/40 text-xs">Покарання: <b>${escapeHTML(item.punishment || "—")}</b></span>
-            ${ (item.aliases && item.aliases.length) ? `<span class="text-xs text-slate-400">Синоніми: ${item.aliases.slice(0,5).map(a=>`<code class="tag">${escapeHTML(a)}</code>`).join(" ")}${item.aliases.length>5?" …":""}</span>` : "" }
+            ${ (item.aliases && item.aliases.length)
+                ? `<span class="text-xs text-slate-400">Синоніми: ${item.aliases.slice(0,5).map(a=>`<code class="tag">${escapeHTML(a)}</code>`).join(" ") }${item.aliases.length>5 ? " …" : ""}</span>`
+                : ""
+              }
             ${ item.notes ? `<span class="text-xs text-amber-300">Примітка: ${escapeHTML(item.notes)}</span>` : ""}
           </div>
         `;
@@ -269,28 +283,44 @@
       elResults.appendChild(frag);
     }
 
+    function escapeHTML(str=""){
+      return str.replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+      })[c]);
+    }
+
     function search(q){
       q = (q||"").trim().toLowerCase();
-      if(!q) return [];
+      if(!q) return DATA;
       const terms = q.split(/\s+/).filter(Boolean);
       return DATA.filter(item => terms.every(t => item.hay.includes(t)));
     }
 
-    function onInput(){ render(search(elQ.value)); saveQS(); }
-    function saveQS(){ const u=new URL(location.href); if(elQ.value) u.searchParams.set("q", elQ.value); else u.searchParams.delete("q"); history.replaceState(null,"",u.toString()); }
-    function loadQS(){ const u=new URL(location.href); elQ.value = u.searchParams.get("q")||""; if(elQ.value) render(search(elQ.value)); }
+    function onInput(){
+      render(search(elQ.value));
+      saveQS();
+    }
+
+    function saveQS(){
+      const u = new URL(location.href);
+      if(elQ.value) u.searchParams.set("q", elQ.value);
+      else u.searchParams.delete("q");
+      history.replaceState(null, "", u.toString());
+    }
+
+    function loadQS(){
+      const u = new URL(location.href);
+      const q = u.searchParams.get("q") || "";
+      elQ.value = q;
+      render(search(q));
+    }
 
     elQ.addEventListener('input', onInput);
-    elClear.addEventListener('click',()=>{elQ.value=""; onInput(); elQ.focus();});
-    elShowAll.addEventListener('click',()=>{elQ.value=""; onInput(); window.scrollTo({top:0, behavior:"smooth"}); });
+    elClear.addEventListener('click', () => { elQ.value=""; onInput(); elQ.focus(); });
+    elShowAll.addEventListener('click', () => { elQ.value=""; onInput(); window.scrollTo({top:0, behavior:"smooth"}); });
 
+    // Ініціалізація
     loadQS();
-
-    // ====== Спливаюче вікно при першому заході ======
-    if(!localStorage.getItem('furry_intro_shown')){
-      alert(`Привіт! Я помічник Furry, мене створили для допомоги тобі.\n\nТакож нагадую, що ти обов’язково повинен періодично перевіряти розділ "Загальні правила в Дискорд".\nЦе не офіційний портал.`);
-      localStorage.setItem('furry_intro_shown','1');
-    }
   </script>
 </body>
 </html>
