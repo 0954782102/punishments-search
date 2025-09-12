@@ -3,15 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="google-site-verification" content="F5wJ1yhRpqChiSD5zajnKqFiRJxoxD4rbd6-Ki4N8lQ" />" 
+  <meta name="google-site-verification" content="F5wJ1yhRpqChiSD5zajnKqFiRJxoxD4rbd6-Ki4N8lQ" /> 
   <title>Furry — пошук порушень і покарань</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root { color-scheme: dark light; }
-    html, body { height: 100%; }
-    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    html, body { height: 100%; margin: 0; }
+
+    body { 
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; 
+      background: url("Screenshot_2025-09-12-07-42-42-950_com.miui.gallery.jpg") no-repeat center center fixed;
+      background-size: cover; /* щоб картинка займала весь екран */
+    }
+
+    /* щоб текст/блоки були читабельними */
+    .bg-overlay {
+      background: rgba(15, 23, 42, 0.75); /* напівпрозорий темний фон */
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+
     .kbd{border:1px solid rgba(255,255,255,.2); padding:.1rem .4rem; border-radius:.4rem; font-size:.8rem}
     .tag{border:1px solid rgba(255,255,255,.15); padding:.15rem .5rem; border-radius:999px; font-size:.75rem; white-space:nowrap}
     .mono{font-variant-numeric: tabular-nums}
@@ -19,7 +32,7 @@
     .safe-wrap{overflow-wrap:anywhere}
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100">
+<body class="text-slate-100">
   <!-- ======= Модальне вікно версії ======= -->
   <div id="versionModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 hidden">
     <div class="bg-slate-900 text-slate-100 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-lg">
@@ -29,10 +42,10 @@
     </div>
   </div>
 
-  <div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="max-w-6xl mx-auto px-4 py-8 bg-overlay">
     <header class="mb-6">
       <h1 class="text-2xl md:text-3xl font-bold tracking-tight">🛠️ Furry Helper</h1>
-      <p class="text-slate-400 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">оск</span>, <span class="kbd">нон рп нік</span>, <span class="kbd">nonrp drive</span>, <span class="kbd">образа адміна</span>, <span class="kbd">донат</span>…</p>
+      <p class="text-slate-300 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">оск</span>, <span class="kbd">нон рп нік</span>, <span class="kbd">nonrp drive</span>, <span class="kbd">образа адміна</span>, <span class="kbd">донат</span>…</p>
     </header>
 
     <section class="mb-6">
@@ -48,7 +61,7 @@
           <button id="showAllBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Показати всі</button>
         </div>
       </div>
-      <div class="text-xs text-slate-400 mt-2 flex flex-wrap gap-2">
+      <div class="text-xs text-slate-300 mt-2 flex flex-wrap gap-2">
         <span class="tag">Підказка: шукай і за кодом правила — <span class="mono">4.1.2</span>, <span class="mono">5.11</span></span>
         <span class="tag">Синоніми: «оск адміна» == «образа адміністрації»</span>
         <span class="tag">UPD застосовані (16.08, 28.08 тощо)</span>
