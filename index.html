@@ -3,43 +3,50 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="google-site-verification" content="F5wJ1yhRpqChiSD5zajnKqFiRJxoxD4rbd6-Ki4N8lQ" />" 
-  <title>Furry — пошук порушень і покарань</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Furry — пошук правил і покарань</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root { color-scheme: dark light; }
-    html, body { height: 100%; }
-    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
-    .kbd{border:1px solid rgba(255,255,255,.2); padding:.1rem .4rem; border-radius:.4rem; font-size:.8rem}
-    .tag{border:1px solid rgba(255,255,255,.15); padding:.15rem .5rem; border-radius:999px; font-size:.75rem; white-space:nowrap}
-    .mono{font-variant-numeric: tabular-nums}
-    .pill{border-radius:999px}
-    .safe-wrap{overflow-wrap:anywhere}
+    html, body { height: 100%; font-family: 'Inter', sans-serif; }
+    body { background: radial-gradient(circle at top, #0f172a, #020617); }
+    .glass {
+      background: rgba(30,41,59,0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .card {
+      transition: all .25s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100">
-  <!-- ======= Модальне вікно версії ======= -->
+<body class="text-slate-100">
+
+  <!-- ======= Модальне вікно ======= -->
   <div id="versionModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 hidden">
-    <div class="bg-slate-900 text-slate-100 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-lg">
-      <h2 class="text-lg font-bold">🛠️ Furry Helper</h2>
+    <div class="glass text-slate-100 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-lg">
+      <h2 class="text-xl font-bold">🛠️ Furry Helper</h2>
       <p>Версія 0.2 — швидкий пошук по правилах та покаранням!</p>
-      <button id="closeModal" class="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl">Закрити</button>
+      <button id="closeModal" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl">Закрити</button>
     </div>
   </div>
 
-  <div class="max-w-6xl mx-auto px-4 py-8">
+  <!-- ======= Контейнер ======= -->
+  <div class="max-w-5xl mx-auto px-4 py-8">
     <header class="mb-6">
-      <h1 class="text-2xl md:text-3xl font-bold tracking-tight">🛠️ Furry Helper</h1>
-      <p class="text-slate-400 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">оск</span>, <span class="kbd">нон рп нік</span>, <span class="kbd">nonrp drive</span>, <span class="kbd">образа адміна</span>, <span class="kbd">донат</span>…</p>
+      <h1 class="text-3xl font-bold tracking-tight">🛠️ Furry Helper</h1>
+      <p class="text-slate-400 mt-1 text-sm">Швидкий пошук по правилах та покаранням. Наприклад: <span class="px-2 py-0.5 rounded bg-slate-800 text-xs">dm</span>, <span class="px-2 py-0.5 rounded bg-slate-800 text-xs">оск адміна</span>, <span class="px-2 py-0.5 rounded bg-slate-800 text-xs">nonrp drive</span>…</p>
     </header>
 
+    <!-- ======= Пошук ======= -->
     <section class="mb-6">
       <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
         <div class="relative flex-1">
-          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="Пошук за ключем або описом… (напр. «оск адміна», «mass dm gz», «5.10»)" autofocus>
-          <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 opacity-70" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <input id="q" class="w-full glass border border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40 outline-none rounded-2xl px-4 py-3 pr-10 transition" placeholder="Пошук за ключем або описом…" autofocus>
+          <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 opacity-70 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.2-5.2M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
           </svg>
         </div>
@@ -48,13 +55,7 @@
           <button id="showAllBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Показати всі</button>
         </div>
       </div>
-      <div class="text-xs text-slate-400 mt-2 flex flex-wrap gap-2">
-        <span class="tag">Підказка: шукай і за кодом правила — <span class="mono">4.1.2</span>, <span class="mono">5.11</span></span>
-        <span class="tag">Синоніми: «оск адміна» == «образа адміністрації»</span>
-        <span class="tag">UPD застосовані (16.08, 28.08 тощо)</span>
-      </div>
     </section>
-
     <section id="stats" class="text-slate-300 text-sm mb-3"></section>
     <section id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
 
