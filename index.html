@@ -11,19 +11,12 @@
       background: url("Screenshot_2025-09-12-07-42-42-950_com.miui.gallery.jpg") no-repeat center center fixed;
       background-size: cover;
       font-family: Arial, sans-serif;
-      color: #fff;
     }
 
-    /* глобально прибираємо всі білі фони */
-    * {
-      background: transparent !important;
-      box-sizing: border-box;
-    }
-
-    header, .stats, .card, .modal-content {
-      background: rgba(0, 0, 0, 0.6) !important;
-      border-radius: 10px;
-      padding: 10px;
+    header {
+      background: white;
+      padding: 20px;
+      text-align: center;
     }
 
     .container {
@@ -33,32 +26,38 @@
     #q {
       width: 100%;
       padding: 10px;
-      border: none;
+      margin: 10px 0;
+      border: 1px solid #ccc;
       border-radius: 6px;
-      outline: none;
-      background: rgba(0,0,0,0.5) !important;
-      color: #fff;
-    }
-
-    #q::placeholder {
-      color: #ccc;
     }
 
     button {
-      background: rgba(0, 0, 0, 0.7) !important;
-      color: #fff;
-      border: 1px solid #fff;
-      border-radius: 6px;
+      margin: 5px;
       padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
+      background: #007bff;
+      color: white;
     }
 
     button:hover {
-      background: rgba(255, 255, 255, 0.2) !important;
+      background: #0056b3;
+    }
+
+    .stats {
+      background: white;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
     }
 
     .card {
+      background: white;
+      padding: 15px;
       margin: 10px 0;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .modal {
@@ -73,14 +72,16 @@
     }
 
     .modal-content {
+      background: white;
       margin: 15% auto;
       padding: 20px;
       width: 80%;
       max-width: 500px;
+      border-radius: 10px;
     }
 
     .close {
-      color: #fff;
+      color: #333;
       float: right;
       font-size: 28px;
       font-weight: bold;
@@ -88,7 +89,7 @@
     }
 
     .close:hover {
-      color: #ff5555;
+      color: red;
     }
   </style>
 </head>
@@ -113,11 +114,16 @@
   </div>
 
   <script>
-    // приклад масиву правил
     const RULES = [
-      { code: "2.1", title: "Заборонено ники", text: "Заборонено використовувати образливі ники.", punishment: "Попередження / Бан" },
+      { code: "2.1", title: "Неприпустимі ники", text: "Заборонено використовувати образливі ники.", punishment: "Попередження / Бан" },
+      { code: "2.2", title: "Неприпустимі аватари", text: "Заборонені NSFW та образливі аватари.", punishment: "Попередження / Бан" },
+      { code: "3.1", title: "Чіти", text: "Використання сторонніх програм заборонено.", punishment: "Бан назавжди" },
       { code: "3.2", title: "Баги", text: "Використання багів заборонено.", punishment: "Бан 7 днів" },
-      { code: "5.1", title: "Флуд", text: "Заборонений флуд у чаті.", punishment: "Мут 30 хв" }
+      { code: "4.1", title: "Metagaming", text: "Заборонено використовувати OOC-інфу в IC.", punishment: "Бан 3 дні" },
+      { code: "4.2", title: "Powergaming", text: "Заборонено примушувати інших гравців до дій.", punishment: "Бан 3 дні" },
+      { code: "5.1", title: "Флуд", text: "Заборонено флуд у чаті.", punishment: "Мут 30 хв" },
+      { code: "5.2", title: "Образи", text: "Заборонено ображати інших.", punishment: "Мут 1 година / Бан" }
+      // 👉 сюди можеш дописати всі інші свої правила з великого списку
     ];
 
     const q = document.getElementById("q");
@@ -131,7 +137,9 @@
       list.forEach(r => {
         const div = document.createElement("div");
         div.className = "card";
-        div.innerHTML = `<h3>${r.code} — ${r.title}</h3><p>${r.text}</p><strong>Покарання:</strong> ${r.punishment}`;
+        div.innerHTML = `<h3>${r.code} — ${r.title}</h3>
+                         <p>${r.text}</p>
+                         <strong>Покарання:</strong> ${r.punishment}`;
         results.appendChild(div);
       });
       stats.textContent = "Знайдено: " + list.length;
