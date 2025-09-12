@@ -8,11 +8,14 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html, body { height: 100%; font-family: 'Inter', sans-serif; }
-    body { background: radial-gradient(circle at top, #0f172a, #020617); }
-    .glass {
-      background: rgba(30,41,59,0.7);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+  body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: url("Screenshot_2025-09-12-07-42-42-950_com.miui.gallery.jpg") no-repeat center center;
+      background-size: cover; /* масштабує фото, щоб покривало весь екран */
+      background-attachment: fixed; /* ефект паралаксу */
+      font-family: Arial, sans-serif;
     }
     .card {
       transition: all .25s ease;
