@@ -1,89 +1,70 @@
 <!doctype html> 
 <html lang="uk">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="google-site-verification" content="F5wJ1yhRpqChiSD5zajnKqFiRJxoxD4rbd6-Ki4N8lQ" /> 
-  <title>Furry — пошук порушень і покарань</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://i.postimg.cc/sg8hv2Cr/photo-2025-09-14-23-33-00.jpg">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root { color-scheme: dark light; }
-    html, body { height: 100%; margin: 0; }
-
-body {
-  background: url("https://i.postimg.cc/SNGLN9rY/photo-2025-09-14-23-48-14.jpg") no-repeat center center fixed;
-  background-size: cover;
-}
-   /* щоб текст/блоки були читабельними */
-    .bg-overlay {
-      background: rgba(10, 22, 41, 0.60); /* напівпрозорий темний фон */
-      border-radius: 1rem;
-      padding: 1.5rem;
-    }
-
-    .kbd{border:1px solid rgba(255,255,255,.2); padding:.1rem .4rem; border-radius:.4rem; font-size:.8rem}
-    .tag{border:1px solid rgba(255,255,255,.15); padding:.15rem .5rem; border-radius:999px; font-size:.75rem; white-space:nowrap}
-    .mono{font-variant-numeric: tabular-nums}
-    .pill{border-radius:999px}
-    .safe-wrap{overflow-wrap:anywhere}
-  </style>
+  <!-- ... ваш head без змін ... -->
 </head>
 <body class="text-slate-100">
-  <!-- ======= Модальне вікно версії ======= -->
-  <div id="versionModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 hidden">
-    <div class="bg-slate-900 text-slate-100 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-lg">
-      <h2 class="text-lg font-bold">🛠️ Furry Helper</h2>
-      <p>Версія 0.2 — швидкий пошук по правилах та покаранням!</p>
-      <button id="closeModal" class="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl">Закрити</button>
+  <!-- ======= Кнопка меню у правому верхньому куті ======= -->
+  <div class="fixed top-4 right-4 z-50">
+    <button id="menuBtn" class="p-2 bg-slate-800/70 hover:bg-slate-700 rounded-full text-slate-100">
+      &#x22EE;
+    </button>
+  </div>
+
+  <!-- ======= Модальне вікно меню ======= -->
+  <div id="menuModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-40 hidden">
+    <div class="bg-slate-900 text-slate-100 rounded-2xl p-6 max-w-md w-full text-center space-y-4 shadow-lg">
+      <h2 class="text-lg font-bold mb-2">Меню</h2>
+      <!-- Контакти техпідтримки -->
+      <div class="bg-slate-800/50 rounded-xl p-4">
+        <h3 class="font-semibold mb-1">Технічна підтримка</h3>
+        <p>Напишіть нам: <a href="mailto:a60840397@gmail.com" class="text-indigo-400 underline">a60840397@gmail.com</a></p>
+      </div>
+      <!-- Відгук -->
+      <div class="bg-slate-800/50 rounded-xl p-4">
+        <h3 class="font-semibold mb-1">Залишити відгук</h3>
+        <p>Відправити відгук на ту ж електронну пошту: <a href="mailto:a60840397@gmail.com" class="text-indigo-400 underline">a60840397@gmail.com</a></p>
+      </div>
+      <!-- Посилання на UA Online -->
+      <div class="bg-slate-800/50 rounded-xl p-4">
+        <h3 class="font-semibold mb-1">Завантажити UA Online</h3>
+        <a href="https://ua-online.games/" target="_blank" class="text-indigo-400 underline">Перейти на сайт</a>
+      </div>
+      <!-- Інформація про автора -->
+      <div class="bg-slate-800/50 rounded-xl p-4 text-left space-y-2">
+        <h3 class="font-semibold text-center mb-2">Хто мене створив</h3>
+        <p>Цей проєкт створив <b>Артем Процко</b>. Всі права на дизайн, код та контент належать автору. Будь-яке копіювання чи використання без дозволу заборонене.</p>
+        <p>Контактний телефон: <b>066-692-16-01</b></p>
+        <p>Усі дії з проєктом узгоджуються відповідно до законодавства та правил використання контенту. Порушення прав автора тягне юридичну відповідальність.</p>
+      </div>
+      <button id="closeMenu" class="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl">Закрити</button>
     </div>
   </div>
 
+  <!-- ======= Модальне вікно версії ======= -->
+  <div id="versionModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 hidden">
+    <!-- ... ваш модал версії ... -->
+  </div>
+
   <div class="max-w-6xl mx-auto px-4 py-8 bg-overlay">
-    <header class="mb-6">
-      <h1 class="text-2xl md:text-3xl font-bold tracking-tight">🛠️ Furry Helper</h1>
-      <p class="text-slate-300 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">оск</span>, <span class="kbd">нон рп нік</span>, <span class="kbd">nonrp drive</span>, <span class="kbd">образа адміна</span>, <span class="kbd">донат</span>…</p>
-    </header>
-
-    <section class="mb-6">
-      <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
-        <div class="relative flex-1">
-          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="Пошук за ключем або описом… (напр. «оск адміна», «mass dm gz», «5.10»)" autofocus>
-          <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 opacity-70" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.2-5.2M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-          </svg>
-        </div>
-        <div class="flex gap-2">
-          <button id="clearBtn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Очистити</button>
-          <button id="showAllBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Показати всі</button>
-        </div>
-      </div>
-      <div class="text-xs text-slate-300 mt-2 flex flex-wrap gap-2">
-        <span class="tag">Підказка: шукай і за кодом правила — <span class="mono">4.1.2</span>, <span class="mono">5.11</span></span>
-        <span class="tag">Синоніми: «оск адміна» == «образа адміністрації»</span>
-        <span class="tag">UPD застосовані (16.08, 28.08 тощо)</span>
-      </div>
-    </section>
-
-    <section id="stats" class="text-slate-300 text-sm mb-3"></section>
-    <section id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
-
-    <footer class="mt-12 text-slate-500 text-xs">
-      <div class="space-y-1">
-        <p>Останні зміни включено: правки до <span class="mono">3.10</span>, <span class="mono">3.30</span>, <span class="mono">3.31</span> (999+), видалений <span class="mono">3.33</span> (старий), оновлені <span class="mono">4.1.1</span>, <span class="mono">4.4.1</span>, <span class="mono">4.25</span>, <span class="mono">4.28</span>, <span class="mono">5.10</span>, <span class="mono">5.11</span>, <span class="mono">5.15</span>, <span class="mono">5.24</span>.</p>
-        <p>UI Не забувайте первіряти офіційний портал Discord.</p>
-      </div>
-    </footer>
+    <!-- ... ваш основний контент ... -->
   </div>
 
   <script>
+    // ====== Меню модальне ======
+    const menuBtn = document.getElementById('menuBtn');
+    const menuModal = document.getElementById('menuModal');
+    const closeMenu = document.getElementById('closeMenu');
+
+    menuBtn.addEventListener('click', () => menuModal.classList.remove('hidden'));
+    closeMenu.addEventListener('click', () => menuModal.classList.add('hidden'));
+    menuModal.addEventListener('click', e => { if(e.target === menuModal) menuModal.classList.add('hidden'); });
+
     // ====== Модальне вікно версії ======
     window.addEventListener('load', () => {
       const modal = document.getElementById('versionModal');
       const closeBtn = document.getElementById('closeModal');
       modal.classList.remove('hidden');
-
       closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
       modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.add('hidden'); });
     });
