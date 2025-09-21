@@ -370,9 +370,9 @@
     const musicSearchBtn = document.getElementById('musicSearchBtn');
     const musicResultsEl = document.getElementById('musicResults');
 
-    async function searchSpotifyTrack(query) {
+     async function searchSpotifyTrack(query) {
       // ВСТАВ СВОЙ SPOTIFY API TOKEN ТУТ (https://developer.spotify.com/dashboard/)
-      const SPOTIFY_TOKEN = 'BQBMB6lwBuDqwZlbhMV0d5i78YOWE5RfYxnarchXMh2Fb8wQMsNOjtSltbZRuoLlFWV7FaEg3OaReieR7PeDw3jvEqjXsnL2b6ClQ6KpwXmVK-EdLbOjRRwairDed7ws9VfMXL5DcRDRc9d0YQlowf_Dh0bUpy5tvnApl78da8K1bqO-mkpTDK1rX--W0xNBtnu4DvtFplD73TvunZYCE5v0Y7b3asak_G2SZhuCjqlAW12OvNLemP8i7vwPCO-1xR8owAW-ISm0l3zm2-LU9rkHEklo3WqgOBNvuSAnqlSD135QnThwwrnKuhwh4wBf'; // ← сюди вставляй свій токен!
+      const SPOTIFY_TOKEN = 'BQBBAlRPOWZjTZf0OVAABOeotrojoKbbkubq3in55TRqIyDbbyRyxWmToMhkGtsqb1J3AoT59zyZiMhvFty7oVJ2_sPr7lZIW02ukBjMU4vWPtEYTLLnYrIiuLr08GlQUr9sOiBmx2a_YoH7gBpB4WK-xHvZ9uOHnmzIirCxgYV4sUrf2zEXMhwOPeryUChciyxOozKLkjDAO3266G8RI7SRP68JMueGmWFXEiKQ-gH68UwGGBLineg2ZPdsrtenv6kDV-uncrRVNRRv3LNG3x8Ya3E6wWr6dMS4hocAhHvGBnqBFyci-pcfCYxT11OA';
       if (!SPOTIFY_TOKEN || SPOTIFY_TOKEN.length < 10) {
         musicResultsEl.innerHTML = '<span class="text-red-400">Встав токен Spotify для справжнього пошуку!</span>';
         return [];
