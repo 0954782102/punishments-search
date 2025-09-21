@@ -370,47 +370,39 @@
     const musicSearchBtn = document.getElementById('musicSearchBtn');
     const musicResultsEl = document.getElementById('musicResults');
 
-     async function searchSpotifyTrack(query) {
-      // ВСТАВ СВОЙ SPOTIFY API TOKEN ТУТ (https://developer.spotify.com/dashboard/)
-      const SPOTIFY_TOKEN = 'BQBBAlRPOWZjTZf0OVAABOeotrojoKbbkubq3in55TRqIyDbbyRyxWmToMhkGtsqb1J3AoT59zyZiMhvFty7oVJ2_sPr7lZIW02ukBjMU4vWPtEYTLLnYrIiuLr08GlQUr9sOiBmx2a_YoH7gBpB4WK-xHvZ9uOHnmzIirCxgYV4sUrf2zEXMhwOPeryUChciyxOozKLkjDAO3266G8RI7SRP68JMueGmWFXEiKQ-gH68UwGGBLineg2ZPdsrtenv6kDV-uncrRVNRRv3LNG3x8Ya3E6wWr6dMS4hocAhHvGBnqBFyci-pcfCYxT11OA';
-      if (!SPOTIFY_TOKEN || SPOTIFY_TOKEN.length < 10) {
-        musicResultsEl.innerHTML = '<span class="text-red-400">Встав токен Spotify для справжнього пошуку!</span>';
-        return [];
-      }
-      const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`;
-      try {
-        const res = await fetch(url, {
-          headers: { 'Authorization': `Bearer ${SPOTIFY_TOKEN}` }
-        });
-        const data = await res.json();
-        return (data.tracks && data.tracks.items) ? data.tracks.items : [];
-      } catch(e) {
-        musicResultsEl.innerHTML = 'Помилка пошуку або Spotify API недоступний.';
-        return [];
-      }
-    }
+     async function searchDeezerTrack(query) {
+  const url = `https://api.deezer.com/search?q=${encodeURIComponent(query)}`;
+  try {
+    const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`); // обхід CORS через безкоштовний проксі
+    const data = await res.json();
+    return data.data || [];
+  } catch(e) {
+    musicResultsEl.innerHTML = 'Помилка пошуку або Deezer API недоступний.';
+    return [];
+  }
+}
 
-    function showSpotifyEmbed(trackId) {
-      return `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator"
-        width="100%" height="80" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"></iframe>`;
-    }
+function showDeezerPlayer(trackId) {
+  return `<iframe title="Deezer Player" src="https://widget.deezer.com/widget/dark/track/${trackId}" width="100%" height="90" frameborder="0" allowtransparency="true"></iframe>`;
+}
 
-    musicSearchBtn.onclick = async () => {
-      const q = musicQueryEl.value.trim();
-      if (!q) return;
-      musicResultsEl.innerHTML = 'Шукаю...';
-      const tracks = await searchSpotifyTrack(q);
-      if (!tracks.length) {
-        musicResultsEl.innerHTML = 'Нічого не знайдено 😥';
-        return;
-      }
-      musicResultsEl.innerHTML = tracks.map(
-        t => `<div class="mb-4">
-          <div class="font-semibold text-slate-200">${t.name} — <span class="text-slate-400">${t.artists.map(a=>a.name).join(', ')}</span></div>
-          ${showSpotifyEmbed(t.id)}
-        </div>`
-      ).join('');
-    };
+musicSearchBtn.onclick = async () => {
+  const q = musicQueryEl.value.trim();
+  if (!q) return;
+  musicResultsEl.innerHTML = 'Шукаю...';
+  const tracks = await searchDeezerTrack(q);
+  if (!tracks.length) {
+    musicResultsEl.innerHTML = 'Нічого не знайдено 😥';
+    return;
+  }
+  musicResultsEl.innerHTML = tracks.map(
+    t => `<div class="mb-4">
+      <div class="font-semibold text-slate-200">${t.title} — <span class="text-slate-400">${t.artist.name}</span></div>
+      <img src="${t.album.cover_medium}" style="border-radius:8px;max-width:100px;margin-bottom:8px">
+      ${showDeezerPlayer(t.id)}
+    </div>`
+  ).join('');
+};
   </script>
 </body>
 </html>
