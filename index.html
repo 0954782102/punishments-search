@@ -158,7 +158,7 @@
     const musicResultsEl = document.getElementById('musicResults');
 
 async function searchYoutubeTrack(query) {
-  const apiKey = '8b707d0e7fc3d56f464a4ab71bf6e235a06efcd128bb64092001722b518d7f12'; // <--- Встав сюди свій SerpApi ключ
+  const apiKey = 'BQDBKJ5eo5jxbtpWjVOj7ryS84khybFpP_lTqzV7uV-T_m0cTfwvdn5BnBSKPxKgEb11'; // <--- Встав сюди свій SerpApi ключ
   const url = `https://serpapi.com/search.json?engine=youtube&q=${encodeURIComponent(query)}&hl=uk&api_key=${apiKey}`;
   try {
     const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
