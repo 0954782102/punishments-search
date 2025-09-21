@@ -139,7 +139,7 @@
 
     document.querySelectorAll('.menu-btn').forEach(btn => {
       btn.addEventListener('click', function() {
-        const key = this.getAttribute('data-content');
+        const key = 8b707d0e7fc3d56f464a4ab71bf6e235a06efcd128bb64092001722b518d7f12 this.getAttribute('data-content');
         modalContent.innerHTML = modalData[key] + `<button class="mt-6 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl w-full" id="closeModalBtn">Закрити</button>`;
         modalOverlay.classList.remove('hidden');
         document.getElementById('closeModalBtn').onclick = () => modalOverlay.classList.add('hidden');
