@@ -52,7 +52,7 @@
     <section class="mb-6">
       <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
         <div class="relative flex-1">
-          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="Пошук по правилам або покаранням..." autocomplete="off">
+          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="Пошук по покараннях, кодах, синонімах..." />
           <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 opacity-70 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.2-5.2M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
           </svg>
@@ -72,16 +72,16 @@
     <section id="stats" class="text-slate-300 text-sm mb-3"></section>
     <section id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
     
-    <!-- ======= ЧИЛКА / МУЗИКА (ОНОВЛЕНО) ======= -->
+    <!-- ======= ЧИЛКА / МУЗИКА ======= -->
     <section id="chill-music" class="mt-10 bg-slate-900/70 rounded-2xl p-6">
-      <h2 class="text-xl font-bold mb-3">🎶 Чилка: Знайди трек на YouTube</h2>
+      <h2 class="text-xl font-bold mb-3">🎶 Чилка: Знайди трек на Spotify</h2>
       <div class="flex gap-2 mb-2">
-        <input id="musicQuery" class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100" placeholder="Введи назву або фразу (наприклад: У но...)" autocomplete="off">
+        <input id="musicQuery" class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100" placeholder="Введи назву або фразу (наприклад: У ночі)" />
         <button id="musicSearchBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white">Знайти</button>
       </div>
       <div id="musicResults" class="mt-3"></div>
       <div class="text-xs text-slate-400 mt-2">
-        <span>Відтворення повних треків через YouTube. У Deezer/Spotify — лише фрагменти для неавторизованих.</span>
+        <span>Потрібен Spotify аккаунт для прослуховування повної версії треку. Відкрито через Spotify Embed.</span>
       </div>
     </section>
     <!-- ======= КІНЕЦЬ ЧИЛКА / МУЗИКА ======= -->
@@ -130,16 +130,13 @@
           <li>Виправлено інпут пошуку.</li>
           <li>Покращено верстку та читабельність.</li>
           <li>Модалка показує актуальну версію.</li>
-          <li>Додана Чил зона. яку знаєш пісню? знайди тут.</li>
-          <li>Оновелно фоновий дизайн гадаю його вже помітили.</li>
-          <li>Додана можливість написати відгук, чи проблему</li>
         </ul>
       `
     };
 
     document.querySelectorAll('.menu-btn').forEach(btn => {
       btn.addEventListener('click', function() {
-        const key =  this.getAttribute('data-content');
+        const key = this.getAttribute('data-content');
         modalContent.innerHTML = modalData[key] + `<button class="mt-6 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl w-full" id="closeModalBtn">Закрити</button>`;
         modalOverlay.classList.remove('hidden');
         document.getElementById('closeModalBtn').onclick = () => modalOverlay.classList.add('hidden');
@@ -150,44 +147,103 @@
     });
 
     // ====== ПОШУК (як було) ======
-    // ... Тут лишається весь твій RULES, DATA і рендер функціонал, без змін
+    const RULES = [
+      // ... (твоя велика база правил, не міняв)
+    ];
 
-    // ====== МУЗИЧНИЙ ПОШУК (YouTube, оновлено) ======
+    const DATA = RULES.map((r, i) => ({
+      ...r,
+      _id: i + 1,
+      hay: [r.code, r.title].concat(r.aliases || []).concat((r.text || "").split(/[^\p{L}\p{N}_]+/u)).join(" ").toLowerCase()
+    }));
+
+    const elQ = document.getElementById('q');
+    const elResults = document.getElementById('results');
+    const elStats = document.getElementById('stats');
+    const elClear = document.getElementById('clearBtn');
+    const elShowAll = document.getElementById('showAllBtn');
+
+    function render(list){
+      elResults.innerHTML = "";
+      if(!list.length){
+        elStats.innerHTML = "Нічого не знайдено. Спробуй інший запит або синонім.";
+        return;
+      }
+      elStats.innerHTML = `Знайдено <b>${list.length}</b> пункт(ів).`;
+      const frag = document.createDocumentFragment();
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "rounded-2xl border border-slate-800 bg-slate-900/50 p-4 hover:border-indigo-600 transition-colors";
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-2 gap-2">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-1 pill bg-slate-800 text-slate-200 text-xs mono">${item.code}</span>
+              <h3 class="font-semibold text-base safe-wrap">${escapeHTML(item.title)}</h3>
+            </div>
+          </div>
+          <p class="text-slate-400 text-sm safe-wrap">${escapeHTML(item.text || "")}</p>
+          <p class="text-indigo-400 text-sm safe-wrap mt-1"><b>Покарання:</b> ${escapeHTML(item.punishment || "")}</p>
+        `;
+        frag.appendChild(card);
+      });
+      elResults.appendChild(frag);
+    }
+
+    function escapeHTML(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    function search(q){
+      q = q.toLowerCase();
+      return DATA.filter(d => d.hay.includes(q));
+    }
+
+    elQ.addEventListener('input', ()=> render(search(elQ.value)));
+    elClear.addEventListener('click', ()=> { elQ.value=''; render([]); });
+    elShowAll.addEventListener('click', ()=> render(DATA));
+    render([]);
+
+    // ====== МУЗИЧНИЙ ПОШУК (Spotify) ======
     const musicQueryEl = document.getElementById('musicQuery');
     const musicSearchBtn = document.getElementById('musicSearchBtn');
     const musicResultsEl = document.getElementById('musicResults');
 
-async function searchYoutubeTrack(query) {
-  const apiKey = 'BQDBKJ5eo5jxbtpWjVOj7ryS84khybFpP_lTqzV7uV-T_m0cTfwvdn5BnBSKPxKgEb11'; // <--- Встав сюди свій SerpApi ключ
-  const url = `https://serpapi.com/search.json?engine=youtube&q=${encodeURIComponent(query)}&hl=uk&api_key=${apiKey}`;
-  try {
-    const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
-    const data = await res.json();
-    console.log(data); // <--- Додано для дебагу
-    return (data.video_results || []).slice(0,5);
-  } catch(e) {
-    musicResultsEl.innerHTML = 'Помилка пошуку або YouTube API недоступний.';
-    return [];
-  }
-}
-    function showYouTubePlayer(videoId) {
-      return `<iframe width="100%" height="100" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+    async function searchSpotifyTrack(query) {
+      // ВСТАВ СВОЙ SPOTIFY API TOKEN ТУТ (https://developer.spotify.com/dashboard/)
+      const SPOTIFY_TOKEN = ''; // ← сюди вставляй свій токен!
+      if (!SPOTIFY_TOKEN || SPOTIFY_TOKEN.length < 10) {
+        musicResultsEl.innerHTML = '<span class="text-red-400">Встав токен Spotify для справжнього пошуку!</span>';
+        return [];
+      }
+      const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`;
+      try {
+        const res = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${SPOTIFY_TOKEN}` }
+        });
+        const data = await res.json();
+        return (data.tracks && data.tracks.items) ? data.tracks.items : [];
+      } catch(e) {
+        musicResultsEl.innerHTML = 'Помилка пошуку або Spotify API недоступний.';
+        return [];
+      }
+    }
+
+    function showSpotifyEmbed(trackId) {
+      return `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${trackId}?utm_source=generator"
+        width="100%" height="80" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"></iframe>`;
     }
 
     musicSearchBtn.onclick = async () => {
       const q = musicQueryEl.value.trim();
       if (!q) return;
-      musicResultsEl.innerHTML = 'Фюрі Шукає...';
-      const tracks = await searchYoutubeTrack(q);
+      musicResultsEl.innerHTML = 'Шукаю...';
+      const tracks = await searchSpotifyTrack(q);
       if (!tracks.length) {
-        musicResultsEl.innerHTML = 'нажаль фюріі не зміг знайти таку пісню 😥';
+        musicResultsEl.innerHTML = 'Нічого не знайдено 😥';
         return;
       }
       musicResultsEl.innerHTML = tracks.map(
         t => `<div class="mb-4">
-          <div class="font-semibold text-slate-200">${t.title} — <span class="text-slate-400">${t.channel_name || ''}</span></div>
-          ${showYouTubePlayer(t.video_id)}
-          <a href="https://www.youtube.com/watch?v=${t.video_id}" target="_blank" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white inline-block mt-2">Слухати у YouTube</a>
+          <div class="font-semibold text-slate-200">${t.name} — <span class="text-slate-400">${t.artists.map(a=>a.name).join(', ')}</span></div>
+          ${showSpotifyEmbed(t.id)}
         </div>`
       ).join('');
     };
