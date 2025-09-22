@@ -23,6 +23,28 @@
     .mono{font-variant-numeric: tabular-nums}
     .pill{border-radius:999px}
     .safe-wrap{overflow-wrap:anywhere}
+    .youtube-thumb {transition: box-shadow .2s;}
+    .youtube-thumb:hover {box-shadow: 0 0 0 3px #6366f1;}
+    .modal-backdrop {
+      background: rgba(0,0,0,0.8);
+      position: fixed; left:0; top:0; width:100vw; height:100vh; z-index:1000;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-content {
+      background: #1e293b;
+      border-radius: 1.2rem;
+      padding: 0;
+      max-width: 600px;
+      width: 95vw;
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .modal-close {
+      position:absolute; top:10px; right:10px; background:#334155; border:none; border-radius:999px; color:#fff; padding:5px 12px; font-size:1.3rem; cursor:pointer;
+      transition: background .2s;
+    }
+    .modal-close:hover {background:#6366f1;}
   </style>
 </head>
 <body class="text-slate-100">
@@ -46,13 +68,13 @@
   <div class="max-w-6xl mx-auto px-4 py-8 bg-overlay">
     <header class="mb-6">
       <h1 class="text-2xl md:text-3xl font-bold tracking-tight">🛠️ Furry Helper</h1>
-      <p class="text-slate-300 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, [...]
+      <p class="text-slate-300 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">5.11</span>, <span class="kbd">мультиакк</span>...</p>
     </header>
 
     <section class="mb-6">
       <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
         <div class="relative flex-1">
-          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="По [...]
+          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="Пошук по правилам або коду...">
           <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 opacity-70 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.2-5.2M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
           </svg>
@@ -72,68 +94,63 @@
     <section id="stats" class="text-slate-300 text-sm mb-3"></section>
     <section id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
     
-    <!-- ======= ЧИЛКА / МУЗИКА (YouTube) ======= -->
-    <section id="chill-music" class="mt-10 bg-slate-900/70 rounded-2xl p-6">
+    <!-- ======= ЧИЛКА / МУЗИКА YOUTUBE ======= -->
+    <section id="chill-music-youtube" class="mt-10 bg-slate-900/70 rounded-2xl p-6">
       <h2 class="text-xl font-bold mb-3">🎶 Чилка: Знайди трек на YouTube</h2>
       <div class="flex gap-2 mb-2">
-        <input id="youtubeQuery" class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100" placeholder="Введи назву або фразу (наприклад: У ночі)">
+        <input id="youtubeQuery" class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100" placeholder="Введи назву або фразу">
         <button id="youtubeSearchBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white">Знайти</button>
       </div>
-      <div id="youtubeResults" class="mt-3"></div>
+      <div id="youtubeResults" class="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
       <div class="text-xs text-slate-400 mt-2">
-        <span>Відео відкриється тут, відтворення прямо на сайті. Потрібен доступ до YouTube.</span>
+        Пошук працює через YouTube Data API. Натисни на відео для перегляду.
       </div>
     </section>
-    <!-- ======= КІНЕЦЬ ЧИЛКА / МУЗИКА ======= -->
 
     <footer class="mt-12 text-slate-500 text-xs">
       <div class="space-y-1">
-        <p>Останні зміни включено: правки до <span class="mono">3.10</span>, <span class="mono">3.30</span>, <span class="mono">3.31</span> (999+), видалений <span[...]
+        <p>Останні зміни включено: правки до <span class="mono">3.10</span>, <span class="mono">3.30</span>, <span class="mono">3.31</span> (999+), видалений <span class="mono">старий пункт</span>.</p>
         <p>UI: Перевіряйте офіційний портал Discord для актуальних оновлень.</p>
       </div>
     </footer>
   </div>
 
+  <!-- ======= МОДАЛЬНЕ ВІКНО ДЛЯ YOUTUBE ======= -->
+  <div id="youtubeModal" class="modal-backdrop" style="display:none;">
+    <div class="modal-content">
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+      <div id="youtubeModalInner"></div>
+    </div>
+  </div>
+
   <script>
-    // ====== МОДАЛЬНЕ ВІКНО ======
+    // ====== МОДАЛЬНЕ ВІКНО (меню) ======
     const modalOverlay = document.getElementById('modalOverlay');
     const modalContent = document.getElementById('modalContent');
-
     const modalData = {
-      home: `
-        <h2 class="text-xl font-bold mb-2">Головна</h2>
-        <p>Вітаємо у Furry Helper! Тут можна швидко знайти правила та покарання. Скористайся пошуком вище.</p>
-      `,
-      rules: `
-        <h2 class="text-xl font-bold mb-2">Правила</h2>
-        <p>Всі актуальні правила та покарання шукай через пошук вище.</p>
-      `,
-      faq: `
-        <h2 class="text-xl font-bold mb-2">FAQ</h2>
+      home: `<h2 class="text-xl font-bold mb-2">Головна</h2>
+        <p>Вітаємо у Furry Helper! Тут можна швидко знайти правила та покарання. Скористайся пошуком вище.</p>`,
+      rules: `<h2 class="text-xl font-bold mb-2">Правила</h2>
+        <p>Всі актуальні правила та покарання шукай через пошук вище.</p>`,
+      faq: `<h2 class="text-xl font-bold mb-2">FAQ</h2>
         <ul class="list-disc pl-5 text-slate-300 text-sm">
           <li>Як шукати правило? — Введіть частину назви, код або синонім.</li>
           <li>Що означає "Jail"? — Тимчасове ув'язнення персонажа.</li>
           <li>Де взяти повний перелік? — Всі правила доступні через цей сайт, офіційний Discord та форум.</li>
-        </ul>
-      `,
-      contacts: `
-        <h2 class="text-xl font-bold mb-2">Контакти</h2>
+        </ul>`,
+      contacts: `<h2 class="text-xl font-bold mb-2">Контакти</h2>
         <p class="text-slate-300 text-sm">Зворотній зв'язок:<br>
           Discord: <span class="mono">@artem_symy</span><br>
           Email: <span class="mono">furry1helper@gmail.com</span>
-        </p>
-      `,
-      updates: `
-        <h2 class="text-xl font-bold mb-2">Оновлення 0.3</h2>
+        </p>`,
+      updates: `<h2 class="text-xl font-bold mb-2">Оновлення 0.3</h2>
         <ul class="list-disc pl-5 text-slate-300 text-sm">
           <li>Додано якірні секції для меню.</li>
           <li>Виправлено інпут пошуку.</li>
           <li>Покращено верстку та читабельність.</li>
           <li>Модалка показує актуальну версію.</li>
-        </ul>
-      `
+        </ul>`
     };
-
     document.querySelectorAll('.menu-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const key = this.getAttribute('data-content');
@@ -146,9 +163,9 @@
       if (e.target === modalOverlay) modalOverlay.classList.add('hidden');
     });
 
-    // ====== ПОШУК (як було) ======
+    // ====== ПОШУК ПРАВИЛ (як було) ======
     const RULES = [
-      // --- Базові пункти з твоєї початкової таблиці
+ // --- Базові пункти з твоєї початкової таблиці
       { code: "4.1",   title: "dm",            punishment: "Jail 20 хвилин", text: "Death Match — вбивство/шкода без вагомої IC причини.", aliases:["дм","дмш","кіл без причини","deathmatch"] },
       { code: "4.1.1", title: "mass dm",       punishment: "Jail 120 хвилин", text: "Mass DM — 3+ жертв без IC причини. (UPD)", aliases:["мас дм","мдм"] },
       { code: "4.1.2", title: "dm gz",         punishment: "Jail 30 хвилин", text: "DM у громадських місцях (Green Zone).", aliases:["дм гз","дм в гз","dm в gz","dm в гз"] },
@@ -312,19 +329,16 @@
       { code: "8.10", title: "лідер/зам може брати хабар", punishment: "РП-покарання від СБУ: штраф/арешт", text: "Адміністрація не втручається в РП.", aliases:["керівник хабар"] },
       { code: "8.11", title: "хабар за звільнення з в'язниці", punishment: "Warn", text: "Заборонено випускати за хабар або зменшувати час.", aliases:["випустив за хабар"] },
     ];
-
-   const DATA = RULES.map((r, i) => ({
+    const DATA = RULES.map((r, i) => ({
       ...r,
       _id: i + 1,
       hay: [r.code, r.title].concat(r.aliases || []).concat((r.text || "").split(/[^\p{L}\p{N}_]+/u)).join(" ").toLowerCase()
     }));
-
     const elQ = document.getElementById('q');
     const elResults = document.getElementById('results');
     const elStats = document.getElementById('stats');
     const elClear = document.getElementById('clearBtn');
     const elShowAll = document.getElementById('showAllBtn');
-
     function render(list){
       elResults.innerHTML = "";
       if(!list.length){
@@ -350,58 +364,68 @@
       });
       elResults.appendChild(frag);
     }
-
     function escapeHTML(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
     function search(q){
       q = q.toLowerCase();
       return DATA.filter(d => d.hay.includes(q));
     }
-
     elQ.addEventListener('input', ()=> render(search(elQ.value)));
     elClear.addEventListener('click', ()=> { elQ.value=''; render([]); });
     elShowAll.addEventListener('click', ()=> render(DATA));
     render([]);
 
-    // ====== МУЗИЧНИЙ ПОШУК (YouTube) ======
+    // ====== YOUTUBE SEARCH & MODAL ======
+    const YOUTUBE_API_KEY = 'AIzaSyCgcvd37KilEX_pc5Dhkf4Cwsp_WNC1fFQ';
     const youtubeQueryEl = document.getElementById('youtubeQuery');
     const youtubeSearchBtn = document.getElementById('youtubeSearchBtn');
     const youtubeResultsEl = document.getElementById('youtubeResults');
+    const youtubeModal = document.getElementById('youtubeModal');
+    const youtubeModalInner = document.getElementById('youtubeModalInner');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
 
-    // Використання YouTube Data API заборонено без API-ключа, тому обходимось відкритим пошуком
-    async function searchYouTube(query) {
-      // Відкритий пошук через noembed.com (показує перше відео)
-      youtubeResultsEl.innerHTML = "Шукаю...";
+    youtubeSearchBtn.onclick = async () => {
+      const q = youtubeQueryEl.value.trim();
+      if (!q) return;
+      youtubeResultsEl.innerHTML = "<div class='col-span-full'>Шукаю...</div>";
       try {
-        // Використовуємо Google пошук з site:youtube.com, беремо перше відео
-        const resp = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`);
-        // Але noembed працює тільки для конкретних відео, тому ми зробимо простіше:
-        // Пошукаємо на Youtube і візьмемо перше відео через iframe
-        // Тобто відкриємо відео з результатів пошуку
-        // Для цього треба знайти id відео (але без API це не зробити на сервері), тож відкриємо вікно з результатами пошуку або підставимо в iframe за запитом
-        // Найкраще — просто вбудувати в iframe YouTube search results page
-        youtubeResultsEl.innerHTML = `
-          <iframe 
-            width="100%" 
-            height="380" 
-            src="https://www.youtube.com/results?search_query=${encodeURIComponent(query)}"
-            title="YouTube Results"
-            frameborder="0"
-            allowfullscreen
-            class="rounded-xl w-full"
-            style="min-height:320px"></iframe>
-          <div class="mt-2 text-slate-400 text-xs">Якщо відео не грузиться — <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(query)}" target="_blank" class="underline text-indigo-400">відкрий у новій вкладці</a>.</div>
-        `;
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=5&q=${encodeURIComponent(q)}&key=${YOUTUBE_API_KEY}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.items || !data.items.length) {
+          youtubeResultsEl.innerHTML = "<div class='col-span-full'>Нічого не знайдено.</div>";
+          return;
+        }
+        youtubeResultsEl.innerHTML = "";
+        data.items.forEach(video => {
+          const videoId = video.id.videoId;
+          if (!videoId) return;
+          const card = document.createElement('div');
+          card.className = "rounded-xl bg-slate-800/80 p-2 flex flex-col items-center hover:bg-indigo-950 transition cursor-pointer youtube-thumb";
+          card.style.minHeight = "220px";
+          card.innerHTML = `
+            <img src="https://i.ytimg.com/vi/${videoId}/hqdefault.jpg" alt="" class="rounded-lg mb-2" style="width:100%;max-width:320px;">
+            <div class="text-slate-100 text-base font-semibold text-center px-2 mb-2 line-clamp-2" style="word-break:break-word;">${video.snippet.title}</div>
+          `;
+          card.onclick = () => showYoutubeModal(videoId, video.snippet.title);
+          youtubeResultsEl.appendChild(card);
+        });
       } catch (e) {
-        youtubeResultsEl.innerHTML = 'Помилка пошуку або мережі.';
+        youtubeResultsEl.innerHTML = "<div class='col-span-full'>Помилка запиту або перевищено ліміт API.</div>";
       }
-    }
-
-    youtubeSearchBtn.onclick = () => {
-      const query = youtubeQueryEl.value.trim();
-      if (!query) return;
-      searchYouTube(query);
     };
+
+    function showYoutubeModal(videoId, title) {
+      youtubeModalInner.innerHTML = `
+        <div class="w-full" style="aspect-ratio:16/9;background:#181e2a;">
+          <iframe width="100%" height="340" src="https://www.youtube.com/embed/${videoId}" 
+            frameborder="0" allowfullscreen class="rounded-xl" style="display:block;width:100%;height:340px;"></iframe>
+        </div>
+        <div class="p-4 text-lg font-semibold text-slate-100 text-center">${title}</div>
+      `;
+      youtubeModal.style.display = "flex";
+    }
+    modalCloseBtn.onclick = () => youtubeModal.style.display = "none";
+    youtubeModal.onclick = (e) => {if (e.target === youtubeModal) youtubeModal.style.display = "none";}
   </script>
 </body>
 </html>
