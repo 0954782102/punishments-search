@@ -448,21 +448,21 @@
 <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen flex flex-col">
   <div class="container mx-auto p-6 flex-1">
     <!-- Заголовок -->
-    <h1 class="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-red-400 to-pink-600 bg-clip-text text-transparent drop-shadow-lg">
+    <h1 class="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent drop-shadow-lg">
       Правила ППВЧ
     </h1>
 
     <!-- Пошук -->
     <div class="mb-6 max-w-xl mx-auto">
       <input id="q" type="text" placeholder="🔎 Пошук по ППВЧ..." 
-        class="w-full px-4 py-3 text-black rounded-xl shadow focus:ring-4 focus:ring-red-400 outline-none transition">
+        class="w-full px-4 py-3 text-black rounded-xl shadow focus:ring-4 focus:ring-blue-400 outline-none transition">
     </div>
 
     <!-- Кнопки -->
     <div class="flex justify-center gap-4 mb-6">
       <button id="clearBtn" class="bg-gray-700 hover:bg-gray-600 px-5 py-2 rounded-xl transition shadow">Очистити</button>
       <button id="showAllBtn" class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-xl transition shadow">Показати всі</button>
-      <a href="index.html" class="bg-red-600 hover:bg-red-500 px-5 py-2 rounded-xl transition shadow">⬅ Повернутися</a>
+      <a href="index.html" class="bg-blue-700 hover:bg-blue-600 px-5 py-2 rounded-xl transition shadow">⬅ Повернутися</a>
     </div>
 
     <!-- Статистика -->
@@ -490,25 +490,24 @@
     const clearBtn = document.getElementById("clearBtn");
     const showAllBtn = document.getElementById("showAllBtn");
 
-  function renderResults(results) {
-  resultsContainer.innerHTML = "";
-  if (results.length === 0) {
-    statsContainer.textContent = "Нічого не знайдено 🙈";
-    return;
-  }
-  statsContainer.textContent = `Знайдено ${results.length} правил`;
-  results.forEach(rule => {
-    const card = document.createElement("div");
-    card.className = "bg-white text-black p-5 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition";
-    card.innerHTML = `
-      <h3 class="text-lg font-bold mb-1">${rule.code} — ${rule.title}</h3>
-      <p class="text-sm mb-2 text-blue-600 font-semibold">${rule.text}</p>
-      <p class="text-xs text-gray-700">📝 Покарання: ${rule.punishment}</p>
-    `;
-    resultsContainer.appendChild(card);
-  });
-}
-
+    function renderResults(results) {
+      resultsContainer.innerHTML = "";
+      if (results.length === 0) {
+        statsContainer.textContent = "Нічого не знайдено 🙈";
+        return;
+      }
+      statsContainer.textContent = `Знайдено ${results.length} правил`;
+      results.forEach(rule => {
+        const card = document.createElement("div");
+        card.className = "bg-white text-black p-5 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition";
+        card.innerHTML = `
+          <h3 class="text-lg font-bold mb-1">${rule.code} — ${rule.title}</h3>
+          <p class="text-sm mb-2 text-blue-600 font-semibold">${rule.text}</p>
+          <p class="text-xs text-gray-700">📝 Покарання: ${rule.punishment}</p>
+        `;
+        resultsContainer.appendChild(card);
+      });
+    }
 
     function searchRules(query) {
       query = query.toLowerCase().trim();
