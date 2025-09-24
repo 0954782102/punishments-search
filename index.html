@@ -490,24 +490,25 @@
     const clearBtn = document.getElementById("clearBtn");
     const showAllBtn = document.getElementById("showAllBtn");
 
-    function renderResults(results) {
-      resultsContainer.innerHTML = "";
-      if (results.length === 0) {
-        statsContainer.textContent = "Нічого не знайдено 🙈";
-        return;
-      }
-      statsContainer.textContent = `Знайдено ${results.length} правил`;
-      results.forEach(rule => {
-        const card = document.createElement("div");
-        card.className = "bg-white text-black p-5 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition";
-        card.innerHTML = `
-          <h3 class="text-lg font-bold mb-1">${rule.code} — ${rule.title}</h3>
-          <p class="text-sm mb-2">${rule.text}</p>
-          <p class="text-xs text-gray-700">📝 Покарання: ${rule.punishment}</p>
-        `;
-        resultsContainer.appendChild(card);
-      });
-    }
+  function renderResults(results) {
+  resultsContainer.innerHTML = "";
+  if (results.length === 0) {
+    statsContainer.textContent = "Нічого не знайдено 🙈";
+    return;
+  }
+  statsContainer.textContent = `Знайдено ${results.length} правил`;
+  results.forEach(rule => {
+    const card = document.createElement("div");
+    card.className = "bg-white text-black p-5 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition";
+    card.innerHTML = `
+      <h3 class="text-lg font-bold mb-1">${rule.code} — ${rule.title}</h3>
+      <p class="text-sm mb-2 text-blue-600 font-semibold">${rule.text}</p>
+      <p class="text-xs text-gray-700">📝 Покарання: ${rule.punishment}</p>
+    `;
+    resultsContainer.appendChild(card);
+  });
+}
+
 
     function searchRules(query) {
       query = query.toLowerCase().trim();
