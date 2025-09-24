@@ -491,15 +491,21 @@ function renderPPVCHResults(list) {
   `).join('');
 }
 
-document.getElementById('ppvchSearchBtn').addEventListener('click', () => {
-  const query = ppvchInput.value.toLowerCase();
+function normalize(str) {
+  return str.toLowerCase().replace(/\s+/g, ''); // прибираємо пробіли і робимо нижній регістр
+}
+
+ppvchInput.addEventListener('input', () => {
+  const query = normalize(ppvchInput.value);
+  if (!query) return renderPPVCHResults([]); // якщо порожньо, очистити
   const filtered = PPVCH_RULES.filter(r =>
-    r.code.toLowerCase().includes(query) ||
-    r.text.toLowerCase().includes(query) ||
-    r.aliases.some(a => a.toLowerCase().includes(query))
+    normalize(r.code).includes(query) ||
+    normalize(r.text).includes(query) ||
+    r.aliases.some(a => normalize(a).includes(query))
   );
   renderPPVCHResults(filtered);
 });
+
 
 document.getElementById('ppvchClearBtn').addEventListener('click', () => {
   ppvchInput.value = '';
