@@ -436,5 +436,98 @@
     modalCloseBtn.onclick = () => youtubeModal.style.display = "none";
     youtubeModal.onclick = (e) => {if (e.target === youtubeModal) youtubeModal.style.display = "none";}
   </script>
+</div>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>ППВЧ — Furry Helper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">Правила ППВЧ</h1>
+
+    <!-- Пошук -->
+    <div class="mb-4">
+      <input id="q" type="text" placeholder="Пошук по ППВЧ..." class="w-full px-4 py-2 text-black rounded-lg">
+    </div>
+
+    <!-- Кнопки -->
+    <div class="space-x-4 mb-4">
+      <button id="clearBtn" class="bg-gray-600 px-4 py-2 rounded-lg">Очистити</button>
+      <button id="showAllBtn" class="bg-blue-600 px-4 py-2 rounded-lg">Показати всі</button>
+      <a href="index.html" class="bg-red-600 px-4 py-2 rounded-lg inline-block">Повернутися</a>
+    </div>
+
+    <!-- Статистика -->
+    <div id="stats" class="mb-2 text-sm text-gray-400"></div>
+
+    <!-- Результати -->
+    <div id="results"></div>
+  </div>
+
+  <script>
+    // Тут база тільки для ППВЧ
+    const RULES = [
+      { code: "ППВЧ-1", title: "Перше правило ППВЧ", text: "Опис правила 1.", punishment: "Попередження", aliases: ["ppvch1", "п1"] },
+      { code: "ППВЧ-2", title: "Друге правило ППВЧ", text: "Опис правила 2.", punishment: "Кік", aliases: ["ppvch2", "п2"] }
+    ];
+
+    const searchInput = document.getElementById("q");
+    const resultsContainer = document.getElementById("results");
+    const statsContainer = document.getElementById("stats");
+    const clearBtn = document.getElementById("clearBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+
+    function renderResults(results) {
+      resultsContainer.innerHTML = "";
+      if (results.length === 0) {
+        statsContainer.textContent = "Нічого не знайдено 🙈";
+        return;
+      }
+      statsContainer.textContent = `Знайдено ${results.length} правил`;
+      results.forEach(rule => {
+        const card = document.createElement("div");
+        card.className = "bg-white text-black p-4 rounded-2xl shadow mb-4";
+        card.innerHTML = `
+          <h3 class="text-lg font-bold">${rule.code} — ${rule.title}</h3>
+          <p class="text-sm mt-1">${rule.text}</p>
+          <p class="text-xs text-gray-700 mt-2">📝 Покарання: ${rule.punishment}</p>
+        `;
+        resultsContainer.appendChild(card);
+      });
+    }
+
+    function searchRules(query) {
+      query = query.toLowerCase().trim();
+      if (!query) {
+        resultsContainer.innerHTML = "";
+        statsContainer.textContent = "Введіть запит для пошуку правил";
+        return;
+      }
+      const results = RULES.filter(rule =>
+        rule.code.toLowerCase().includes(query) ||
+        rule.title.toLowerCase().includes(query) ||
+        rule.text.toLowerCase().includes(query) ||
+        rule.aliases.some(alias => alias.toLowerCase().includes(query))
+      );
+      renderResults(results);
+    }
+
+    searchInput.addEventListener("input", e => searchRules(e.target.value));
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      resultsContainer.innerHTML = "";
+      statsContainer.textContent = "Поле очищено";
+    });
+    showAllBtn.addEventListener("click", () => {
+      renderResults(RULES);
+    });
+    statsContainer.textContent = `Всього правил: ${RULES.length}`;
+  </script>
 </body>
 </html>
+
+
