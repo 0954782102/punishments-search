@@ -513,51 +513,72 @@
     const showAllBtn = document.getElementById("showAllBtn");
 
     function renderResults(results) {
-      resultsContainer.innerHTML = "";
-      if (results.length === 0) {
-        statsContainer.textContent = "Нічого не знайдено 🙈";
-        return;
-      }
-      statsContainer.textContent = `Знайдено ${results.length} правил`;
-      results.forEach(rule => {
-        const card = document.createElement("div");
-        card.className = "bg-white text-black p-5 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition";
-        card.innerHTML = `
-          <h3 class="text-lg font-bold mb-1">ППВЧ-${rule.code}</h3>
-          <p class="text-sm mb-2 text-blue-600 font-semibold whitespace-pre-line">${rule.text}</p>
-          ${rule.note ? `<p class="text-xs text-gray-600 italic">ℹ️ ${rule.note}</p>` : ""}
-          <p class="text-xs text-gray-700">📝 Покарання: ${rule.punishment || "—"}</p>
-        `;
-        resultsContainer.appendChild(card);
-      });
-    }
+  resultsContainer.innerHTML = "";
+  if (results.length === 0) {
+    statsContainer.textContent = "Нічого не знайдено 🙈";
+    return;
+  }
+  statsContainer.textContent = `Знайдено ${results.length} правил`;
+  results.forEach(rule => {
+    const card = document.createElement("div");
+    card.className = "bg-white text-black p-5 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition";
+    card.innerHTML = `
+      <h3 class="text-lg font-bold mb-1">ППВЧ-${rule.code}</h3>
+      <p class="text-sm mb-2 text-blue-600 font-semibold whitespace-pre-line">${rule.text}</p>
+      ${rule.note ? `<p class="text-xs text-gray-600 italic">ℹ️ ${rule.note}</p>` : ""}
+      <p class="text-xs text-gray-700">📝 Покарання: ${rule.punishment || "—"}</p>
+    `;
+    resultsContainer.appendChild(card);
+  });
+}
 
-    function searchRules(query) {
-      query = query.toLowerCase().trim();
-      if (!query) {
-        resultsContainer.innerHTML = "";
-        statsContainer.textContent = "Введіть запит для пошуку правил";
-        return;
-      }
-      const results = RULES.filter(rule =>
-        rule.code.toLowerCase().includes(query) ||
-        rule.text.toLowerCase().includes(query) ||
-        (rule.note && rule.note.toLowerCase().includes(query)) ||
-        rule.aliases.some(alias => alias.toLowerCase().includes(query))
-      );
-      renderResults(results);
-    }
+function renderResults(results) {
+  resultsContainer.innerHTML = "";
+  if (results.length === 0) {
+    statsContainer.textContent = "Нічого не знайдено 🙈";
+    return;
+  }
+  statsContainer.textContent = `Знайдено ${results.length} правил`;
+  results.forEach(rule => {
+    const card = document.createElement("div");
+    card.className = "bg-white text-black p-5 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition";
+    card.innerHTML = `
+      <h3 class="text-lg font-bold mb-1">ППВЧ-${rule.num}</h3>
+      <p class="text-sm mb-2 text-blue-600 font-semibold whitespace-pre-line">${rule.text}</p>
+      ${rule.note ? `<p class="text-xs text-gray-600 italic">ℹ️ ${rule.note}</p>` : ""}
+      <p class="text-xs text-gray-700">📝 Покарання: ${rule.punishment || "—"}</p>
+    `;
+    resultsContainer.appendChild(card);
+  });
+}
 
-    searchInput.addEventListener("input", e => searchRules(e.target.value));
-    clearBtn.addEventListener("click", () => {
-      searchInput.value = "";
-      resultsContainer.innerHTML = "";
-      statsContainer.textContent = "Поле очищено";
-    });
-    showAllBtn.addEventListener("click", () => {
-      renderResults(RULES);
-    });
-    statsContainer.textContent = `Всього правил: ${RULES.length}`;
+function searchRules(query) {
+  query = query.toLowerCase().trim();
+  if (!query) {
+    resultsContainer.innerHTML = "";
+    statsContainer.textContent = "Введіть запит для пошуку правил";
+    return;
+  }
+  const results = RULES.filter(rule =>
+    rule.num.toLowerCase().includes(query) ||
+    rule.text.toLowerCase().includes(query) ||
+    (rule.note && rule.note.toLowerCase().includes(query)) ||
+    ((rule.aliases || []).some(alias => alias.toLowerCase().includes(query)))
+  );
+  renderResults(results);
+}
+
+// Події
+searchInput.addEventListener("input", e => searchRules(e.target.value));
+clearBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  resultsContainer.innerHTML = "";
+  statsContainer.textContent = "Поле очищено";
+});
+showAllBtn.addEventListener("click", () => {
+  renderResults(RULES);
+});
+statsContainer.textContent = `Всього правил: ${RULES.length}`;
   </script>
 </body>
 </html>
