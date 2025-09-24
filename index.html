@@ -446,6 +446,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen flex flex-col">
+
   <div class="container mx-auto p-6 flex-1">
     <!-- Заголовок -->
     <h1 class="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent drop-shadow-lg">
@@ -489,7 +490,7 @@
       { code: "1.8", text: "Заборонено відновлювати здоров’я під час перестрілки.", punishment: "Jail 30 хвилин", aliases: ["хіл","лікування","перестрілка"] },
       { code: "1.9", text: "Заборонено використовувати засоби поповнення здоров’я під час руху.", punishment: "Jail 30 хвилин", aliases: ["хіл у русі","лікування під час бігу"] },
       { code: "1.10", text: "Військовим дозволено ігнорувати ПГ та РК під час НС на своїй базі.", punishment: "", aliases: ["пг","рк","надзвичайна ситуація"] }
-      // і так далі, можна додати всі інші правила
+      // Додати інші правила за потреби
     ];
 
     const searchInput = document.getElementById("q");
@@ -510,8 +511,8 @@
         card.className = "bg-white text-black p-5 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition";
         card.innerHTML = `
           <h3 class="text-lg font-bold mb-1">ППВЧ-${rule.code}</h3>
-          <p class="text-sm mb-2 text-blue-600 font-semibold whitespace-pre-line">${rule.text}</p>
-          ${rule.note ? `<p class="text-xs text-gray-600 italic">ℹ️ ${rule.note}</p>` : ""}
+          <p class="text-sm mb-2 text-blue-500 font-semibold whitespace-pre-line">${rule.text}</p>
+          ${rule.note ? `<p class="text-xs text-gray-400 italic">ℹ️ ${rule.note}</p>` : ""}
           <p class="text-xs text-gray-700">📝 Покарання: ${rule.punishment || "—"}</p>
         `;
         resultsContainer.appendChild(card);
@@ -546,7 +547,6 @@
     });
     statsContainer.textContent = `Всього правил: ${RULES.length}`;
   </script>
+
 </body>
 </html>
-
-
