@@ -30,12 +30,22 @@
     #splash {
       animation: fadeScale 2.5s ease forwards;
       z-index: 2000;
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #0a1629;
     }
 
     /* анімація для появи контенту */
     @keyframes fadeUp {
       0% { opacity: 0; transform: translateY(30px); }
       100% { opacity: 1; transform: translateY(0); }
+    }
+
+    #main-content {
+      opacity: 0;
     }
 
     #main-content.show {
@@ -47,83 +57,31 @@
 <body class="text-slate-100">
 
   <!-- Splash screen -->
-  <div id="splash" class="fixed inset-0 flex items-center justify-center bg-[#0a1629]">
+  <div id="splash">
     <img src="https://i.postimg.cc/fR78zhjP/192-png.png" alt="Furry Logo" class="w-32 h-32">
   </div>
-    <a href="https://drive.google.com/uc?export=download&id=ID_ФАЙЛУ" target="_blank">
-  <button class="px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
-    Завантажити Furry Helper
-  </button>
-</a>
+
+  <!-- Основний контент -->
+  <div id="main-content" class="flex flex-col items-center justify-center h-screen gap-6">
+    <h1 class="text-4xl font-bold">Ласкаво просимо до Furry Helper</h1>
+    <a href="https://drive.google.com/uc?export=download&id=1xmlKg6SWFZ-5QdXNaDOsHQCFg9GC-dBw" target="_blank">
+      <button class="px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
+        Завантажити Furry Helper
+      </button>
+    </a>
+  </div>
+
+  <script>
+    // Приховуємо splash і показуємо основний контент після 2.5 секунд
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('main-content').classList.add('show');
+      }, 2500);
+    });
   </script>
 </body>
-  
-  <!-- ======= МЕНЮ ======= -->
-  <nav class="w-full mb-4">
-    <ul class="flex gap-4 px-4 py-2 bg-slate-900/70 rounded-2xl justify-center">
-      <li><button class="text-indigo-400 hover:text-indigo-300 font-semibold menu-btn" data-content="home">Головна</button></li>
-      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="rules">Правила</button></li>
-      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="faq">FAQ</button></li>
-      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="contacts">Контакти</button></li>
-      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="updates">Оновлення</button></li>
-    </ul>
-  </nav>
-
-  <!-- ======= МОДАЛЬНЕ ВІКНО ======= -->
-  <div id="modalOverlay" class="fixed inset-0 flex items-center justify-center bg-black/80 z-50 hidden">
-    <div id="modalContent" class="bg-slate-900 text-slate-100 rounded-2xl p-8 max-w-lg w-full text-left space-y-6 shadow-2xl"></div>
-  </div>
-
-  <div class="max-w-6xl mx-auto px-4 py-8 bg-overlay">
-    <header class="mb-6">
-      <h1 class="text-2xl md:text-3xl font-bold tracking-tight">🛠️ Furry Helper</h1>
-      <p class="text-slate-300 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">5.11</span>, <span class="kbd">мультиакк</span>...</p>
-    </header>
-
-    <section class="mb-6">
-      <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
-        <div class="relative flex-1">
-          <input id="q" class="w-full bg-slate-900/60 border border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none rounded-2xl px-4 py-3 pr-10" placeholder="Пошук по правилам або коду...">
-          <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 opacity-70 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.2-5.2M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-          </svg>
-        </div>
-        <div class="flex gap-2">
-          <button id="clearBtn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Очистити</button>
-          <button id="showAllBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Показати всі</button>
-        </div>
-      </div>
-      <div class="text-xs text-slate-300 mt-2 flex flex-wrap gap-2">
-        <span class="tag">Підказка: шукай і за кодом правила — <span class="mono">4.1.2</span>, <span class="mono">5.11</span></span>
-        <span class="tag">Синоніми: «оск адміна» == «образа адміністрації»</span>
-        <span class="tag">UPD застосовані (16.08, 28.08 тощо)</span>
-      </div>
-    </section>
-
-    <section id="stats" class="text-slate-300 text-sm mb-3"></section>
-    <section id="results" class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
-    
-    <!-- ======= ЧИЛКА / МУЗИКА YOUTUBE ======= -->
-    <section id="chill-music-youtube" class="mt-10 bg-slate-900/70 rounded-2xl p-6">
-      <h2 class="text-xl font-bold mb-3">🎶 Чилка:Слухай пісні. Або дивись Ютуб. Разом з Furry</h2>
-      <div class="flex gap-2 mb-2">
-        <input id="youtubeQuery" class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100" placeholder="Введи назву або фразу">
-        <button id="youtubeSearchBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white">Знайти</button>
-      </div>
-      <div id="youtubeResults" class="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-      <div class="text-xs text-slate-400 mt-2">
-        Пошук працює через YouTube Data API. Натисни на відео для перегляду.
-      </div>
-    </section>
-
-    <footer class="mt-12 text-slate-500 text-xs">
-      <div class="space-y-1">
-        <p>Останні зміни включено: правки до <span class="mono">3.10</span>, <span class="mono">3.30</span>, <span class="mono">3.31</span> (999+), видалений <span class="mono">старий пункт</span>.</p>
-        <p>UI: Перевіряйте офіційний портал Discord для актуальних оновлень.</p>
-      </div>
-    </footer>
-  </div>
-
+</html>
   <!-- ======= МОДАЛЬНЕ ВІКНО ДЛЯ YOUTUBE ======= -->
   <div id="youtubeModal" class="modal-backdrop" style="display:none;">
     <div class="modal-content">
