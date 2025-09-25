@@ -547,4 +547,128 @@ document.getElementById('ppvchClearBtn').addEventListener('click', () => {
 // Ініціалізація пустим
 renderPPVCHResults([]);
 </script>
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Furry — пошук порушень і покарань</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0078D4">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-C444GGS4MZ');
+  </script>
+  <!-- кінець Google Analytics -->
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root { color-scheme: dark light; }
+    html, body { height: 100%; margin: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: url("https://i.postimg.cc/SNGLN9rY/photo-2025-09-14-23-48-14.jpg") no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* splash animation */
+    @keyframes fadeScale {
+      0% { opacity: 0; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.1); }
+    }
+
+    #splash {
+      animation: fadeScale 2.5s ease forwards;
+      z-index: 2000;
+    }
+
+    .bg-overlay { background: rgba(10, 22, 41, 0.60); border-radius: 1rem; padding: 1.5rem; }
+    .kbd { border:1px solid rgba(255,255,255,.2); padding:.1rem .4rem; border-radius:.4rem; font-size:.8rem }
+    .tag { border:1px solid rgba(255,255,255,.15); padding:.15rem .5rem; border-radius:999px; font-size:.75rem; white-space:nowrap }
+    .mono { font-variant-numeric: tabular-nums }
+    .pill { border-radius:999px }
+    .safe-wrap { overflow-wrap:anywhere }
+    .youtube-thumb { transition: box-shadow .2s; }
+    .youtube-thumb:hover { box-shadow: 0 0 0 3px #6366f1; }
+    .modal-backdrop {
+      background: rgba(0,0,0,0.8);
+      position: fixed; left:0; top:0; width:100vw; height:100vh; z-index:1000;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-content {
+      background: #1e293b;
+      border-radius: 1.2rem;
+      padding: 0;
+      max-width: 600px;
+      width: 95vw;
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .modal-close {
+      position:absolute; top:10px; right:10px; background:#334155; border:none;
+      border-radius:999px; color:#fff; padding:5px 12px; font-size:1.3rem; cursor:pointer;
+      transition: background .2s;
+    }
+    .modal-close:hover { background:#6366f1; }
+  </style>
+</head>
+<body class="text-slate-100">
+
+  <!-- Splash screen -->
+  <div id="splash" class="fixed inset-0 flex items-center justify-center bg-[#0a1629]">
+    <img src="https://i.postimg.cc/fR78zhjP/192-png.png" alt="Furry Logo" class="w-32 h-32">
+  </div>
+  <!-- Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(() => console.log("✅ Service Worker підключений"))
+        .catch(err => console.error("❌ Помилка SW:", err));
+    }
+  </script>
+
+  <!-- ======= МЕНЮ ======= -->
+  <nav class="w-full mb-4">
+    <ul class="flex gap-4 px-4 py-2 bg-slate-900/70 rounded-2xl justify-center">
+      <li><button class="text-indigo-400 hover:text-indigo-300 font-semibold menu-btn" data-content="home">Головна</button></li>
+      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="rules">Правила</button></li>
+      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="faq">FAQ</button></li>
+      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="contacts">Контакти</button></li>
+      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="updates">Оновлення</button></li>
+    </ul>
+  </nav>
+
+  <!-- ======= МОДАЛЬНЕ ВІКНО ======= -->
+  <div id="modalOverlay" class="fixed inset-0 flex items-center justify-center bg-black/80 z-50 hidden">
+    <div id="modalContent" class="bg-slate-900 text-slate-100 rounded-2xl p-8 max-w-lg w-full text-left space-y-6 shadow-2xl"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 py-8 bg-overlay">
+    <header class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold tracking-tight">🛠️ Furry Helper</h1>
+      <p class="text-slate-300 text-sm md:text-base mt-1">
+        Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, <span class="kbd">5.11</span>, <span class="kbd">мультиакк</span>...
+      </p>
+
+      <!-- Кнопка завантаження Furry Helper -->
+      <div class="mt-4">
+        <a href="https://drive.google.com/file/d/1xmlKg6SWFZ-5QdXNaDOsHQCFg9GC-dBw/view?usp=sharing" 
+           target="_blank" 
+           class="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-2xl transition-colors">
+           Завантажити Furry Helper
+        </a>
+      </div>
+    </header>
+
 
