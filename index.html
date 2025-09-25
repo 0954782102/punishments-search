@@ -42,36 +42,6 @@
       animation: fadeScale 2.5s ease forwards;
       z-index: 2000;
     }
-
-    .bg-overlay { background: rgba(10, 22, 41, 0.60); border-radius: 1rem; padding: 1.5rem; }
-    .kbd { border:1px solid rgba(255,255,255,.2); padding:.1rem .4rem; border-radius:.4rem; font-size:.8rem }
-    .tag { border:1px solid rgba(255,255,255,.15); padding:.15rem .5rem; border-radius:999px; font-size:.75rem; white-space:nowrap }
-    .mono { font-variant-numeric: tabular-nums }
-    .pill { border-radius:999px }
-    .safe-wrap { overflow-wrap:anywhere }
-    .youtube-thumb { transition: box-shadow .2s; }
-    .youtube-thumb:hover { box-shadow: 0 0 0 3px #6366f1; }
-    .modal-backdrop {
-      background: rgba(0,0,0,0.8);
-      position: fixed; left:0; top:0; width:100vw; height:100vh; z-index:1000;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .modal-content {
-      background: #1e293b;
-      border-radius: 1.2rem;
-      padding: 0;
-      max-width: 600px;
-      width: 95vw;
-      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25);
-      position:relative;
-      overflow:hidden;
-    }
-    .modal-close {
-      position:absolute; top:10px; right:10px; background:#334155; border:none;
-      border-radius:999px; color:#fff; padding:5px 12px; font-size:1.3rem; cursor:pointer;
-      transition: background .2s;
-    }
-    .modal-close:hover { background:#6366f1; }
   </style>
 </head>
 <body class="text-slate-100">
@@ -80,7 +50,19 @@
   <div id="splash" class="fixed inset-0 flex items-center justify-center bg-[#0a1629]">
     <img src="https://i.postimg.cc/fR78zhjP/192-png.png" alt="Furry Logo" class="w-32 h-32">
   </div>
-  <!-- твій контент тут -->
+
+  <!-- Контент, який з’явиться після splash -->
+  <div id="main-content" class="relative z-10 opacity-0 transition-opacity duration-1000">
+    <div class="flex justify-center mt-10">
+      <a href="Furry Helper.apk" download
+         class="group relative flex flex-col items-center justify-center px-8 py-4 rounded-2xl 
+                bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg 
+                hover:shadow-2xl hover:scale-105 transition-transform duration-300">
+        <span class="text-xl font-bold">Furry Helper</span>
+        <span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">завантажити</span>
+      </a>
+    </div>
+  </div>
 
   <!-- Service Worker -->
   <script>
@@ -89,18 +71,17 @@
         .then(() => console.log("✅ Service Worker підключений"))
         .catch(err => console.error("❌ Помилка SW:", err));
     }
+
+    // Прибрати splash і показати контент
+    setTimeout(() => {
+      document.getElementById('splash').style.display = 'none';
+      document.getElementById('main-content').classList.remove('opacity-0');
+    }, 2500);
   </script>
-  
-<!-- Кнопка завантаження -->
-<div class="flex justify-center mt-10">
-  <a href="Furry Helper.apk" download
-     class="group relative flex flex-col items-center justify-center px-8 py-4 rounded-2xl 
-            bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg 
-            hover:shadow-2xl hover:scale-105 transition-transform duration-300">
-    <span class="text-xl font-bold">Furry Helper</span>
-    <span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">завантажити</span>
-  </a>
-</div>
+
+</body>
+</html>
+
 
 
   <!-- ======= МЕНЮ ======= -->
