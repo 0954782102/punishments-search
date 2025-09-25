@@ -50,56 +50,6 @@
   <div id="splash" class="fixed inset-0 flex items-center justify-center bg-[#0a1629]">
     <img src="https://i.postimg.cc/fR78zhjP/192-png.png" alt="Furry Logo" class="w-32 h-32">
   </div>
-
-  <!-- Контент після splash -->
-  <div id="main-content" class="relative z-10 opacity-0">
-    <div class="flex justify-center mt-10">
-      <button id="downloadBtn"
-              class="group relative flex flex-col items-center justify-center px-8 py-4 rounded-2xl 
-                     bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg 
-                     hover:shadow-2xl hover:scale-105 transition-transform duration-300">
-        <span class="text-xl font-bold">Furry Helper</span>
-        <span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">завантажити</span>
-      </button>
-    </div>
-
-    <!-- Повідомлення про стан -->
-    <div id="downloadStatus" class="text-center mt-4 text-sm"></div>
-  </div>
-
-  <script>
-    // Прибрати splash і показати контент
-    setTimeout(() => {
-      document.getElementById('splash').style.display = 'none';
-      document.getElementById('main-content').classList.add('show');
-    }, 2500);
-
-    // Завантаження APK з перевіркою
-    document.getElementById("downloadBtn").addEventListener("click", async () => {
-      const fileUrl = "Furry Helper.apk"; // поклади файл у ту ж папку, що й index.html
-      const statusEl = document.getElementById("downloadStatus");
-
-      try {
-        const response = await fetch(fileUrl, { method: "HEAD" });
-
-        if (response.ok) {
-          const link = document.createElement("a");
-          link.href = fileUrl;
-          link.download = "Furry Helper.apk";
-          link.click();
-
-          statusEl.textContent = "✅ Завантаження почалося...";
-          statusEl.className = "text-center mt-4 text-green-400 text-sm";
-        } else {
-          statusEl.textContent = "❌ Файл недоступний. Спробуй пізніше.";
-          statusEl.className = "text-center mt-4 text-red-400 text-sm";
-        }
-      } catch (error) {
-        statusEl.textContent = "⚠️ Помилка підключення до сервера.";
-        statusEl.className = "text-center mt-4 text-yellow-400 text-sm";
-      }
-    });
-
     <a href="https://drive.google.com/uc?export=download&id=ID_ФАЙЛУ" target="_blank">
   <button class="px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
     Завантажити Furry Helper
