@@ -88,7 +88,6 @@
         .catch(err => console.error("❌ Помилка SW:", err));
     }
   </script>
-</body>
 
   <!-- ======= МЕНЮ ======= -->
   <nav class="w-full mb-4">
@@ -207,7 +206,7 @@
     });
     modalOverlay.addEventListener('click', (e) => {
       if (e.target === modalOverlay) modalOverlay.classList.add('hidden');
-    })
+    });
     
    // ====== ПОШУК ПРАВИЛ (як було) ======
     const RULES = [
