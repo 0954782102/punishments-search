@@ -9,23 +9,12 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0078D4">
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C444GGS4MZ');
-  </script>
-  <!-- кінець Google Analytics -->
-
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     :root { color-scheme: dark light; }
     html, body { height: 100%; margin: 0; }
-    html { scroll-behavior: smooth; }
     body {
       background: url("https://i.postimg.cc/SNGLN9rY/photo-2025-09-14-23-48-14.jpg") no-repeat center center fixed;
       background-size: cover;
@@ -43,7 +32,7 @@
       z-index: 2000;
     }
 
-    /* анімація для кнопки */
+    /* анімація для появи контенту */
     @keyframes fadeUp {
       0% { opacity: 0; transform: translateY(30px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -62,32 +51,54 @@
     <img src="https://i.postimg.cc/fR78zhjP/192-png.png" alt="Furry Logo" class="w-32 h-32">
   </div>
 
-  <!-- Контент, який з’явиться після splash -->
+  <!-- Контент після splash -->
   <div id="main-content" class="relative z-10 opacity-0">
     <div class="flex justify-center mt-10">
-      <a href="Furry Helper.apk" download
-         class="group relative flex flex-col items-center justify-center px-8 py-4 rounded-2xl 
-                bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg 
-                hover:shadow-2xl hover:scale-105 transition-transform duration-300">
+      <button id="downloadBtn"
+              class="group relative flex flex-col items-center justify-center px-8 py-4 rounded-2xl 
+                     bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg 
+                     hover:shadow-2xl hover:scale-105 transition-transform duration-300">
         <span class="text-xl font-bold">Furry Helper</span>
         <span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">завантажити</span>
-      </a>
+      </button>
     </div>
+
+    <!-- Повідомлення про стан -->
+    <div id="downloadStatus" class="text-center mt-4 text-sm"></div>
   </div>
 
-  <!-- Service Worker -->
   <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js")
-        .then(() => console.log("✅ Service Worker підключений"))
-        .catch(err => console.error("❌ Помилка SW:", err));
-    }
-
-    // Прибрати splash і показати контент з анімацією
+    // Прибрати splash і показати контент
     setTimeout(() => {
       document.getElementById('splash').style.display = 'none';
       document.getElementById('main-content').classList.add('show');
     }, 2500);
+
+    // Завантаження APK з перевіркою
+    document.getElementById("downloadBtn").addEventListener("click", async () => {
+      const fileUrl = "Furry Helper.apk"; // поклади файл у ту ж папку, що й index.html
+      const statusEl = document.getElementById("downloadStatus");
+
+      try {
+        const response = await fetch(fileUrl, { method: "HEAD" });
+
+        if (response.ok) {
+          const link = document.createElement("a");
+          link.href = fileUrl;
+          link.download = "Furry Helper.apk";
+          link.click();
+
+          statusEl.textContent = "✅ Завантаження почалося...";
+          statusEl.className = "text-center mt-4 text-green-400 text-sm";
+        } else {
+          statusEl.textContent = "❌ Файл недоступний. Спробуй пізніше.";
+          statusEl.className = "text-center mt-4 text-red-400 text-sm";
+        }
+      } catch (error) {
+        statusEl.textContent = "⚠️ Помилка підключення до сервера.";
+        statusEl.className = "text-center mt-4 text-yellow-400 text-sm";
+      }
+    });
   </script>
 </body>
   
