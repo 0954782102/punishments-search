@@ -42,6 +42,17 @@
       animation: fadeScale 2.5s ease forwards;
       z-index: 2000;
     }
+
+    /* анімація для кнопки */
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    #main-content.show {
+      opacity: 1;
+      animation: fadeUp 1s ease forwards;
+    }
   </style>
 </head>
 <body class="text-slate-100">
@@ -52,7 +63,7 @@
   </div>
 
   <!-- Контент, який з’явиться після splash -->
-  <div id="main-content" class="relative z-10 opacity-0 transition-opacity duration-1000">
+  <div id="main-content" class="relative z-10 opacity-0">
     <div class="flex justify-center mt-10">
       <a href="Furry Helper.apk" download
          class="group relative flex flex-col items-center justify-center px-8 py-4 rounded-2xl 
@@ -72,17 +83,15 @@
         .catch(err => console.error("❌ Помилка SW:", err));
     }
 
-    // Прибрати splash і показати контент
+    // Прибрати splash і показати контент з анімацією
     setTimeout(() => {
       document.getElementById('splash').style.display = 'none';
-      document.getElementById('main-content').classList.remove('opacity-0');
+      document.getElementById('main-content').classList.add('show');
     }, 2500);
   </script>
 
 </body>
 </html>
-
-
 
   <!-- ======= МЕНЮ ======= -->
   <nav class="w-full mb-4">
