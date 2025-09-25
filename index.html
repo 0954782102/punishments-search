@@ -31,18 +31,6 @@
       background-size: cover;
     }
 
-    /* splash animation */
-    @keyframes fadeScale {
-      0% { opacity: 0; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(1.1); }
-    }
-
-    #splash {
-      animation: fadeScale 2.5s ease forwards;
-      z-index: 2000;
-    }
-
     .bg-overlay { background: rgba(10, 22, 41, 0.60); border-radius: 1rem; padding: 1.5rem; }
     .kbd { border:1px solid rgba(255,255,255,.2); padding:.1rem .4rem; border-radius:.4rem; font-size:.8rem }
     .tag { border:1px solid rgba(255,255,255,.15); padding:.15rem .5rem; border-radius:999px; font-size:.75rem; white-space:nowrap }
@@ -75,19 +63,7 @@
   </style>
 </head>
 <body class="text-slate-100">
-
-  <!-- Splash screen -->
-  <div id="splash" class="fixed inset-0 flex items-center justify-center bg-[#0a1629]">
-    <img src="https://i.postimg.cc/fR78zhjP/192-png.png" alt="Furry Logo" class="w-32 h-32">
-  </div>
-  <!-- Service Worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw-v2.js")
-        .then(() => console.log("✅ Service Worker підключений"))
-        .catch(err => console.error("❌ Помилка SW:", err));
-    }
-  </script>
+</script>
 
   <!-- ======= МЕНЮ ======= -->
   <nav class="w-full mb-4">
