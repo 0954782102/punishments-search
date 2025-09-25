@@ -18,6 +18,7 @@
     body {
       background: url("https://i.postimg.cc/SNGLN9rY/photo-2025-09-14-23-48-14.jpg") no-repeat center center fixed;
       background-size: cover;
+      font-family: sans-serif;
     }
 
     /* splash animation */
@@ -52,6 +53,37 @@
       opacity: 1;
       animation: fadeUp 1s ease forwards;
     }
+
+    /* модальне вікно YouTube */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      overflow: auto;
+      padding: 1rem;
+    }
+    .modal-content {
+      background: #0a1629;
+      border-radius: 1rem;
+      max-width: 800px;
+      width: 100%;
+      position: relative;
+      padding: 1rem;
+    }
+    .modal-close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1.5rem;
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body class="text-slate-100">
@@ -62,74 +94,13 @@
   </div>
 
   <!-- Основний контент -->
-  <div id="main-content" class="flex flex-col items-center justify-center h-screen gap-6">
-    <h1 class="text-4xl font-bold">Ласкаво просимо до Furry Helper</h1>
+  <div id="main-content" class="flex flex-col items-center justify-center h-screen gap-6 px-4">
+    <h1 class="text-4xl font-bold text-center">Ласкаво просимо до Furry Helper</h1>
     <a href="https://drive.google.com/uc?export=download&id=1xmlKg6SWFZ-5QdXNaDOsHQCFg9GC-dBw" target="_blank">
       <button class="px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
         Завантажити Furry Helper
       </button>
     </a>
-  </div>
-
-  <script>
-    // Приховуємо splash і показуємо основний контент після 2.5 секунд
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('splash').style.display = 'none';
-        document.getElementById('main-content').classList.add('show');
-      }, 2500);
-    });
-  </script>
-</body>
-</html>
-  <!-- ======= МОДАЛЬНЕ ВІКНО ДЛЯ YOUTUBE ======= -->
-  <div id="youtubeModal" class="modal-backdrop" style="display:none;">
-    <div class="modal-content">
-      <button class="modal-close" id="modalCloseBtn">&times;</button>
-      <div id="youtubeModalInner"></div>
-    </div>
-  </div>
-
-  <script>
-    // ====== МОДАЛЬНЕ ВІКНО (меню) ======
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalContent = document.getElementById('modalContent');
-    const modalData = {
-      home: `<h2 class="text-xl font-bold mb-2">Головна</h2>
-        <p>Вітаємо у Furry Helper! Тут можна швидко знайти правила та покарання. Скористайся пошуком вище.</p>`,
-      rules: `<h2 class="text-xl font-bold mb-2">Правила</h2>
-        <p>Всі актуальні правила та покарання шукай через пошук вище.</p>`,
-      faq: `<h2 class="text-xl font-bold mb-2">FAQ</h2>
-        <ul class="list-disc pl-5 text-slate-300 text-sm">
-          <li>Як шукати правило? — Введіть частину назви, код або синонім.</li>
-          <li>Що означає "Jail"? — Тимчасове ув'язнення персонажа.</li>
-          <li>Де взяти повний перелік? — Всі правила доступні через цей сайт, офіційний Discord та форум.</li>
-        </ul>`,
-      contacts: `<h2 class="text-xl font-bold mb-2">Контакти</h2>
-        <p class="text-slate-300 text-sm">Зворотній зв'язок:<br>
-          Discord: <span class="mono">@artem_symy</span><br>
-          Email: <span class="mono">furry1helper@gmail.com</span>
-        </p>`,
-      updates: `<h2 class="text-xl font-bold mb-2">Оновлення 0.3</h2>
-        <ul class="list-disc pl-5 text-slate-300 text-sm">
-          <li>Додано якірні секції для меню.</li>
-          <li>Виправлено інпут пошуку.</li>
-          <li>Покращено верстку та читабельність.</li>
-          <li>Модалка показує актуальну версію.</li>
-        </ul>`
-    };
-    document.querySelectorAll('.menu-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const key = this.getAttribute('data-content');
-        modalContent.innerHTML = modalData[key] + `<button class="mt-6 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl w-full" id="closeModalBtn">Закрити</button>`;
-        modalOverlay.classList.remove('hidden');
-        document.getElementById('closeModalBtn').onclick = () => modalOverlay.classList.add('hidden');
-      });
-    });
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) modalOverlay.classList.add('hidden');
-    });
-
     // ====== ПОШУК ПРАВИЛ (як було) ======
     const RULES = [
  // --- Базові пункти з твоєї початкової таблиці
