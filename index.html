@@ -120,9 +120,14 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.2-5.2M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
           </svg>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 flex-wrap">
           <button id="clearBtn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Очистити</button>
           <button id="showAllBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500">Показати всі</button>
+          <a href="https://drive.google.com/file/d/1xmlKg6SWFZ-5QdXNaDOsHQCFg9GC-dBw/view?usp=sharing"
+             target="_blank"
+             class="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-500 text-white font-semibold">
+            ⬇️ Завантажити Furry Helper
+          </a>
         </div>
       </div>
       <div class="text-xs text-slate-300 mt-2 flex flex-wrap gap-2">
@@ -202,9 +207,9 @@
     });
     modalOverlay.addEventListener('click', (e) => {
       if (e.target === modalOverlay) modalOverlay.classList.add('hidden');
-    });
-
-    // ====== ПОШУК ПРАВИЛ (як було) ======
+    })
+    
+   // ====== ПОШУК ПРАВИЛ (як було) ======
     const RULES = [
  // --- Базові пункти з твоєї початкової таблиці
       { code: "4.1",   title: "dm",            punishment: "Jail 20 хвилин", text: "Death Match — вбивство/шкода без вагомої IC причини.", aliases:["дм","дмш","кіл без причини","deathmatch"] },
