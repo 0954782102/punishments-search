@@ -530,3 +530,127 @@ document.getElementById('ppvchClearBtn').addEventListener('click', () => {
 // Ініціалізація пустим
 renderPPVCHResults([]);
 </script>
+
+  <!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Furry — пошук порушень і покарань та AI чат</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { color-scheme: dark light; }
+    body {
+      background: url("https://i.postimg.cc/SNGLN9rY/photo-2025-09-14-23-48-14.jpg") no-repeat center center fixed;
+      background-size: cover;
+    }
+    .bg-overlay {
+      background: rgba(10, 22, 41, 0.60);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    .kbd{border:1px solid rgba(255,255,255,.2); padding:.1rem .4rem; border-radius:.4rem; font-size:.8rem}
+    .tag{border:1px solid rgba(255,255,255,.15); padding:.15rem .5rem; border-radius:999px; font-size:.75rem; white-space:nowrap}
+    .mono{font-variant-numeric: tabular-nums}
+  </style>
+</head>
+<body class="text-slate-100">
+
+  <nav class="w-full mb-4">
+    <ul class="flex gap-4 px-4 py-2 bg-slate-900/70 rounded-2xl justify-center">
+      <li><button class="text-indigo-400 hover:text-indigo-300 font-semibold menu-btn" data-content="home">Головна</button></li>
+      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="rules">Правила</button></li>
+      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="faq">FAQ</button></li>
+      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="contacts">Контакти</button></li>
+      <li><button class="text-slate-200 hover:text-indigo-400 menu-btn" data-content="updates">Оновлення</button></li>
+    </ul>
+  </nav>
+
+  <div class="max-w-6xl mx-auto px-4 py-8 bg-overlay">
+    <header class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold tracking-tight">🛠️ Furry Helper</h1>
+      <p class="text-slate-300 text-sm md:text-base mt-1">Швидкий пошук по правилам та покаранням. Введи ключове слово: <span class="kbd">dm</span>, [...]</p>
+    </header>
+
+    <section class="mb-6">
+      <!-- Тут твій пошук по правилам -->
+    </section>
+
+    <!-- ======= ЧАТ З ШІ ======= -->
+    <section id="ai-chat" class="my-8 flex flex-col items-center">
+      <div class="w-full md:w-2/3 bg-slate-900/70 rounded-2xl p-6 shadow-lg">
+        <h2 class="text-xl font-bold mb-3 text-center">🤖 Чат з ШІ</h2>
+        <div class="flex gap-2 mb-4">
+          <input id="chatInput" class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100"
+            placeholder="Введи питання або запит..." />
+          <button id="chatSendBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white">Відправити</button>
+        </div>
+        <div id="chatHistory" class="mt-3 space-y-4"></div>
+        <div class="text-xs text-slate-400 mt-4 text-center">
+          <span>Працює через API-ключ. Відповіді генерує OpenAI GPT-3.5 (безкоштовно для тесту).</span>
+        </div>
+      </div>
+    </section>
+    <!-- ======= КІНЕЦЬ ЧАТУ ======= -->
+
+    <footer class="mt-12 text-slate-500 text-xs text-center">
+      <div class="space-y-1">
+        <p>Останні зміни включено: ...</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ==== ЧАТ З ШІ ====
+    const OPENAI_API_KEY = "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";
+
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    const chatHistory = document.getElementById('chatHistory');
+
+    let chatMessages = [];
+
+    chatSendBtn.onclick = async () => {
+      const userMsg = chatInput.value.trim();
+      if (!userMsg) return;
+      chatMessages.push({role: "user", content: userMsg});
+      renderChat();
+      chatInput.value = "";
+      chatSendBtn.disabled = true;
+      chatSendBtn.textContent = "Відправляю...";
+
+      try {
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${OPENAI_API_KEY}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "openai/gpt-3.5-turbo", // Можна змінити на іншу модель, якщо потрібно
+            messages: chatMessages
+          })
+        });
+        const data = await res.json();
+        const aiMsg = data.choices?.[0]?.message?.content || "Помилка відповіді ШІ.";
+        chatMessages.push({role: "assistant", content: aiMsg});
+        renderChat();
+      } catch(e) {
+        chatMessages.push({role: "assistant", content: "Помилка з'єднання з ШІ."});
+        renderChat();
+      }
+      chatSendBtn.disabled = false;
+      chatSendBtn.textContent = "Відправити";
+    };
+
+    function renderChat() {
+      chatHistory.innerHTML = chatMessages.map(
+        m => `<div class="p-3 rounded-xl ${m.role === 'user' ? 'bg-indigo-900 text-slate-100 text-right' : 'bg-slate-800 text-slate-200 text-left'}">
+          ${m.role === 'user' ? '<b>Ти:</b>' : '<b>ШІ:</b>'} ${m.content}
+        </div>`
+      ).join('');
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+  </script>
+</body>
+</html>
